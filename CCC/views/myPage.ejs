@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <!-- Bootstrap CSS 추가 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css"> <!-- 사용자 정의 스타일시트 -->
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- 마이페이지 컨텐츠 -->
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script> <!-- 사용자 정의 JS -->
+</body>
+</html>
+<div class="container mt-5">
+    <h1 class="mb-4">마이페이지</h1>
+
+    <!-- 사용자 정보 섹션 -->
+    <div class="card mb-3">
+        <div class="card-header">
+            회원 정보
+        </div>
+        <div class="card-body">
+            <p class="card-text">이름: <%= userInfo.name %></p>
+            <p class="card-text">이메일: <%= userInfo.email %></p>
+        </div>
+    </div>
+
+    <!-- 찜한 상품 섹션 -->
+    <div class="card mb-3">
+        <div class="card-header">
+            찜한 상품
+        </div>
+        <ul class="list-group list-group-flush">
+            <% favoriteProducts.forEach(function(product) { %>
+                <li class="list-group-item"><%= product.name %> - <%= product.price %></li>
+            <% }); %>
+        </ul>
+    </div>
+
+    <!-- 내가 작성한 리뷰 섹션 -->
+    <div class="card mb-3">
+        <div class="card-header">
+            내가 작성한 리뷰
+        </div>
+        <ul class="list-group list-group-flush">
+            <% myReviews.forEach(function(review) { %>
+                <li class="list-group-item">상품명: <%= review.productName %>, 리뷰: <%= review.content %></li>
+            <% }); %>
+        </ul>
+    </div>
+
+    <!-- 좋아요한 상품 섹션 -->
+    <div class="card mb-3">
+        <div class="card-header">
+            좋아요한 상품
+        </div>
+        <ul class="list-group list-group-flush">
+            <% likedProducts.forEach(function(product) { %>
+                <li class="list-group-item"><%= product.name %> - <%= product.price %></li>
+            <% }); %>
+        </ul>
+    </div>
+</div>

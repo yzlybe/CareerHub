@@ -1,0 +1,91 @@
+/* 기본 바디 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+/* 헤더 스타일 */
+h1 {
+    background-color: #007bff;
+    color: white;
+    margin: 0;
+    padding: 20px 0;
+    text-align: center;
+}
+
+h2 {
+    color: #333;
+}
+
+/* 섹션 스타일 */
+#userInfo, #favoriteProducts, #myReviews, #likedProducts {
+    background-color: white;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+/* 정보 및 리스트 항목 스타일 */
+p, li {
+    color: #666;
+}
+
+/* 링크 및 버튼 스타일 */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 사용자 정의 스타일 */
+.card {
+    border: none; /* 기본 테두리 제거 */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 추가 */
+    border-radius: 10px; /* 둥근 모서리 */
+}
+
+.card-header {
+    background-color: #fff; /* 헤더 배경색 변경 */
+    border-bottom: 3px solid #007bff; /* 하단 테두리 색상 */
+    color: #333; /* 텍스트 색상 */
+    font-size: 20px; /* 폰트 크기 */
+}
+
+.card-body, .list-group-flush {
+    background-color: #f9f9f9; /* 카드 바디 배경색 변경 */
+}
+
+.list-group-item {
+    border: none; /* 리스트 항목 테두리 제거 */
+}
+
+/* 링크 및 버튼 호버 효과 강화 */
+a:hover, .btn:hover {
+    filter: brightness(85%);
+}
+
+/* 추가적인 마진 및 패딩 조정으로 레이아웃 개선 */
+.container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
