@@ -14,4 +14,5 @@ const sequelize = new Sequelize(
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.ReviewModel = require("./Reviews")(sequelize, Sequelize);
 module.exports = db;
