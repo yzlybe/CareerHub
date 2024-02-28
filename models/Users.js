@@ -22,6 +22,7 @@ const usersModel = (Sequelize, DataTypes) => {
             },
             nickname: {
                 type: DataTypes.STRING(20),
+                allowNull: false,
             },
         },
         {
