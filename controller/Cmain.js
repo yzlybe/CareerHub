@@ -9,15 +9,18 @@ const {
 exports.index = (req, res) => {
     res.render("index");
 };
+// get /main
 // 메인페이지 렌더링
 exports.main = async (req, res) => {
     const foundJobs = await jobsModel.findAll();
     res.send(foundJobs);
 };
+// get /login
 // 회원가입페이지 렌더링
 exports.register = (req, res) => {
     res.send("register page");
 };
+// post /register
 // 회원가입 포스트 요청
 exports.createUser = async (req, res) => {
     try {
@@ -43,10 +46,12 @@ exports.createUser = async (req, res) => {
         res.status(500).send("server error");
     }
 };
+// get /login
 // 로그인 페이지 렌더링
 exports.login = (req, res) => {
     res.send("login page");
 };
+// post /login
 // 로그인 요청시 DB 조회
 exports.findOneUsers = async (req, res) => {
     try {
