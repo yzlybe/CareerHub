@@ -8,7 +8,7 @@ CREATE TABLE users (
     users_email VARCHAR(100) NOT NULL,
     users_password VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    nickname VARCHAR(20)
+    nickname VARCHAR(20) NOT NULL
 );
 desc users;
 insert into users VALUES (null,"test@naver.com","1234",default,"jarajiri");
