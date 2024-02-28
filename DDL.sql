@@ -5,7 +5,7 @@ show tables;
 drop table if EXISTS users;
 CREATE TABLE users (
     users_id INT PRIMARY KEY AUTO_INCREMENT,
-    users_email VARCHAR(255) NOT NULL,
+    users_email VARCHAR(255) NOT NULL UNIQUE,
     users_password VARCHAR(255) NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP not null,
     nickname VARCHAR(255) NOT NULL
