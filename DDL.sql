@@ -86,3 +86,5 @@ from user_likes
 inner join jobs
 on user_likes.jobs_id = jobs.jobs_id
 where user_likes.users_id = 1;
+
+--createUser test
