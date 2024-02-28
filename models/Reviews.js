@@ -1,7 +1,7 @@
-
-
-const Reviews = function(Sequelize, DataTypes) {
-    return Sequelize.define("Reviews", {
+const reviewsModel = (Sequelize, DataTypes) => {
+    const model = Sequelize.define(
+      "Reviews", 
+      {
         reviews_id: {
             type:DataTypes.INTEGER,
             allowNull:false,
@@ -29,11 +29,12 @@ const Reviews = function(Sequelize, DataTypes) {
             allowNull: true,
           },
     },{
-            tableName:"Reviews",
-            freezTableName:true,
+            tableName:"reviews",
             timestamps:false,
+            freezTableName:true,
     }
     );
+    return model;
 };
 
-module.exports = Reviews;
+module.exports = reviewsModel;
