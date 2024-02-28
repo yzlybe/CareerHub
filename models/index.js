@@ -15,5 +15,5 @@ const sequelize = new Sequelize(
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 db.reviewsModel = require("./Reviews")(sequelize, Sequelize);
-db.likesModel = require("./Likes")(sequelize, Sequelize);
+db.user_likesModel = require("./Likes")(sequelize, Sequelize);
 module.exports = db;

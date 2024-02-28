@@ -1,8 +1,8 @@
-const likesModel = (Sequelize, DataTypes) => {
+const user_likesModel = (Sequelize, DataTypes) => {
     const model = Sequelize.define(
-        "Likes",
+        "User_likes",
         {
-            likes_id: {
+            user_likes_id: {
                 type:DataTypes.INTEGER,
                 primaryKey: true,
                 allowNull: false,                
@@ -19,13 +19,9 @@ const likesModel = (Sequelize, DataTypes) => {
                 allowNull: false,
                 //autoIncrement:true,             
             },
-            conut: {
-                type:DataTypes.INTEGER,
-                allowNull: false,
-            },
         },
         {
-            tableName: "likes",
+            tableName: "user_likes",
             timestamps: false,
             freezeTableName: true,
         }
@@ -33,4 +29,4 @@ const likesModel = (Sequelize, DataTypes) => {
     return model;
 }
 
-module.exports = likesModel;
+module.exports = user_likesModel;
