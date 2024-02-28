@@ -15,6 +15,7 @@ const reviewsModel = (Sequelize, DataTypes) => {
             created_at: {
                 type: DataTypes.DATE,
                 allowNull: false,
+                defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
             },
             updated_at: {
                 type: DataTypes.DATE,

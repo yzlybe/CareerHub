@@ -12,7 +12,6 @@ CREATE TABLE users (
 );
 desc users;
 SELECT * from users;
-SELECT * from users;
 
 -- jobs table
 drop table if EXISTS jobs; 
@@ -71,6 +70,7 @@ CREATE TABLE user_likes (
     on update CASCADE on delete CASCADE
 );
 desc user_likes;
+select * from user_likes;
 
 -- TEST 
 
