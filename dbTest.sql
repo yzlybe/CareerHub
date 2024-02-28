@@ -36,8 +36,19 @@ CREATE TABLE jobs (
     jobs_id INT PRIMARY KEY AUTO_INCREMENT,
     users_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATE 
-    nickname VARCHAR(20)
+    updated_at DATE,
+    img_path VARCHAR(255) DEFAULT '/uploads/default.png',
+    company_name VARCHAR(100), NOT NULL,
+    levels ENUM(1,2,3) NOT NULL,
+    introduce TEXT,
+    task text,
+    condition VARCHAR(255),
+    prefer VARCHAR(255),
+    stack ENUM('JAVA','NODE','VUE','REACT'),
+    welfaer VARCHAR(255),
+    
+    
+
 );
 desc users;
 insert into users VALUES (null,"test@naver.com","1234",default,"jarajiri");
