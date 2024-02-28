@@ -1,6 +1,4 @@
-const { INTEGER } = require("sequelize")
-
-const likeModel = (Sequelize, DataTypes) => {
+const likesModel = (Sequelize, DataTypes) => {
     const model = Sequelize.define(
         "Likes",
         {
@@ -13,13 +11,13 @@ const likeModel = (Sequelize, DataTypes) => {
                 type:DataTypes.INTEGER,
                 //
                 allowNull: false,
-                autoIncrement:true,             
+                //autoIncrement:true,             
             },
             jobs_id: {
                 type:DataTypes.INTEGER,
                 //
                 allowNull: false,
-                autoIncrement:true,             
+                //autoIncrement:true,             
             },
             conut: {
                 type:DataTypes.INTEGER,
@@ -35,4 +33,4 @@ const likeModel = (Sequelize, DataTypes) => {
     return model;
 }
 
-module.exports = likeModel;
+module.exports = likesModel;
