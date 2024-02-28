@@ -12,6 +12,7 @@ CREATE TABLE users (
 );
 desc users;
 SELECT * from users;
+SELECT * from users;
 
 -- jobs table
 drop table if EXISTS jobs; 
