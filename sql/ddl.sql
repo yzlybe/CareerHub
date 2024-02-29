@@ -28,7 +28,7 @@ CREATE TABLE jobs (
     conditions VARCHAR(255),
     prefer VARCHAR(255),
     stack ENUM('JAVA','NODE','VUE','REACT','JS','SPRING'),
-    welfaer VARCHAR(255),
+    welfare VARCHAR(255),
     deadline DATETIME NOT NULL,
     address VARCHAR(255) NOT NULL,
     address_detail VARCHAR(255),

@@ -51,7 +51,7 @@ const jobsModel = (sequelize, DataTypes) => {
                     "SPRING"
                 ),
             },
-            welfaer: {
+            welfare: {
                 type: DataTypes.STRING(255),
             },
             deadline: {
