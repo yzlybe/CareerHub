@@ -12,7 +12,7 @@ router.get("/register", mainCtr.register);
 router.post("/register", mainCtr.createUser);
 router.get("/login", mainCtr.login);
 router.post("/login", mainCtr.findOneUsers);
-// router.get("/mypage", mainCtr.selectOneUser);
+router.get("/mypage", mainCtr.findUserProfile);
 // router.put("/mypage", mainCtr.updateUser);
 // router.delete("/mypage", mainCtr.deleteUser);
 

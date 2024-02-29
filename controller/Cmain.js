@@ -65,11 +65,11 @@ exports.findOneUsers = async (req, res) => {
             },
         });
 
-        console.log(foundUsers);
-        console.log(foundUsers.users_id);
+        console.log("조회결과", foundUser);
+        // console.log(foundUsers.users_id);
         // 가입된 유저시 세션 설정
-        if (foundUsers) {
-            req.session.userId = foundUsers.users_id;
+        if (foundUser) {
+            req.session.userId = foundUser.users_id;
             res.send(true); // 로그인 성공
         } else {
             // 로그인 실패
@@ -78,6 +78,25 @@ exports.findOneUsers = async (req, res) => {
         //todo:
         //이메일 중복체크 검사
         //비밀번호 암호화
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).send("server error");
+    }
+};
+// get /mypage
+// 세션에 userId 값이 있을 때(로그인 상태) 사용자 정보 표시
+// 없을시 로그인 화면으로 리다이렉트
+exports.findUserProfile = async (req, res) => {
+    if (!req.session.userId) return res.redirect("/");
+    try {
+        console.log(req.session.userId);
+        const userProfile = await usersModel.findOne({
+            where: {
+                users_id: req.session.userId,
+            },
+        });
+        console.log(userProfile); // DB조회된 결과 확인
+        res.send(userProfile);
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
