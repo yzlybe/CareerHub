@@ -9,21 +9,22 @@ const dotenv = require("dotenv").config();
 app.set("views", "./views");
 app.set("view engine", "ejs");
 app.use("/static", express.static(__dirname + "/public"));
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 /* 세션 설정 */
-// const sessionConfig = {
-//   secret: process.env.SECRET,
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: {
-//     httpOnly: false,
-//     maxAge: 1000 * 60 * 60,
-//     signed: true,
-//   },
-// };
-// app.use(session(sessionConfig));
+const sessionConfig = {
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: false,
+        maxAge: 1000 * 60 * 60,
+        signed: true,
+    },
+};
+app.use(session(sessionConfig));
 
 /* 라우터 설정 */
 app.use("/", router);

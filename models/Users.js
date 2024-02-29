@@ -1,6 +1,6 @@
 const usersModel = (Sequelize, DataTypes) => {
     const model = Sequelize.define(
-        "Users",
+        "users",
         {
             users_id: {
                 type: DataTypes.INTEGER,
@@ -9,11 +9,12 @@ const usersModel = (Sequelize, DataTypes) => {
                 allowNull: false,
             },
             users_email: {
-                type: DataTypes.STRING(100),
+                type: DataTypes.STRING(255),
                 allowNull: false,
+                unique: true,
             },
             users_password: {
-                type: DataTypes.STRING(100),
+                type: DataTypes.STRING(255),
                 allowNull: false,
             },
             created_at: {
@@ -21,7 +22,7 @@ const usersModel = (Sequelize, DataTypes) => {
                 defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
             },
             nickname: {
-                type: DataTypes.STRING(20),
+                type: DataTypes.STRING(255),
                 allowNull: false,
             },
         },
