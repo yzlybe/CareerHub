@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mainCtr = require("../controller/Cmain");
-// const jobsCtr = require("../controller/Cjobs");
+const jobsCtr = require("../controller/Cjobs");
 // const likeCtr = require("../controller/Clike");
 // const reviewCtr = require("../controller/Creview");
 
@@ -16,9 +16,11 @@ router.get("/mypage", mainCtr.findUserProfile);
 // router.put("/mypage", mainCtr.updateUser);
 // router.delete("/mypage", mainCtr.deleteUser);
 
-/*  ========jobs routing========= 
-
-*/
+/*  ========jobs routing========= */
+router.get("/jobs", jobsCtr.jobs);
+router.get("/jobs/like", jobsCtr.jobsLike);
+router.get("/jobs/:jobId", jobsCtr.jobsDetail);
+// router.post("/jobs", jobsCtr.jobsWrite)
 
 /*  ========like routing========= 
 

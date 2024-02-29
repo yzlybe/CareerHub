@@ -1,4 +1,4 @@
--- Active: 1707101283311@@127.0.0.1@3306@sesac
+-- Active: 1707101282876@@127.0.0.1@3306@sesac
 -- 더미 데이터 삽입을 위한 MYSQL 프로시저
 -- 프로시저 삭제
 DROP PROCEDURE IF EXISTS insert_dummy_data;
