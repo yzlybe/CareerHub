@@ -6,6 +6,7 @@ const {
     likesModel,
 } = require("../models");
 const dotenv = require("dotenv").config();
+const axios = require("axios");
 
 exports.index = (req, res) => {
     res.render("index");
@@ -176,30 +177,120 @@ exports.logout = async (req, res) => {
 };
 
 // =================== oAuth ===================
-
+// get /goole/test
+// 구글 로그인 테스트 페이지
 exports.googleTest = (req, res) => {
     res.render("gLogin");
 };
-
+// get /google/login
+// 프론트에서 링크걸 경로 href="/google/login"
+// 구글 로그인 경로
 exports.googleLogin = (req, res) => {
     let url = "https://accounts.google.com/o/oauth2/v2/auth";
-    // client_id는 위 스크린샷을 보면 발급 받았음을 알 수 있음
-    // 단, 스크린샷에 있는 ID가 아닌 당신이 직접 발급 받은 ID를 사용해야 함.
     url += `?client_id=${process.env.GOOGLE_CLIENT_ID}`;
-    // 아까 등록한 redirect_uri
-    // 로그인 창에서 계정을 선택하면 구글 서버가 이 redirect_uri로 redirect 시켜줌
-    url += `&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}`;
-    // 필수 옵션.
+    url += `&redirect_uri=${process.env.GOOGLE_LOGIN_REDIRECT_URI}`;
     url += "&response_type=code";
-    // 구글에 등록된 유저 정보 email, profile을 가져오겠다 명시
     url += "&scope=email profile";
-    // 완성된 url로 이동
-    // 이 url이 위에서 본 구글 계정을 선택하는 화면임.
+    console.log(process.env.GOOGLE_CLIENT_ID);
+    console.log(process.env.GOOGLE_LOGIN_REDIRECT_URI);
     res.redirect(url);
 };
-
-exports.googleLoginDone = (req, res) => {
+// get /google/login
+// 구글 로그인 후 디비에 등록된 사용자인지 검증
+exports.googleLoginRedirect = async (req, res) => {
     const { code } = req.query;
     console.log(`code: ${code}`);
-    res.send("login ok");
+    const resp = await axios.post(process.env.GOOGLE_TOKEN_URL, {
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: process.env.GOOGLE_LOGIN_REDIRECT_URI,
+        grant_type: "authorization_code",
+    });
+
+    const resp2 = await axios.get(process.env.GOOGLE_USERINFO_URL, {
+        headers: {
+            Authorization: `Bearer ${resp.data.access_token}`,
+        },
+    });
+    // res.json(resp2.data); 결과 표시
+    // 받아온 정보로 디비 조회
+    try {
+        const { email } = resp2.data; // 구글 서버에서 온 정보로 교체
+
+        const foundUser = await usersModel.findOne({
+            where: {
+                users_email: email,
+            },
+        });
+
+        console.log("조회결과", foundUser);
+        // console.log(foundUsers.users_id);
+
+        // 가입된 유저시 세션 설정
+        if (foundUser) {
+            req.session.userId = foundUser.users_id;
+            req.session.nickname = foundUser.nickname;
+            res.send(true); // 로그인 성공
+        } else {
+            // 로그인 실패
+            res.send(false);
+        }
+        //todo:
+        //이메일 중복체크 검사
+        //비밀번호 암호화
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).send("server error");
+    }
+};
+// get /google/signup
+// 구글 회원가입 경로
+exports.googleSignUp = (req, res) => {
+    let url = "https://accounts.google.com/o/oauth2/v2/auth";
+    url += `?client_id=${process.env.GOOGLE_CLIENT_ID}`;
+    url += `&redirect_uri=${process.env.GOOGLE_SIGNUP_REDIRECT_URI}`;
+    url += "&response_type=code";
+    url += "&scope=email profile";
+    res.redirect(url);
+};
+// post /google/signup
+//
+exports.googleSignUpRedirect = async (req, res) => {
+    const { code } = req.query;
+    console.log(`code: ${code}`);
+
+    const resp = await axios.post(process.env.GOOGLE_TOKEN_URL, {
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: process.env.GOOGLE_SIGNUP_REDIRECT_URI,
+        grant_type: "authorization_code",
+    });
+
+    const resp2 = await axios.get(process.env.GOOGLE_USERINFO_URL, {
+        headers: {
+            Authorization: `Bearer ${resp.data.access_token}`,
+        },
+    });
+    // res.json(resp2.data);
+    try {
+        const { email, name } = resp2.data;
+
+        const newUser = await usersModel.create({
+            users_email: email,
+            users_password: "google login User",
+            nickname: name,
+        });
+
+        console.log(newUser);
+        //todo:
+        //이메일 중복체크 검사
+        //비밀번호 암호화
+        //
+        res.send(newUser);
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).send("server error");
+    }
 };

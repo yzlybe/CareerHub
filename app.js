@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const router = require("./routes/router");
+const OauthRouter = require("./routes/google");
 const { sequelize } = require("./models");
 const app = express();
 const dotenv = require("dotenv").config();
@@ -28,6 +29,7 @@ app.use(session(sessionConfig));
 
 /* 라우터 설정 */
 app.use("/", router);
+app.use("/google", OauthRouter);
 
 /* 시퀄라이즈 설정 */
 sequelize
