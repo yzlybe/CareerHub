@@ -1,0 +1,314 @@
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+
+  
+  box-sizing: border-box; /* 모든 요소에 box-sizing을 적용합니다. */
+}
+
+
+/* 탑바 부분  */
+header {
+ 
+  padding: 10px;
+  text-align: center;
+}
+
+.circle {
+  width: 10px; /* 동그라미의 너비 */
+  height: 10px; /* 동그라미의 높이 */
+  margin-left: 20px; /* 동그라미 사이의 간격 */
+  background-color: black; /* 동그라미의 색상 */
+  border-radius: 50%; /* 원형으로 만들기 위한 설정 */
+  display: inline-block; /* 동그라미를 옆으로 나열하기 위한 설정 */
+  margin-left:3px;
+  margin-right: 3px; 
+}
+.circle:first-child {
+  margin-left: 15px; /* 첫 번째 동그라미의 왼쪽 여백을 20px로 설정 */
+}
+.top-bar {
+  display: flex; /* 자식 요소를 flex 아이템으로 만듦 */
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  /* 기존의 .top-bar 스타일 */
+  background-color: #f0f0f0;
+  height: 30px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+ 
+}
+
+
+/* 버튼 부분과 Frontend 개발자 취업 소식 문구 */ 
+
+
+.content-container {
+  display: flex;
+  justify-content: space-between; /* 좌우 컨텐츠 간격 조정 */
+  align-items: center; /* 세로 중앙 정렬 */
+  margin-top: 2.5rem; /* 상단 여백 추가, rem 단위 사용 */
+}
+
+.title-container {
+  margin-left: 15%; /* % 단위 사용으로 화면 비율에 따라 조정 */
+  font-size: 0.8rem; /* rem 단위 사용 */
+  font-weight: bold; /* 글씨 굵기 */
+  padding-left: 1.25rem; /* rem 단위 사용 */
+}
+
+
+
+.button {
+  border: 2px solid #f0f0f0;
+  background-color: #fff;
+  padding: 5px 9px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  margin-right: 10px;
+  border-radius: 15px;
+}
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  padding: 10px; 
+  
+  padding-right: 250px;
+  margin-top: 30px; /* 상단 여백을 주어 top-bar와 겹치지 않도록 설정 */
+}
+
+#fav{
+color:red;
+}
+
+.icon {
+  color: #808080;
+  font-size: 15px; 
+}
+
+p{
+ font-size: 13px; 
+ color: #808080;
+ font-weight: 530;
+}
+
+
+
+
+/* 회사명 입력창과 언어들 버튼  나열  */
+
+.search-filter-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.search-input-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.search-input-container input[type="text"] {
+  width: 450px;
+  padding: 10px;
+  padding-right: 40px; /* 돋보기 아이콘을 위한 공간 확보 */
+  border: 1px solid #ccc;
+  border-radius: 10px 10px 10px 10px; /* 모서리 둥글게 설정 */
+ 
+  /* 필요한 추가 스타일 */
+}
+
+.search-input-container .material-symbols-outlined {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%); /* 아이콘을 입력 필드의 중앙으로 정렬 */
+  pointer-events: none; /* 입력 필드 클릭 시 아이콘에 의해 가로막히지 않게 설정 */
+}
+
+
+
+
+
+.search-filter-section button, .button-group button {
+  padding: 5px 10px; /* 여백 조정 */
+  margin: 2px; /* 간격 조정 */
+  font-size: 0.9em; /* 폰트 크기 조정 */
+  border: 2px solid #ddd; /* 테두리 스타일 */
+  background-color: white; /* 배경색 */
+  color: blue; /* 텍스트 색상 */
+  border-radius: 5px; /* 모서리 둥글기 */
+  cursor: pointer; /* 마우스 오버 시 커서 변경 */
+  transition: background-color 0.3s; /* 배경색 변경 시 애니메이션 */
+}
+
+.button-group button.selected, .search-filter-section button.selected {
+  background-color: blue; /* 선택 시 배경색 */
+  color: white; /* 선택 시 텍스트 색상 */
+}
+
+
+
+
+
+
+
+/* 컨테이너 및 포트폴리오 아이템 스타일 */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  padding-left:  9.6%;
+  padding-right: 7%;
+}
+
+#portfolioItems {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* 아이템을 왼쪽부터 채웁니다. */
+  width: 72%; /* 수정: 최대 너비 제한 없이 부모 컨테이너의 너비에 맞춥니다. */
+}
+#portfolioItems::after {
+  content: "";
+  width: calc(33.333% - 40px); /* 각 카드의 너비와 동일하게 설정합니다. */
+  margin: 10px; /* 각 카드의 마진과 동일하게 설정합니다. */
+  flex: auto; /* 남은 공간을 채우도록 설정합니다. */
+}
+.portfolioCard {
+  margin: 10px; /* 카드 사이의 마진 조정 */
+  box-sizing: border-box;
+  min-height: 300px; /* 최소 높이 설정 */
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 35px;
+  overflow: hidden; /* 내용이 넘치면 숨김 처리 */
+  width: calc(33.333% - 40px); /* 한 줄에 3개씩 정확히 맞도록 너비 조정 */
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 내용 정렬 */
+  align-items: center; /* 가로 방향으로 내용 가운데 정렬 */
+  justify-content: flex-start; /* 세로 방향으로 상단 정렬 */
+  position: relative;
+}
+
+.portfolioCard img {
+    width: 80px; /* 카드 너비에 맞춤 */
+    height: auto; /* 비율 유지 */
+    border-top-left-radius: 10px; /* 카드의 상단 좌우 둥근 모서리 적용 */
+    border-top-right-radius: 10px;
+}
+
+.tag-button {
+  padding: 5px 10px;
+  border: 2px solid #ddd;
+  background-color: #f7f7f7;
+  color: #333;
+ 
+  cursor: default; /* 버튼이지만 클릭할 필요가 없으므로 기본 커서로 설정 */
+  margin: 2px;
+  display: inline-block;
+  text-align: center;
+  font-size: 0.9em;
+  transition: background-color 0.3s;
+  background-color:  white; /* 선택 시 배경색 */
+  color: blue; /* 선택 시 텍스트 색상 */
+  border-radius: 5px;
+ 
+  
+  
+}
+
+.tag-button:hover {
+  background-color: blue; /* 마우스 오버 효과 */
+  color: white;
+}
+
+/* 즐겨찾기 */
+.favorite-container {
+position: absolute;
+top: 10px;  /* 상단에서부터의 위치 */
+left: 10px; /* 왼쪽에서부터의 위치 */
+}
+
+.favorite {
+cursor: pointer; /* 마우스를 올렸을 때 손가락 모양으로 변경 */
+
+}
+
+
+
+
+/* 공고등록 버튼 */
+.fab-container {
+position: fixed; /* 고정 위치 */
+bottom: 100px; 
+right: 100px; 
+z-index: 999; /* 다른 요소들 위에 표시 */
+}
+
+.fab {
+width: 80px; /* 버튼의 최소 너비, 필요에 따라 조절 가능 */
+height: 80px;
+padding: 10px; /* 버튼 안쪽 여백, 텍스트 크기에 따라 조절 가능 */
+border-radius: 50%; /* 원형 모양 */
+background-color:  blue; /* 배경색 */
+color : white; /* 텍스트 색상 */
+text-align: center; /* 텍스트 중앙 정렬 */
+line-height : normal; /* 텍스트 라인 높이를 normal로 설정 */
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+border: none; /* 테두리 제거 */
+outline: none; /* 외곽선 제거 */
+cursor: pointer; /* 마우스 오버 시 커서 변경 */
+font-size: 14px; /* 폰트 크기, 필요에 따라 조절 가능 */
+font-weight: bold; /* 폰트 두께 */
+user-select: none; /* 텍스트 선택 방지 */
+overflow: hidden; /* 내용이 넘치면 숨김 처리 */
+white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
+}
+
+/* 버튼 호버 효과 */
+.fab:hover {
+background-color:  white; /* 배경색 */
+color : blue; /* 텍스트 색상 */
+
+
+border: 1px solid black;
+}
+
+
+
+/* 페이지네이션 컨트롤 스타일 */
+#pagination {
+text-align: center;
+padding: 20px 0;
+}
+
+#pagination button {
+padding: 5px 15px;
+margin: 0 5px;
+background-color: #f0f0f0;
+border: 1px solid #ddd;
+cursor: pointer;
+transition: background-color 0.3s;
+border-radius: 50%;
+}
+
+#pagination button:hover {
+background-color: #e0e0e0;
+}
+
+#pagination button.active {
+background-color: blue;
+color: white;
+}
