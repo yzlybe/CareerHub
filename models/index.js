@@ -25,7 +25,7 @@ usersModel.hasMany(jobsModel, {
         name: "users_id",
         allowNull: false,
         onUpdate: "cascade",
-        onDelete: "cascade",
+        onDelete: "set null",
     },
 });
 jobsModel.belongsTo(usersModel, {
@@ -33,7 +33,7 @@ jobsModel.belongsTo(usersModel, {
         name: "users_id",
         allowNull: false,
         onUpdate: "cascade",
-        onDelete: "cascade",
+        onDelete: "set null",
     },
 });
 
@@ -81,7 +81,7 @@ usersModel.hasMany(reviewsModel, {
         name: "users_id",
         allowNull: false,
         onUpdate: "cascade",
-        onDelete: "cascade",
+        onDelete: "set null",
     },
 });
 reviewsModel.belongsTo(usersModel, {
@@ -89,7 +89,7 @@ reviewsModel.belongsTo(usersModel, {
         name: "users_id",
         allowNull: false,
         onUpdate: "cascade",
-        onDelete: "cascade",
+        onDelete: "set null",
     },
 });
 

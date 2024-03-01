@@ -60,7 +60,7 @@ select * from reviews;
 -- user_likes
 drop table if EXISTS user_likes;
 CREATE TABLE user_likes (
-    user_likes INT PRIMARY KEY AUTO_INCREMENT,
+    user_likes_id INT PRIMARY KEY AUTO_INCREMENT,
     users_id INT ,
     jobs_id INT ,
     Foreign Key (jobs_id) REFERENCES jobs(jobs_id)
