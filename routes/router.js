@@ -21,9 +21,12 @@ router.get("/google/test", mainCtr.googleTest);
 // 구글 인증 서버로 리다이렉트 될 경로
 router.get("/google/login", mainCtr.googleLogin);
 router.get("/google/success", mainCtr.googleLoginDone);
-/*  ========jobs routing========= 
 
-*/
+/*  ========jobs routing========= */
+router.get("/jobs", jobsCtr.jobs);
+router.get("/jobs/like", jobsCtr.jobsLike);
+router.get("/jobs/:jobId", jobsCtr.jobsDetail);
+// router.post("/jobs", jobsCtr.jobsWrite)
 
 /*  ========like routing========= 
 
