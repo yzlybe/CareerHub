@@ -26,8 +26,11 @@ router.get("/google/success", mainCtr.googleLoginDone);
 router.get("/jobs", jobsCtr.jobs);
 router.get("/jobs/like", jobsCtr.jobsLike);
 router.get("/jobs/:jobId", jobsCtr.jobsDetail);
-// router.post("/jobs", jobsCtr.jobsWrite)
-
+router.post("/jobs", jobsCtr.jobsWrite)
+router.put("/jobs", jobsCtr.jobsUpdate)
+router.delete("/jobs", jobsCtr.jobsDelete)
+router.get("/jobs/:company", jobsCtr.jobsCom)
+//router.get("/jobs/:company/:stack", jobsCtr.jobsComSt)
 /*  ========like routing========= 
 
 */
