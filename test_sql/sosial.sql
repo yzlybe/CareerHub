@@ -2,4 +2,4 @@
 select * from users;
 insert into users values(null,'eic40211@gmail.com','google login user',default,'nickname');
 
-DELETE from users where users_id in (11,12,13);
+DELETE from users where users_id in (19,20);
