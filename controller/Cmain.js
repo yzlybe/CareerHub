@@ -111,12 +111,19 @@ exports.findUserProfile = async (req, res) => {
         //세션값으로 유저 프로필 조회
         const userProfile = await usersModel.findOne({
             where: {
-                // users_id: req.session.userId,
-                users_id: userId,
+                users_id: req.session.userId,
             },
         });
         console.log(userProfile); // DB조회된 결과 확인
-        res.send({ result: true, data: userProfile });
+        if (userProfile) {
+            res.send({
+                result: true,
+                data: userProfile,
+                msg: "프로필 조회 완료",
+            });
+        } else {
+            res.send({ result: false, data: null, msg: "프로필 조회 실패" });
+        }
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
@@ -137,8 +144,8 @@ exports.updateUser = async (req, res) => {
             },
             {
                 where: {
-                    users_id: 4,
-                    // users_id: req.session.userId,
+                    // users_id: 4,
+                    users_id: req.session.userId,
                 },
             }
         );
@@ -164,8 +171,8 @@ exports.deleteUser = async (req, res) => {
         console.log(req.session.userId);
         const isDeleted = await usersModel.destroy({
             where: {
-                users_id: 1,
-                // users_id: req.session.userId,
+                // users_id: 2,
+                users_id: req.session.userId,
             },
         });
         console.log(isDeleted); // DB 삭제 결과 확인
@@ -174,17 +181,17 @@ exports.deleteUser = async (req, res) => {
             req.session.destroy((err) => {
                 if (err) throw err;
             });
-            res.send(true);
+            res.send({ result: true, msg: "회원 탈퇴 완료" });
             //res.redirect("/");
         } else {
-            res.send(false);
+            res.send({ result: false, msg: "회원 탈퇴 실패" });
         }
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
     }
 };
-
+// get /logout
 exports.logout = async (req, res) => {
     req.session.destroy((err) => {
         if (err) throw err;
@@ -247,13 +254,13 @@ exports.googleLoginRedirect = async (req, res) => {
         if (foundUser) {
             req.session.userId = foundUser.users_id;
             req.session.nickname = foundUser.nickname;
-            res.send(true); // 로그인 성공
+            res.send({ result: true, msg: "로그인 성공" }); // 로그인 성공
         } else {
             // 로그인 실패
-            res.send(false);
+            res.send({ result: false, msg: "로그인 실패" });
         }
         //todo:
-        //이메일 중복체크 검사
+
         //비밀번호 암호화
     } catch (error) {
         console.log("error", error);
@@ -292,7 +299,14 @@ exports.googleSignUpRedirect = async (req, res) => {
     // res.json(resp2.data);
     try {
         const { email, name } = resp2.data;
-
+        //이메일 중복체크 검사
+        const checkDup = await usersModel.findOne({
+            where: {
+                users_email: email,
+            },
+        });
+        if (checkDup) return res.send({ result: false, msg: "이메일 중복" });
+        //검증 후 데이터 생성
         const newUser = await usersModel.create({
             users_email: email,
             users_password: "google login User",
@@ -300,11 +314,15 @@ exports.googleSignUpRedirect = async (req, res) => {
         });
 
         console.log(newUser);
-        //todo:
-        //이메일 중복체크 검사
-        //비밀번호 암호화
-        //
-        res.render("/");
+        if (newUser) {
+            // 디비 삽입 성공시 세션 설정
+            req.session.userId = newUser.users_id;
+            req.session.nickname = newUser.nickname;
+            res.send({ result: true, msg: "회원가입 성공" }); // 회원 가입 성공
+        } else {
+            // 회원 가입 실패
+            res.send({ result: false, msg: "회원가입 실패" });
+        }
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
