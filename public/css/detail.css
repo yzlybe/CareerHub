@@ -1,0 +1,325 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+div[name="jobs"] {
+    text-align: left;
+    max-width: 900px;
+    width: 100%;
+    padding: 20px;
+}
+
+.profile {
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+/* 전체 text박스 */
+.text-input {
+    max-width: 900px; /* 패딩값을 포함한 최대 너비 */
+    width: 100%;
+    height: 50px;
+    font-size: 16px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box; /* 패딩과 테두리를 너비에 포함하도록 설정 */
+}
+
+/* 선택된 상태일 때의 스타일 */
+.text-input:focus {
+    border-color: #2c88d9;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* 비활성화된 상태일 때의 스타일 */
+.text-input:disabled {
+    background-color: #f0f0f0;
+    color: #999999;
+}
+
+/* textarea 공통 CSS */
+.textarea-input {
+    width: 900px;
+    height: 200px;
+    font-size: 16px;
+    padding: 10px; /* 각 텍스트 상자에 내부 여백을 추가할 수 있습니다. */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 5px; /* placeholder와의 여백을 추가합니다. */
+    box-sizing: border-box; /* 패딩과 테두리를 너비에 포함하도록 설정 */
+}
+
+/* 선택된 상태일 때의 스타일 */
+.textarea-input:focus {
+    border-color: #2c88d9;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* 비활성화된 상태일 때의 스타일 */
+.textarea-input:disabled {
+    background-color: #f0f0f0;
+    color: #999999;
+}
+
+/* 전체 버튼 */
+.input-file-button {
+    display: inline-block;
+    padding: 0.5em 0.75em;
+    color: #fff;
+    font-size: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #2c88d9;
+    cursor: pointer;
+    border: none;
+    border-radius: 0.25em;
+}
+
+.filebox input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* 경력 */
+div[name="form-check"] {
+    padding-left: 20px;
+}
+
+/* 스택 선택 */
+.app {
+    text-align: center;
+    padding: 0 20px;
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tech-tag {
+    cursor: pointer;
+    padding: 8px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+}
+
+/* 기술 선택시 */
+.tech-tag.selected {
+    background-color: #2c88d9;
+    color: #fff;
+}
+
+/* 기술 선택 전 */
+.tech-tag {
+    border: 1px solid #ccc; /* 선택되지 않은 기술 스택의 테두리 스타일 설정 */
+    padding: 8px;
+    margin: 4px;
+    cursor: pointer;
+}
+
+/* 마감일 */
+input[type="datetime-local"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    /* 추가적인 스타일을 여기에 추가하세요 */
+}
+
+/* 선택된 상태일 때의 스타일 */
+input[type="datetime-local"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* 비활성화된 상태일 때의 스타일 */
+input[type="datetime-local"]:disabled {
+    background-color: #f0f0f0;
+    color: #999999;
+}
+
+/* 주의 문구 */
+label[name="warning"] {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.input-file-button[name="submit"] {
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* 카카오맵 */
+map_wrap,
+.map_wrap * {
+    margin: 0;
+    padding: 0;
+    font-family: "Malgun Gothic", dotum, "돋움", sans-serif;
+    font-size: 12px;
+}
+.map_wrap a,
+.map_wrap a:hover,
+.map_wrap a:active {
+    color: #000;
+    text-decoration: none;
+}
+.map_wrap {
+    position: relative;
+    width: 100%;
+    height: 500px;
+}
+#menu_wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    margin: 10px 0 30px 10px;
+    padding: 5px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+    font-size: 12px;
+    border-radius: 10px;
+}
+.bg_white {
+    background: #fff;
+}
+#menu_wrap hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 2px solid #5f5f5f;
+    margin: 3px 0;
+}
+#menu_wrap .option {
+    text-align: center;
+}
+#menu_wrap .option p {
+    margin: 10px 0;
+}
+#menu_wrap .option button {
+    margin-left: 5px;
+}
+#placesList li {
+    list-style: none;
+}
+#placesList .item {
+    position: relative;
+    border-bottom: 1px solid #888;
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 65px;
+}
+#placesList .item span {
+    display: block;
+    margin-top: 4px;
+}
+#placesList .item h5,
+#placesList .item .info {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#placesList .item .info {
+    padding: 10px 0 10px 55px;
+}
+#placesList .info .gray {
+    color: #8a8a8a;
+}
+#placesList .info .jibun {
+    padding-left: 26px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png)
+        no-repeat;
+}
+#placesList .info .tel {
+    color: #009900;
+}
+#placesList .item .markerbg {
+    float: left;
+    position: absolute;
+    width: 36px;
+    height: 37px;
+    margin: 10px 0 0 10px;
+    background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png)
+        no-repeat;
+}
+#placesList .item .marker_1 {
+    background-position: 0 -10px;
+}
+#placesList .item .marker_2 {
+    background-position: 0 -56px;
+}
+#placesList .item .marker_3 {
+    background-position: 0 -102px;
+}
+#placesList .item .marker_4 {
+    background-position: 0 -148px;
+}
+#placesList .item .marker_5 {
+    background-position: 0 -194px;
+}
+#placesList .item .marker_6 {
+    background-position: 0 -240px;
+}
+#placesList .item .marker_7 {
+    background-position: 0 -286px;
+}
+#placesList .item .marker_8 {
+    background-position: 0 -332px;
+}
+#placesList .item .marker_9 {
+    background-position: 0 -378px;
+}
+#placesList .item .marker_10 {
+    background-position: 0 -423px;
+}
+#placesList .item .marker_11 {
+    background-position: 0 -470px;
+}
+#placesList .item .marker_12 {
+    background-position: 0 -516px;
+}
+#placesList .item .marker_13 {
+    background-position: 0 -562px;
+}
+#placesList .item .marker_14 {
+    background-position: 0 -608px;
+}
+#placesList .item .marker_15 {
+    background-position: 0 -654px;
+}
+#pagination {
+    margin: 10px auto;
+    text-align: center;
+}
+#pagination a {
+    display: inline-block;
+    margin-right: 10px;
+}
+#pagination .on {
+    font-weight: bold;
+    cursor: default;
+    color: #777;
+}
