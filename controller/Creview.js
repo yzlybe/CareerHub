@@ -17,11 +17,7 @@ exports.findAllReviews = async (req, res) => {
             where: { jobs_id: jobsId },
         });
         console.log(reviews);
-        if (reviews) {
-            res.send({ result: true, data: reviews });
-        } else {
-            res.send({ result: false, data: reviews, msg: "댓글 조회 실패" });
-        }
+        res.send(reviews);
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
@@ -39,14 +35,14 @@ exports.createReview = async (req, res) => {
         const isSuccess = await reviewsModel.create({
             reviews_comment: comment,
             jobs_id: jobsId,
-            users_id: req.session.userId,
-            // users_id: 2,
+            // users_id: req.session.userId,
+            users_id: 2,
         });
         console.log(isSuccess);
-        if (isSuccess > 0) {
-            res.send({ result: true, data: null, msg: "댓글 등록 성공" });
+        if (isSuccess) {
+            res.send(true);
         } else {
-            res.send({ result: false, data: null, msg: "댓글 등록 실패" });
+            res.send(false);
         }
     } catch (error) {
         console.log("error", error);
@@ -73,10 +69,10 @@ exports.updateReview = async (req, res) => {
         );
 
         console.log(isSuccess);
-        if (isSuccess > 0) {
-            res.send({ result: true, data: null, msg: "댓글 수정 성공" });
+        if (isSuccess) {
+            res.send(true);
         } else {
-            res.send({ result: false, data: null, msg: "댓글 수정 내용없음" });
+            res.send(false);
         }
     } catch (error) {
         console.log("error", error);
@@ -98,10 +94,10 @@ exports.deleteReview = async (req, res) => {
         });
 
         console.log(isSuccess);
-        if (isSuccess > 0) {
-            res.send({ result: true, data: null, msg: "댓글 삭제 성공" });
+        if (isSuccess) {
+            res.send(true);
         } else {
-            res.send({ result: false, data: null, msg: "댓글 삭제 실패" });
+            res.send(false);
         }
     } catch (error) {
         console.log("error", error);
