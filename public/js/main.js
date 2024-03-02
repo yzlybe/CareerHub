@@ -304,3 +304,126 @@ function initialize() {
 
 
 document.addEventListener('DOMContentLoaded', initialize);
+
+//로그인,회원가입 모달
+ 
+document.addEventListener('DOMContentLoaded', function() {
+  const authModal = document.getElementById('authModal');
+  const modalBody = document.getElementById('modalBody');
+  const loginButton = document.querySelector('.login-button');
+  const closeButton = document.querySelector('.close-button');
+
+  // 이메일 유효성 검사
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.toLowerCase());
+  }
+
+  // 비밀번호 유효성 검사
+  function validatePassword(password) {
+    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    return re.test(password);
+  }
+
+  // 로그인 양식 렌더링
+  window.renderLoginForm = function() {
+    modalBody.innerHTML = `
+      <h2>로그인</h2>
+      <form id="loginForm">
+        <input type="email" name="email" placeholder="이메일 주소" required><br>
+        <input type="password" name="password" placeholder="비밀번호" required><br>
+        <button type="submit" class="login-action">로그인</button>
+        <button type="button" onclick="renderSignupForm()">회원 가입</button>
+      </form>
+    `;
+
+    // 로그인 폼 submit 이벤트 처리
+    document.getElementById('loginForm').onsubmit = function(event) {
+      event.preventDefault();
+      login();
+    };
+  };
+
+  // 회원가입 양식 렌더링
+  window.renderSignupForm = function() {
+    modalBody.innerHTML = `
+      <h2>회원가입</h2>
+      <form id="signupForm">
+        <input type="email" name="email" placeholder="이메일 주소" required><br>
+        <input type="text" name="username" placeholder="닉네임" required><br>
+        <input type="password" name="password" placeholder="비밀번호" required><br>
+        <input type="password" name="confirm_password" placeholder="비밀번호 확인" required><br>
+        <button type="submit" class="signup-action">회원 가입</button>
+        <button type="button" onclick="renderLoginForm()">뒤로 가기</button>
+      </form>
+    `;
+
+    // 회원가입 폼 submit 이벤트 처리
+    document.getElementById('signupForm').onsubmit = function(event) {
+      event.preventDefault();
+      signup();
+    };
+  };
+
+  // 로그인 처리
+  function login() {
+    const email = document.querySelector("#loginForm input[name='email']").value;
+    const password = document.querySelector("#loginForm input[name='password']").value;
+
+    if (!validateEmail(email) || !validatePassword(password)) {
+      alert("이메일 또는 비밀번호가 유효하지 않습니다.");
+      return;
+    }
+
+    console.log("로그인 성공", email);
+    // 여기서 서버로 로그인 요청을 보냅니다.
+  }
+
+  // 회원가입 처리
+  function signup() {
+    const email = document.querySelector("#signupForm input[name='email']").value;
+    const username = document.querySelector("#signupForm input[name='username']").value;
+    const password = document.querySelector("#signupForm input[name='password']").value;
+    const confirmPassword = document.querySelector("#signupForm input[name='confirm_password']").value;
+  
+    // 이메일 유효성 검사
+    if (!validateEmail(email)) {
+      alert("유효한 이메일 주소를 입력해주세요.");
+      return;
+    }
+  
+    // 비밀번호 유효성 검사
+    if (!validatePassword(password)) {
+      alert("비밀번호는 최소 6자 이상이며, 최소 하나의 문자 및 하나의 숫자를 포함해야 합니다.");
+      return;
+    }
+  
+    // 비밀번호 일치 검사
+    if (password !== confirmPassword) {
+      alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+  
+    // 서버로 회원가입 요청 로직을 여기에 추가
+    console.log("회원가입 요청: ", email, username, password);
+    // 실제 애플리케이션에서는 여기서 서버로 폼 데이터를 전송하는 AJAX 요청 등을 수행합니다.
+  }
+  
+
+  loginButton.addEventListener('click', function() {
+    renderLoginForm();
+    authModal.style.display = 'block';
+  });
+
+  closeButton.addEventListener('click', function() {
+    authModal.style.display = 'none';
+    renderLoginForm(); // 모달을 닫고 다시 열 때 로그인 양식으로 초기화
+  });
+
+  window.addEventListener('click', function(event) {
+    if (event.target == authModal) {
+      authModal.style.display = 'none';
+      renderLoginForm(); // 모달을 닫고 다시 열 때 로그인 양식으로 초기화
+    }
+  });
+});
