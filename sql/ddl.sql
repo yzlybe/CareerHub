@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 -- Active: 1707101302725@@127.0.0.1@3306@sesac
+=======
+>>>>>>> 1e30c17651676628e968fe8022ca2029590fe4fa
 show tables;
 
 -- users table
@@ -61,7 +64,7 @@ select * from reviews;
 -- user_likes
 drop table if EXISTS user_likes;
 CREATE TABLE user_likes (
-    user_likes INT PRIMARY KEY AUTO_INCREMENT,
+    user_likes_id INT PRIMARY KEY AUTO_INCREMENT,
     users_id INT ,
     jobs_id INT ,
     Foreign Key (jobs_id) REFERENCES jobs(jobs_id)

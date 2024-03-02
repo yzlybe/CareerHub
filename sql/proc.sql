@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 -- Active: 1707101302725@@127.0.0.1@3306@sesac
+=======
+>>>>>>> 1e30c17651676628e968fe8022ca2029590fe4fa
 -- 더미 데이터 삽입을 위한 MYSQL 프로시저
 -- 프로시저 삭제
 DROP PROCEDURE IF EXISTS insert_dummy_data;
