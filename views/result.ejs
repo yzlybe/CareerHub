@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>결과 페이지</title>
+
+        <!-- 여기에 필요한 CSS 파일들을 추가하세요 -->
+    </head>
+
+    <body>
+        <div name="jobs">
+            <h1>📕 회사 로고</h1>
+            <img
+                id="resultImage"
+                src="<%= Info && Info.img_path ? `/uploads/${Info.img_path}` : '/static/img/default.png' %>"
+                alt="회사 로고"
+                width="100"
+                height="100"
+                class="profile"
+            />
+            <br />
+
+            <h1>📗 회사명</h1>
+            <p>회사명: <%= Info.company_name || "N/A" %></p>
+            <br />
+
+            <h1>🔧 기술 스택</h1>
+            <p>스택: <%= Info.task || "N/A" %></p>
+
+            <h1>📘 경력</h1>
+            <p>경력: <%= Info.levels || "N/A" %></p>
+            <br />
+
+            <h1>👨‍💻 회사 소개</h1>
+            <p>회사 소개: <%= Info.introduce || "N/A" %></p>
+            <br />
+
+            <h1>📌 담당 업무</h1>
+            <p>담당 업무: <%= Info.task || "N/A" %></p>
+            <br />
+
+            <h1>📜 자격요건</h1>
+            <p>자격요건: <%= Info.conditions || "N/A" %></p>
+            <br />
+
+            <h1>👍 우대 사항</h1>
+            <p>우대 사항: <%= Info.prefer || "N/A" %></p>
+            <br />
+
+            <!-- 이하 회사 정보들을 계속해서 출력해주세요 -->
+
+            <h1>📎 공고 출처</h1>
+            <p>공고 출처: <%= Info.source || "N/A" %></p>
+            <br />
+
+            <h1>💡 기타 추가 정보</h1>
+            <p>추가 정보: <%= Info.others || "N/A" %></p>
+            <br />
+
+            <h1>📍 위치</h1>
+            <p>주소: <%= Info.address || "N/A" %></p>
+            <p>상세 주소: <%= Info.address_detail || "N/A" %></p>
+            <br />
+
+            <!-- 마감일, 기술 스택, 회사 복지 등 다양한 정보들을 출력해주세요 -->
+        </div>
+    </body>
+</html>
