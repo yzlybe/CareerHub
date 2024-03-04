@@ -1,8 +1,18 @@
 "use strict";
 
 const Sequelize = require("sequelize");
+console.log("crossenv", process.env.NODE_ENV); // prod or development(DB)
+
 // const config = require(__dirname + "/../config/config.js")["DB"];
-const config = require(__dirname + "/../config/config.js")["prod"];
+// const config = require(__dirname + "/../config/config.js")["prod"];
+let config;
+if (process.env.NODE_ENV) {
+    // npm run dev, npm start
+    config = require(__dirname + "/../config/config.js")[process.env.NODE_ENV];
+} else {
+    // node app.js
+    config = require(__dirname + "/../config/config.js")["DB"];
+}
 
 const db = {};
 
