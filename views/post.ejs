@@ -106,12 +106,12 @@
                 <p class="registerDate"><%=reviewsdata[i].created_at%></p>
                 <div class="commentDiv">
                     <p class="comment"><%=reviewsdata[i].reviews_comment%></p>
-                    <button
+                    <!-- <button
                         class="editCommentButton"
-                        onclick="editComment('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="editComment('<%#=reviewsdata[i].reviews_id%>')"
                     >
                         수정
-                    </button>
+                    </button> -->
                     <button
                         class="deleteCommentButton"
                         onclick="deleteComment('<%=reviewsdata[i].reviews_id%>')"
@@ -170,12 +170,14 @@
                     })
                         .then((res) => {
                             console.log("resdata", res.data);
+                            document.location.reload();
                         })
                         .catch((err) => console.log(err));
                 }
             }
 
             // 댓글 수정 put /review
+            // 임시로 기능만 구현... 구조는 수정해야 함
             function edit(reviewid) {
                 console.log(reviewid);
                 console.log(document.forms["editCmt"].editTxt.value);
@@ -188,6 +190,7 @@
                     },
                 }).then((res) => {
                     console.log(res);
+                    document.location.reload();
                 });
                 //     // 프론트에서 데이터 변경할 수 있도록
                 //     // const children = document.querySelector(
@@ -205,10 +208,10 @@
             }
 
             // 취소 버튼을 누르거나, 수정이 끝난 후 실행
-            function editCancel() {
-                // 등록 버튼으로 변경
-                btnGroup.innerHTML = `<button type="button" onclick="createVisitor()">방명록 등록</button>`;
-            }
+            // function editCancel() {
+            //     // 등록 버튼으로 변경
+            //     btnGroup.innerHTML = `<button type="button" onclick="createVisitor()">방명록 등록</button>`;
+            // }
 
             // 댓글 삭제 delete /review
             function deleteComment(reviewid) {
