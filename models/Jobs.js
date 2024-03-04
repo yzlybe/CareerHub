@@ -41,16 +41,6 @@ const jobsModel = (sequelize, DataTypes) => {
             prefer: {
                 type: DataTypes.STRING(255),
             },
-            stack: {
-                type: DataTypes.ENUM(
-                    "JAVA",
-                    "NODE",
-                    "VUE",
-                    "REACT",
-                    "JS",
-                    "SPRING"
-                ),
-            },
             welfare: {
                 type: DataTypes.STRING(255),
             },

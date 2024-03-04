@@ -8,15 +8,32 @@ const {
 const dotenv = require("dotenv").config();
 const axios = require("axios");
 
-exports.index = (req, res) => {
-    res.render("index");
+exports.index = async (req, res) => {
+    if (req.session.userId) {
+        res.render("index", {
+            isLogin: true,
+            nickname: req.session.nickname,
+            userId: req.session.userId,
+        });
+    } else {
+        res.render("index", { isLogin: false });
+    }
 };
+// 테스트용
 exports.test = (req, res) => {
-    res.render("getDB");
+    if (req.session.userId) {
+        res.render("getDB", {
+            isLogin: true,
+            nickname: req.session.nickname,
+            userId: req.session.userId,
+        });
+    } else {
+        res.render("getDB", { isLogin: false });
+    }
 };
 
 // get /main
-// 메인페이지 렌더링
+// 전체 공고 목록 조회
 exports.main = async (req, res) => {
     const foundJobs = await jobsModel.findAll();
     res.send(foundJobs);
