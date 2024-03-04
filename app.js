@@ -32,6 +32,11 @@ const sessionConfig = {
     },
 };
 app.use(session(sessionConfig));
+//각 페이지 렌더링시 세션 정보 주입하는 미들웨어 by영인
+app.use((req,res,next)=>{
+    res.locals.session=req.session;
+    next();
+})
 
 // 라우터 설정
 app.use("/", router);
@@ -113,4 +118,3 @@ app.post("/upload", uploadDetail.single("img_path"), function (req, res) {
     });
 });
 
-//

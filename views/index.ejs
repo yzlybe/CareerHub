@@ -98,17 +98,20 @@
   <div class="modal-content">
     <span class="close-button">&times;</span>
     <div id="modalBody">
-      <h2>로그인</h2>
-      <!-- 로그인 폼 -->
-      <br id="loginForm">
+      <!-- 로그인 폼 시작 -->
+      <form id="loginForm">
+        <h2>로그인</h2>
         <input type="email" name="email" placeholder="이메일 주소" required><br>
         <input type="password" name="password" placeholder="비밀번호" required><br>
-        <button type="button" onclick="login()">로그인</button> </br>
+        <!-- 로그인 함수를 호출하는 버튼 -->
+        <button type="button" onclick="login()">로그인</button>
         <button type="button" onclick="showSignup()">회원 가입</button>
       </form>
+      <!-- 로그인 폼 끝 -->
     </div>
   </div>
 </div>
+
 
 <!-- 회원 정보 수정 모달 -->
 <div id="editProfileModal" class="modal edit-profile-modal">
@@ -126,6 +129,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 
 

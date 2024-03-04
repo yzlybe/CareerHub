@@ -1,4 +1,5 @@
 //main.js
+
 // 데이터를 동적으로 렌더링하기 위한 샘플 데이터
 const portfolioData = [
     {
@@ -108,6 +109,9 @@ const portfolioData = [
     },
     // 추가 포트폴리오 아이템들...
 ];
+
+
+
 let currentPage = 1;
 const itemsPerPage = 12;
 const maxPageNumberLimit = 10;
@@ -175,30 +179,43 @@ function attachFavoriteEventListeners() {
 function renderItems(items) {
     const container = document.getElementById("portfolioItems");
     container.innerHTML = "";
-    items.forEach((item) => {
-        const tagsHTML = item.tags
-            .map((tag) => `<span class="tag-button">${tag}</span>`)
-            .join(" ");
+    items.forEach(item => {
+        const tagsHTML = item.tags.map(tag => `<span class="tag-button">${tag}</span>`).join(" ");
         const favoriteIcon = item.isFavorite ? "favorite" : "favorite_border";
-        const favoriteColor = item.isFavorite ? "red" : "inherit"; // 즐겨찾기 상태에 따른 색상 변경
+        const favoriteColor = item.isFavorite ? "red" : "inherit";
 
-        // 즐겨찾기 카운트를 표시합니다. 0일 경우에도 숫자가 보입니다.
-        const favoriteCountText = item.favoriteCount;
-        container.innerHTML += `
-        <div class="portfolioCard" data-item-id="${item.id}">
-          <div class="favorite-container">
-            <span class="material-symbols-outlined favorite" style="color: ${favoriteColor};">${favoriteIcon}</span>
-            <span class="favorite-count">${favoriteCountText}</span> <!-- 즐겨찾기 카운트 표시, 0일 경우에도 표시 -->
-          </div>
-          <img src="${item.imageUrl}" alt="${item.title}">
-          <h3>${item.title}</h3>
-          <p>${item.date}</p>
-          <div class="tags-container">${tagsHTML}</div>
-        </div>
-      `;
+        const cardHTML = `
+            <div class="portfolioCard" data-item-id="${item.id}">
+                <div class="favorite-container" onclick="event.stopPropagation(); toggleFavoriteLocal(${item.id})">
+                    <span class="material-symbols-outlined favorite" style="color: ${favoriteColor};">${favoriteIcon}</span>
+                    <span class="favorite-count">${item.favoriteCount}</span>
+                </div>
+                <img src="${item.imageUrl}" alt="${item.title}">
+                <h3>${item.title}</h3>
+                <p>${item.date}</p>
+                <div class="tags-container">${tagsHTML}</div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', cardHTML);
     });
-    attachFavoriteEventListeners();
+
+    attachCardClickEvent();
 }
+
+// 포트폴리오 카드 클릭 이벤트 리스너 추가
+function attachCardClickEvent() {
+    document.querySelectorAll(".portfolioCard").forEach(card => {
+        card.addEventListener("click", function() {
+            const itemId = this.getAttribute('data-item-id');
+            window.location.href = `/jobs/${itemId}`;
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderItems(portfolioData); // 초기 데이터 렌더링
+});
 // 즐겨찾기한 포트폴리오카드만 나오게 하기
 function attachInterestButtonEventListener() {
     const interestButton = document.querySelector(".interest-button");
@@ -300,22 +317,24 @@ function initialize() {
 }
 document.addEventListener("DOMContentLoaded", initialize);
 //로그인,회원가입 모달
-
 document.addEventListener("DOMContentLoaded", function () {
     const authModal = document.getElementById("authModal");
     const modalBody = document.getElementById("modalBody");
     const loginButton = document.querySelector(".login-button");
     const closeButton = document.querySelector(".close-button");
+
     // 이메일 유효성 검사
     function validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email.toLowerCase());
     }
+
     // 비밀번호 유효성 검사
     function validatePassword(password) {
         const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
         return re.test(password);
     }
+
     // 로그인 양식 렌더링
     window.renderLoginForm = function () {
         modalBody.innerHTML = `
@@ -333,6 +352,9 @@ document.addEventListener("DOMContentLoaded", function () {
             login();
         };
     };
+
+    // 로그인 폼 렌더링
+    renderLoginForm();
     // 회원가입 양식 렌더링
     window.renderSignupForm = function () {
         modalBody.innerHTML = `
@@ -352,21 +374,47 @@ document.addEventListener("DOMContentLoaded", function () {
             signup();
         };
     };
-    // 로그인 처리
     function login() {
-        const email = document.querySelector(
-            "#loginForm input[name='email']"
-        ).value;
-        const password = document.querySelector(
-            "#loginForm input[name='password']"
-        ).value;
-        if (!validateEmail(email) || !validatePassword(password)) {
-            alert("이메일 또는 비밀번호가 유효하지 않습니다.");
-            return;
-        }
-        console.log("로그인 성공", email);
-        // 여기서 서버로 로그인 요청을 보냅니다.
+        const form = document.forms["loginForm"];
+        const email = form["email"].value;
+        const password = form["password"].value;
+    
+        axios({
+            method: "post",
+            url: "/login",
+            data: {
+                email: email,
+                password: password,
+            },
+        }).then((res) => {
+            console.log(res.data);
+            const {result, msg} = res.data;
+            if(result) {
+                alert(msg);
+                closeButton();
+            }
+        });
     }
+
+// 로그인 버튼 UI 업데이트 함수
+function updateLoginButtonUI(isLoggedIn) {
+    const loginButton = document.querySelector('.login-button');
+    if (isLoggedIn) {
+        loginButton.textContent = '로그아웃';
+        // 로그아웃 이벤트 리스너를 추가합니다.
+        loginButton.removeEventListener("click", renderLoginForm);
+        loginButton.addEventListener("click", logout);
+    } else {
+        loginButton.textContent = '로그인';
+        // 로그인 모달을 표시하는 이벤트 리스너를 추가합니다.
+        loginButton.removeEventListener("click", logout);
+        loginButton.addEventListener("click", renderLoginForm);
+    }
+}
+
+
+
+
     // 회원가입 처리
     function signup() {
         const email = document.querySelector(
@@ -422,6 +470,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+
+
+
 //드롭다운
 document.addEventListener("DOMContentLoaded", function () {
     // 드롭다운 메뉴를 토글하는 함수
@@ -507,3 +560,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+//공고 등록 버튼
+document.addEventListener('DOMContentLoaded', function() {
+    // '공고등록' 버튼에 대한 참조를 찾습니다.
+    const postJobButton = document.querySelector('.fab');
+  
+    // 버튼 클릭 이벤트에 대한 리스너를 추가합니다.
+    postJobButton.addEventListener('click', function() {
+      // detail.ejs 페이지로 이동합니다.
+      window.location.href = '/detail'; // 여기서 '/detail.ejs'는 서버의 실제 라우트 경로에 따라 다를 수 있습니다.
+    });
+  });
+
