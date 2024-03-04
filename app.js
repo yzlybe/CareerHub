@@ -82,7 +82,6 @@ sequelize
         app.listen(process.env.PORT, () => {
             console.log("Database connection succeeded!");
             console.log(`http://localhost:${process.env.PORT}`);
-            console.log(`http://115.85.181.69:${process.env.PORT}`);
         });
     })
     .catch((error) => {

@@ -272,6 +272,8 @@ function handleSearchInput(e) {
         renderPaginationControls(filteredCards.length);
     }
 }
+
+
 let isFavoriteMode = false; // '관심 공고' 모드가 활성화되어 있는지 추적
 function toggleFavoriteMode() {
     isFavoriteMode = !isFavoriteMode;
@@ -374,6 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
             signup();
         };
     };
+    //로그인 db연동
     function login() {
         const form = document.forms["loginForm"];
         const email = form["email"].value;
@@ -388,32 +391,84 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         }).then((res) => {
             console.log(res.data);
-            const {result, msg} = res.data;
+            const {result, msg} = res.data; // 가정: 서버에서 {result: true/false, msg: '메시지'} 형태로 응답
             if(result) {
-                alert(msg);
-                closeButton();
+                alert(msg); // 성공 메시지 알림
+                closeAuthModal(); // 모달 닫기 함수 호출
+                
+            } else {
+                alert(msg); // 실패 메시지 알림
             }
+        }).catch((error) => {
+            console.error('로그인 중 오류 발생:', error);
         });
+        updateLoginState(true);
     }
-
-// 로그인 버튼 UI 업데이트 함수
-function updateLoginButtonUI(isLoggedIn) {
-    const loginButton = document.querySelector('.login-button');
+    function logout() {
+        axios({
+            method: "post",
+            url: "/logout", // 가정: 로그아웃을 처리하는 서버의 엔드포인트
+        }).then((res) => {
+            console.log(res.data);
+            const {result, msg} = res.data; // 가정: 서버에서 {result: true/false, msg: '메시지'} 형태로 응답
+            if(result) {
+                alert(msg); // 성공 메시지 알림
+               
+                
+            } else {
+                alert(msg); // 실패 메시지 알림
+            }
+        }).catch((error) => {
+            console.error('로그아웃 중 오류 발생:', error);
+        });
+        updateLoginState(false);
+        closeAuthModal();
+    }
+    //로그인시 모달을 닫는 함수
+    function closeAuthModal() {
+        const authModal = document.getElementById("authModal");
+        authModal.style.display = "none";
+    }
+    // 로그인 모달을 표시하는 함수
+    function handleLoginClick() {
+        const authModal = document.getElementById("authModal");
+        authModal.style.display = "block";
+    }
+    function updateLoginState(isLoggedIn) {
+        const loginButton = document.querySelector('.login-button');
+        const iconSpan = loginButton.querySelector('.material-symbols-outlined');
+        if (isLoggedIn) {
+            // 사용자가 로그인한 상태일 때
+            iconSpan.textContent = 'logout'; // 아이콘을 로그아웃 아이콘으로 변경
+            loginButton.textContent = ' LogOut'; // 버튼 텍스트를 'LogOut'으로 변경
+            loginButton.prepend(iconSpan); // 아이콘을 텍스트 앞에 배치
+            loginButton.removeEventListener("click", handleLoginClick); // 기존 로그인 클릭 이벤트 리스너 제거
+            loginButton.addEventListener("click", logout); // 로그아웃 이벤트 리스너 추가
+        } else {
+            // 사용자가 로그아웃한 상태일 때
+            iconSpan.textContent = 'login'; // 아이콘을 로그인 아이콘으로 변경
+            loginButton.textContent = ' LogIn'; // 버튼 텍스트를 'LogIn'으로 변경
+            loginButton.prepend(iconSpan); // 아이콘을 텍스트 앞에 배치
+            loginButton.removeEventListener("click", logout); // 기존 로그아웃 클릭 이벤트 리스너 제거
+            loginButton.addEventListener("click", handleLoginClick); // 로그인 모달 표시 이벤트 리스너 추가
+        }
+    }
+    
+function handleLoginButtonClick() {
+    const isLoggedIn = (document.querySelector('.login-button').textContent === 'LogOut');
     if (isLoggedIn) {
-        loginButton.textContent = '로그아웃';
-        // 로그아웃 이벤트 리스너를 추가합니다.
-        loginButton.removeEventListener("click", renderLoginForm);
-        loginButton.addEventListener("click", logout);
+        logout();
     } else {
-        loginButton.textContent = '로그인';
-        // 로그인 모달을 표시하는 이벤트 리스너를 추가합니다.
-        loginButton.removeEventListener("click", logout);
-        loginButton.addEventListener("click", renderLoginForm);
+        handleLoginClick();
     }
 }
 
-
-
+document.addEventListener('DOMContentLoaded', () => {
+    // 초기 로그인 상태는 로그아웃으로 가정
+    updateLoginState(false);
+    const loginButton = document.querySelector('.login-button');
+    loginButton.addEventListener("click", handleLoginButtonClick);
+});
 
     // 회원가입 처리
     function signup() {
