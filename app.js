@@ -17,7 +17,7 @@ app.set("views", "./views");
 app.set("view engine", "ejs");
 app.use("/static", express.static(__dirname + "/public"));
 app.use("/uploads", express.static(__dirname + "/uploads"));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 /* 세션 설정 */
@@ -40,33 +40,15 @@ app.use("/google", OauthRouter);
 app.get("/detail", (req, res) => {
     res.render("detail.ejs");
 });
-// app.js
 
 app.post("/result", (req, res) => {
     console.log(req.body);
-    const selectedTechs = req.body.task || []; // task 필드가 배열로 들어오지 않으면 빈 배열로 초기화
-    const companyInfo = {
-        ...req.body,
-        task: selectedTechs, // 선택된 기술들을 배열 그대로 사용
-    };
-
-    // render 함수를 이용하여 result.ejs로 응답을 보냅니다.
+    const companyInfo = req.body;
     res.render("result.ejs", {
-        Info: {
-            ...companyInfo,
-        },
+        Info: companyInfo,
         addInfo: false,
     });
 });
-
-// app.post("/result", (req, res) => {
-//     console.log(req.body);
-//     const companyInfo = req.body;
-//     res.render("result.ejs", {
-//         Info: companyInfo,
-//         addInfo: false,
-//     });
-// });
 
 //
 

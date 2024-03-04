@@ -98,37 +98,30 @@ div[name="form-check"] {
     padding-left: 20px;
 }
 
-/* 스택 선택 */
-.app {
-    text-align: center;
-    padding: 0 20px;
+#stackButtons {
+    display: flex; /* 가로로 나열하기 위한 Flexbox 속성 */
 }
 
-.tech-tags {
-    display: flex;
-    flex-wrap: wrap;
+/* 경력 부분에만 적용되는 스타일 */
+#stackButtons .form-check-input {
+    display: none;
 }
 
-.tech-tag {
-    cursor: pointer;
-    padding: 8px;
-    margin: 8px;
-    border: none;
-    border-radius: 8px;
+.button-label {
+    background-color: #2c88d9; /* 체크된 경우 배경색 변경 */
+    color: #fff; /* 글자색 지정 */
+    border: 2px solid #2c88d9;
+
+    padding: 10px 15px; /* 여백 설정 */
+    border-radius: 5px; /* 모서리 둥글게 설정 */
+    margin-right: 10px; /* 각 라벨 사이의 간격 조절 */
+    cursor: pointer; /* 포인터 커서로 변경하여 클릭 가능하게 만듦 */
 }
 
-/* 기술 선택시 */
-.tech-tag.selected {
-    background-color: #2c88d9;
-    color: #fff;
-}
-
-/* 기술 선택 전 */
-.tech-tag {
-    border: 1px solid #ccc; /* 선택되지 않은 기술 스택의 테두리 스타일 설정 */
-    padding: 8px;
-    margin: 4px;
-    cursor: pointer;
+.form-check-input:checked + .button-label {
+    background-color: #ffffff; /* 배경색 지정 */
+    color: #2c88d9; /* 글자색 지정 */
+    border: 2px solid #2c88d9;
 }
 
 /* 마감일 */
