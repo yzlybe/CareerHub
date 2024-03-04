@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>데이터 가져오는법</title>
+        <!-- axios CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <div id="modalBody">
+            <h2>로그인</h2>
+            <!-- 로그인 폼 -->
+            <form id="loginForm">
+                <!-- 이메일 입력 필드 -->
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="이메일 주소"
+                    required
+                /><br />
+                <!-- 비밀번호 입력 필드 -->
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="비밀번호"
+                    required
+                /><br />
+                <!-- 로그인 버튼 -->
+                <button type="button" onclick="login()">로그인</button>
+            </form>
+        </div>
+
+        <script>
+            function login() {
+                // 폼에서 이메일과 비밀번호 입력 값 가져오기
+                const email = document.querySelector(
+                    "#loginForm input[name='email']"
+                ).value;
+                const password = document.querySelector(
+                    "#loginForm input[name='password']"
+                ).value;
+
+                // POST 요청을 위한 fetch 사용
+                fetch("/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                    }),
+                })
+                    .then((response) => {
+                        // 응답의 JSON을 파싱하여 다음 then 핸들러로 전달
+                        return response.json();
+                    })
+                    .then((data) => {
+                        // 응답 데이터를 콘솔에 출력
+                        console.log(data);
+                    })
+                    .catch((error) => {
+                        // 오류가 발생했을 때 콘솔에 출력
+                        console.error("Error:", error);
+                    });
+            }
+        </script>
+    </body>
+</html>

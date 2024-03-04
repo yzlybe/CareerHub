@@ -11,6 +11,9 @@ const axios = require("axios");
 exports.index = (req, res) => {
     res.render("index");
 };
+exports.test = (req, res) => {
+    res.render("getDB");
+};
 
 // get /main
 // 메인페이지 렌더링
