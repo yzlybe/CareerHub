@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         techCheckbox.type = "checkbox";
         techCheckbox.id = tech;
         techCheckbox.value = tech;
+        techCheckbox.name = tech;
         techCheckbox.addEventListener("change", function () {
             handleTechChange(tech);
         });
