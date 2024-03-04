@@ -146,9 +146,12 @@ exports.jobsWrite = async (req, res) => {
 // 공고 수정
 exports.jobsUpdate = async (req, res) => {
     try {
-        console.log(req.body);
+        console.log(req.body); 
         const {
+            jobsId,
             usersId,
+            updated_at,
+            img_path,
             companyName,
             levels,
             introduce,
@@ -156,8 +159,11 @@ exports.jobsUpdate = async (req, res) => {
             conditions,
             prefer,
             stack,
+            welfaer,
             deadline,
             address,
+            address_detail,
+            others,
             source,
         } = req.body;
 
@@ -180,6 +186,9 @@ exports.jobsUpdate = async (req, res) => {
 
         const isSuccess = await jobsModel.update(
             {
+                users_id: usersId,
+                updated_at,
+                img_path,
                 company_name: companyName,
                 levels:levelValue,
                 introduce,
@@ -187,16 +196,20 @@ exports.jobsUpdate = async (req, res) => {
                 conditions,
                 prefer,
                 stack,
+                welfaer,
                 deadline,
                 address,
+                address_detail,
                 source,
+                others
             },
             {
                 where: {
-                    users_id: usersId,
+                    jobs_id: jobsId,
                 },
             }
         );
+        console.log(usersId);
         console.log(isSuccess);
         if (isSuccess) {
             res.send(true);
