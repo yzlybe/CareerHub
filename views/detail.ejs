@@ -6,21 +6,19 @@
         <title>detail</title>
 
         <link rel="stylesheet" href="/static/css/detail.css" />
-        <script src="/static/js/detail.js"></script>
         
         <!-- axios CDN -->
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
         <!-- 카카오맵 -->
-        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9936a0da59fd85724aeb4306f810fe5c&libraries=services"></script>
-    </head>
-
-
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9936a0da59fd85724aeb4306f810fe5c&libraries=services"></script>
 
     <body>
         <div name="jobs">
-            <!-- <form name="detail" action="/result" method="post" enctype="multipart/form-data"> -->
+
             <form name="detail" action="/result" method="post">
+
 
             <h1>📕 회사 로고</h1>
             <img
@@ -38,13 +36,36 @@
             </span>
             <br />
 
+
+            <script>// 프로필 사진
+
+            function fileUpload() {
+                const fileInput = document.getElementById("img_path");
+                const formData = new FormData();
+                formData.append("img_path", fileInput.files[0]);
+
+                axios({
+                    method: "POST",
+                    url: "/upload",
+                    data: formData,
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                    .then((res) => {
+                        console.log(res.data);
+                        const resultImage = document.getElementById("resultImage");
+                        resultImage.src = `/uploads/${res.data.path}`;
+                    })
+                    .catch((err) => console.error(err));
+            }</script>
+
             <h1>📗 회사명</h1>
             <input type="text" name="company_name" placeholder="회사명을 입력해주세요"  class="text-input"/>
             <br />
 
             <h1>📘 경력</h1>
-            <div name="form-check"> 
-
+            <div name="form-check-label"> 
             <label class="form-check-label">
             <input type="radio" name="levels" value="신입" class="form-check-input"> 신입
             </label>
@@ -54,7 +75,6 @@
             <label class="form-check-label">
             <input type="radio" name="levels" value="경력무관" class="form-check-input"> 경력 무관
             </label>
-
             </div>
 
             <h1>👨‍💻 회사 소개</h1>
@@ -70,12 +90,41 @@
             <h1>👍 우대 사항</h1>
             <textarea name="prefer"  placeholder="회사에 입사하는데 우대하는 사항은 무엇인가요?"  class="textarea-input"></textarea>
 
+
             <h1>🔧 기술 스택</h1>
-            <div class="app">
-                <div class="tech-tags" id="techTagsContainer" name="stack">
-                    
-                </div>
-            </div>  
+            <div class="Checkbox" id="stackButtons">
+            <input type="checkbox" name="stack" id="reactCheckbox" value="React" class="form-check-input">
+            <label for="reactCheckbox" class="form-check-label button-label">React</label>
+
+            <input type="checkbox" name="stack" id="vueCheckbox" value="Vue" class="form-check-input">
+            <label for="vueCheckbox" class="form-check-label button-label">Vue</label>
+
+            <input type="checkbox" name="stack" id="cssCheckbox" value="CSS" class="form-check-input">
+            <label for="cssCheckbox" class="form-check-label button-label">CSS</label>
+
+            <input type="checkbox" name="stack" id="angularCheckbox" value="Angular" class="form-check-input">
+            <label for="angularCheckbox" class="form-check-label button-label">Angular</label>
+
+            <input type="checkbox" name="stack" id="javascriptCheckbox" value="JavaScript" class="form-check-input">
+            <label for="javascriptCheckbox" class="form-check-label button-label">JavaScript</label>
+
+            <input type="checkbox" name="stack" id="htmlCheckbox" value="HTML" class="form-check-input">
+            <label for="htmlCheckbox" class="form-check-label button-label">HTML</label>
+
+            <input type="checkbox" name="stack" id="typescriptCheckbox" value="TypeScript" class="form-check-input">
+            <label for="typescriptCheckbox" class="form-check-label button-label">TypeScript</label>
+
+            <input type="checkbox" name="stack" id="sassCheckbox" value="Sass" class="form-check-input">
+            <label for="sassCheckbox" class="form-check-label button-label">Sass</label>
+
+            <input type="checkbox" name="stack" id="jsxCheckbox" value="JSX" class="form-check-input">
+            <label for="jsxCheckbox" class="form-check-label button-label">JSX</label>
+
+            <input type="checkbox" name="stack" id="webpackCheckbox" value="Webpack" class="form-check-input">
+            <label for="webpackCheckbox" class="form-check-label button-label">Webpack</label>
+            </div>
+
+
 
 
             <h1>✨ 회사 복지</h1>
@@ -84,239 +133,92 @@
             <h1>📅 마감일</h1>
             <input type="datetime-local" id="deadline" name="deadline" /> 까지
 
-
-            <h1>📍 위치</h1>
-            <input type="text" name="address" id="selectedLocation" placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다"  class="text-input"  readonly /><br/><br/>
-            <input type="text" name="address_detail" placeholder="상세 주소를 적어주세요 (선택)"   class="text-input"/>
-            <br/><br/>
-
-                    
-            <div class="map_wrap">
-                <div id="map" style="width:900px;height:100%;position:relative;overflow:hidden;"></div>
-
-                <div id="menu_wrap" class="bg_white">
-                    <div class="option">
-                        <div>
-                            <!-- <form> -->
-                                키워드 : <input type="text" value="" id="keyword" size="15" placeholder="검색해주세요">
-                                <button type="button" onclick="searchPlaces()" >검색하기</button>
-                            <!-- </form> -->
-                        </div>
-                    </div>
-                    <hr>
-                    <ul id="placesList"></ul>
-                    <div id="pagination"></div>
-                </div>
-            </div>
+<h1>📍 위치</h1>
 
 
+<div id="map" style="width:900px;height:400px;margin-top:10px;"></div>
+<br/>
+<!-- 주소 검색 버튼 -->
+<input type="button"  class="input-file-button"  onclick="sample5_execDaumPostcode()" value="주소 검색">
+<!-- 현위치 버튼 -->
+<input type="button"  class="input-file-button"  onclick="getCurrentLocation()" value="현위치 찾기"><br/><br/>
 
-        <script>
-        var markers = [];
-        var mapContainer = document.getElementById('map'),
-            mapOption = {
-                center: new kakao.maps.LatLng(37.566826, 126.9786567),
-                level: 3
-            };
-        var map = new kakao.maps.Map(mapContainer, mapOption);
-        var ps = new kakao.maps.services.Places();
-        var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-        var prevInfowindow = false;
-        var selectedAddress = '';
-
-        function searchPlaces() {
-            var keyword = document.getElementById('keyword').value;
-
-            if (!keyword.replace(/^\s+|\s+$/g, '')) {
-                alert('키워드를 입력해주세요!');
-                return false;
-            }
-
-            ps.keywordSearch(keyword, placesSearchCB);
-        }
-
-        function placesSearchCB(data, status, pagination) {
-            if (status === kakao.maps.services.Status.OK) {
-                displayPlaces(data);
-                displayPagination(pagination);
-            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                alert('검색 결과가 존재하지 않습니다.');
-                return;
-            } else if (status === kakao.maps.services.Status.ERROR) {
-                alert('검색 결과 중 오류가 발생했습니다.');
-                return;
-            }
-        }
-
-        function displayPlaces(places) {
-            var listEl = document.getElementById('placesList'),
-                menuEl = document.getElementById('menu_wrap'),
-                fragment = document.createDocumentFragment(),
-                bounds = new kakao.maps.LatLngBounds();
-
-            removeAllChildNods(listEl);
-            removeMarker();
+<!-- 주소 입력 필드 -->
+<input type="text" name="address" id="sample5_address" placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다" class="text-input" readonly /><br/><br/>
+<!-- 상세 주소 입력 필드 -->
+<input type="text" name="address_detail" placeholder="상세 주소를 적어주세요 (선택)" class="text-input"/><br/><br/>
 
 
-        //  클릭시 확대
-        function displayInfowindow(marker, title, address) {
-            var content = '<div style="padding:5px;z-index:1;">' +
-                '<h5>' + title + '</h5>' +
-                '<span>' + address + '</span>' +
-                '</div>';
+<script>
+    var mapContainer = document.getElementById('map'); // 지도를 표시할 div
+    var mapOption = {
+        center: new daum.maps.LatLng(37.537187, 127.005476), // 기본 중심좌표
+        level: 1 // 지도의 확대 레벨
+    };
 
-            infowindow.setContent(content);
-            infowindow.open(map, marker);
+    // 지도를 미리 생성
+    var map = new daum.maps.Map(mapContainer, mapOption);
+    // 주소-좌표 변환 객체를 생성
+    var geocoder = new daum.maps.services.Geocoder();
+    // 마커를 미리 생성
+    var marker = new daum.maps.Marker({
+        position: new daum.maps.LatLng(37.537187, 127.005476),
+        map: map
+    });
 
-            // 마커 위치로 지도의 중심을 이동
-            map.setCenter(marker.getPosition());
+    // 페이지 로딩 시 현위치로 지도의 중심을 이동하고 주소 입력 필드에 기본값 설정
+    getCurrentLocation();
 
-            // 지도 확대 레벨 조정 
-            map.setLevel(1);
-        }
+    // 주소 검색 함수
+    function sample5_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                var addr = data.address; // 최종 주소 변수
 
+                // 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("sample5_address").value = addr;
+                // 주소로 상세 정보를 검색
+                geocoder.addressSearch(data.address, function (results, status) {
+                    // 정상적으로 검색이 완료됐으면
+                    if (status === daum.maps.services.Status.OK) {
+                        var result = results[0]; //첫번째 결과의 값을 활용
 
-
-            for (var i = 0; i < places.length; i++) {
-                var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
-                    marker = addMarker(placePosition, i),
-                    itemEl = getListItem(i, places[i]);
-
-                bounds.extend(placePosition);
-
-                (function (marker, title, address) {
-                    kakao.maps.event.addListener(marker, 'click', function () {
-                        if (prevInfowindow) {
-                            prevInfowindow.close();
-                        }
-                        displayInfowindow(marker, title, address);
-                        prevInfowindow = infowindow;
-                        selectedAddress = address; // 클릭한 마커의 주소를 저장
-                        updateSelectedLocation(); // 텍스트 창 업데이트
-                    });
-
-                    itemEl.onclick = function () {
-                        if (prevInfowindow) {
-                            prevInfowindow.close();
-                        }
-                        displayInfowindow(marker, title, address);
-                        prevInfowindow = infowindow;
-                        selectedAddress = address; // 클릭한 마커의 주소를 저장
-                        updateSelectedLocation(); // 텍스트 창 업데이트
-                    };
-                })(marker, places[i].place_name, places[i].address_name);
-
-                fragment.appendChild(itemEl);
-            }
-
-            listEl.appendChild(fragment);
-            menuEl.scrollTop = 0;
-
-            map.setBounds(bounds);
-        }
-
-        function getListItem(index, places) {
-            var el = document.createElement('li'),
-                itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
-                    '<div class="info">' +
-                    '   <h5>' + places.place_name + '</h5>';
-
-            if (places.road_address_name) {
-                itemStr += '    <span>' + places.road_address_name + '</span>' +
-                    '   <span class="jibun gray">' + places.address_name + '</span>';
-            } else {
-                itemStr += '    <span>' + places.address_name + '</span>';
-            }
-
-            itemStr += '  <span class="tel">' + places.phone + '</span>' +
-                '</div>';
-
-            el.innerHTML = itemStr;
-            el.className = 'item';
-
-            return el;
-        }
-
-        function addMarker(position, idx, title) {
-            var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
-                imageSize = new kakao.maps.Size(36, 37),
-                imgOptions = {
-                    spriteSize: new kakao.maps.Size(36, 691),
-                    spriteOrigin: new kakao.maps.Point(0, (idx * 46) + 10),
-                    offset: new kakao.maps.Point(13, 37)
-                },
-                markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
-                marker = new kakao.maps.Marker({
-                    position: position,
-                    image: markerImage
+                        // 해당 주소에 대한 좌표를 받아서
+                        var coords = new daum.maps.LatLng(result.y, result.x);
+                        // 지도 중심을 변경한다.
+                        map.setCenter(coords);
+                        // 마커를 결과값으로 받은 위치로 옮긴다.
+                        marker.setPosition(coords);
+                    }
                 });
-
-            marker.setMap(map);
-            markers.push(marker);
-
-            return marker;
-        }
-
-        function removeMarker() {
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(null);
             }
-            markers = [];
+        }).open();
+    }
+
+    // 현위치 찾기 함수
+    function getCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var lat = position.coords.latitude; // 위도
+                var lng = position.coords.longitude; // 경도
+
+                var currentPos = new daum.maps.LatLng(lat, lng);
+                map.setCenter(currentPos);
+                marker.setPosition(currentPos);
+
+                // 주소로 변환하여 입력 필드에 넣기
+                geocoder.coord2Address(lng, lat, function (result, status) {
+                    if (status === daum.maps.services.Status.OK) {
+                        var address = result[0].address.address_name;
+                        document.getElementById("sample5_address").value = address;
+                    }
+                });
+            });
+        } else {
+            alert("현위치를 찾을 수 없습니다.");
         }
-
-        function displayPagination(pagination) {
-            var paginationEl = document.getElementById('pagination'),
-                fragment = document.createDocumentFragment(),
-                i;
-
-            while (paginationEl.hasChildNodes()) {
-                paginationEl.removeChild(paginationEl.lastChild);
-            }
-
-            for (i = 1; i <= pagination.last; i++) {
-                var el = document.createElement('a');
-                el.href = "#";
-                el.innerHTML = i;
-
-                if (i === pagination.current) {
-                    el.className = 'on';
-                } else {
-                    el.onclick = (function (i) {
-                        return function () {
-                            pagination.gotoPage(i);
-                        }
-                    })(i);
-                }
-
-                fragment.appendChild(el);
-            }
-            paginationEl.appendChild(fragment);
-        }
-
-        function displayInfowindow(marker, title, address) {
-            var content = '<div style="padding:5px;z-index:1;">' +
-                '<h5>' + title + '</h5>' +
-                '<span>' + address + '</span>' +
-                '</div>';
-
-            infowindow.setContent(content);
-            infowindow.open(map, marker);
-        }
-
-        function removeAllChildNods(el) {
-            while (el.hasChildNodes()) {
-                el.removeChild(el.lastChild);
-            }
-        }
-
-        // 텍스트 창 업데이트 함수 추가
-        function updateSelectedLocation() {
-            document.getElementById('selectedLocation').value = selectedAddress;
-        }
-        </script>
-
-
-
+    }
+</script>
 
             <h1>📎 공고 출처</h1>
             <input type="text" name="source"  placeholder="어떤 사이트에서 정보를 받았는지 출처를 꼭 밝혀주세요!" class="text-input"/>
@@ -325,13 +227,13 @@
             <textarea name="others"   placeholder="회사에 대한 추가 정보 혹은 여러분의 자유로운 의견을 써주세요(선택)"  class="textarea-input"></textarea>
 <br/><br/>
 
-<label name="warning">
-    <input type="checkbox" name="deleteCheckbox" />
-    욕설 혹은 거짓 정보 등 다른 유저들에게 불쾌함을 줄 수 있는 공고는 관리자에 의해 삭제될 수 있습니다.
-</label>
 
+        <label name="warning">
+            <input type="checkbox" name="deleteCheckbox"/>
+            욕설 혹은 거짓 정보 등 다른 유저들에게 불쾌함을 줄 수 있는 공고는 관리자에 의해 삭제될 수 있습니다.
+        </label>
 
-      <button type="submit" class="input-file-button" name="submit" id="submit-button">제출</button>
+        <button type="submit" class="input-file-button" name="submit" id="submit-button">제출</button>
     </form>
-  </body>
+</div>
 </html>

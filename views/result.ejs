@@ -5,12 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>결과 페이지</title>
 
-        <!-- 여기에 필요한 CSS 파일들을 추가하세요 -->
+                <link rel="stylesheet" href="/static/css/detail.css" />
+
     </head>
 
     <body>
         <div name="jobs">
-            <h1>📕 회사 로고</h1>
             <img
                 id="resultImage"
                 src="<%= Info && Info.img_path ? `/uploads/${Info.img_path}` : '/static/img/default.png' %>"
@@ -20,13 +20,8 @@
                 class="profile"
             />
             <br />
-
-            <h1>📗 회사명</h1>
             <p>회사명: <%= Info.company_name || "N/A" %></p>
             <br />
-
-            <h1>🔧 기술 스택</h1>
-            <p>스택: <%= Info.task || "N/A" %></p>
 
             <h1>📘 경력</h1>
             <p>경력: <%= Info.levels || "N/A" %></p>
@@ -44,11 +39,112 @@
             <p>자격요건: <%= Info.conditions || "N/A" %></p>
             <br />
 
+
             <h1>👍 우대 사항</h1>
             <p>우대 사항: <%= Info.prefer || "N/A" %></p>
+            <br />      
+
+
+<h1>🔧 기술 스택</h1>
+
+<% if (Info && Info.stack && Info.stack.length > 0) { %>
+    <% Info.stack.forEach(function(tech) { %>
+        <span class="tech-stack">
+            <p><%= tech %></p>
+        </span>
+    <% }); %>
+<% } else { %>
+    <span class="tech-stack">
+        <p>기술: N/A</p>
+    </span>
+<% } %>
+
+            <h1>✨ 회사 복지</h1>
+            <p>
+            <p>복지: <%= Info.welfaer || "N/A" %></p>
+            </p>
+
+            <h1>📅 마감일</h1>
+            <p>
+            <p>복지: <%= Info.deadline || "N/A" %></p>
+            </p>
+
+
+            <h1>📍 위치</h1>
+            <p><%= Info.address || "N/A" %><%= Info.address_detail || "N/A" %></p>
             <br />
 
-            <!-- 이하 회사 정보들을 계속해서 출력해주세요 -->
+    <!-- 지도 출력 div -->
+    <div id="map"></div>
+    <br />
+
+
+
+<!-- 스크립트 -->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9936a0da59fd85724aeb4306f810fe5c&libraries=services"></script>
+<script>
+    window.onload = function () {
+        var mapContainer = document.getElementById('map'); // 지도를 표시할 div
+        var mapOption = {
+            center: new daum.maps.LatLng(37.537187, 127.005476), // 기본 중심좌표
+            level: 1 // 지도의 확대 레벨
+        };
+
+        // 지도를 미리 생성
+        var map = new daum.maps.Map(mapContainer, mapOption);
+        // 주소-좌표 변환 객체를 생성
+        var geocoder = new daum.maps.services.Geocoder();
+        // 마커를 미리 생성
+        var marker = new daum.maps.Marker({
+            position: new daum.maps.LatLng(37.537187, 127.005476),
+            map: map
+        });
+
+        // Get the address and details from the input form
+        var address = "<%= Info.address || 'N/A' %>";
+        var addressDetail = "<%= Info.address_detail || 'N/A' %>";
+        var companyName = "<%= Info.company_name || 'N/A' %>";
+        var imgPath = "<%= Info && Info.img_path ? `/uploads/${Info.img_path}` : '' %>";
+
+        // Perform geocoding to get the coordinates for the provided address
+        geocoder.addressSearch(address, function (results, status) {
+            // If geocoding is successful
+            if (status === daum.maps.services.Status.OK) {
+                var result = results[0]; // Take the first result
+
+                // Set the center of the map and move the marker to the obtained coordinates
+                var coords = new daum.maps.LatLng(result.y, result.x);
+                map.setCenter(coords);
+                marker.setPosition(coords);
+
+                // Check if the image path exists
+                if (imgPath) {
+                    // Create a custom marker image
+                    var markerImage = new daum.maps.MarkerImage(imgPath, new daum.maps.Size(50, 50), {
+                        offset: new daum.maps.Point(25, 25) // 마커 이미지의 중심을 지정
+                    });
+
+                    // Set the custom marker image to the marker
+                    marker.setImage(markerImage);
+                }
+
+                // Create an info window
+                var infowindow = new daum.maps.InfoWindow({
+                    position: coords,
+                    content: '<div style="padding:5px;">' +
+                        '<p>' + companyName + '</p>' +
+                        '<p>' + address + '</p>' +
+                        '<p>' + addressDetail + '</p>' +
+                        '</div>'
+                });
+
+                // Open the info window
+                infowindow.open(map, marker);
+            }
+        });
+    };
+</script>
+
 
             <h1>📎 공고 출처</h1>
             <p>공고 출처: <%= Info.source || "N/A" %></p>
@@ -58,12 +154,9 @@
             <p>추가 정보: <%= Info.others || "N/A" %></p>
             <br />
 
-            <h1>📍 위치</h1>
-            <p>주소: <%= Info.address || "N/A" %></p>
-            <p>상세 주소: <%= Info.address_detail || "N/A" %></p>
-            <br />
 
-            <!-- 마감일, 기술 스택, 회사 복지 등 다양한 정보들을 출력해주세요 -->
         </div>
+
+        
     </body>
 </html>
