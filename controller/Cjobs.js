@@ -97,10 +97,29 @@ exports.jobsWrite = async (req, res) => {
             source,
         } = req.body;
 
+        let levelValue;
+        console.log(levels);
+        switch(levels) {
+            case "신입" :
+                levelValue = 1;
+                break;
+            case "경력" :
+                levelValue = 2;
+                break;
+            case "무관" :
+                levelValue = 3;
+                break;
+            default:
+                throw new Error("올바르지 않은 경력 레벨입니다."); // 예상치 못한 값이 전달된 경우 오류 발생
+
+        };
+        console.log("levelValue:", levelValue); 
+
+
         const isSuccess = await jobsModel.create({
             users_id: usersId,
             company_name: companyName,
-            levels,
+            levels:levelValue,
             introduce,
             task,
             conditions,
@@ -127,9 +146,12 @@ exports.jobsWrite = async (req, res) => {
 // 공고 수정
 exports.jobsUpdate = async (req, res) => {
     try {
-        console.log(req.body);
+        console.log(req.body); 
         const {
+            jobsId,
             usersId,
+            updated_at,
+            img_path,
             companyName,
             levels,
             introduce,
@@ -137,29 +159,57 @@ exports.jobsUpdate = async (req, res) => {
             conditions,
             prefer,
             stack,
+            welfaer,
             deadline,
             address,
+            address_detail,
+            others,
             source,
         } = req.body;
+
+        let levelValue;
+        console.log(levels);
+        switch(levels) {
+            case "신입" :
+                levelValue = 1;
+                break;
+            case "경력" :
+                levelValue = 2;
+                break;
+            case "무관" :
+                levelValue = 3;
+                break;
+            default:
+                throw new Error("올바르지 않은 경력 레벨입니다."); // 예상치 못한 값이 전달된 경우 오류 발생
+        };
+        console.log("levelValue:", levelValue); 
+
         const isSuccess = await jobsModel.update(
             {
+                users_id: usersId,
+                updated_at,
+                img_path,
                 company_name: companyName,
-                levels,
+                levels:levelValue,
                 introduce,
                 task,
                 conditions,
                 prefer,
                 stack,
+                welfaer,
                 deadline,
                 address,
+                address_detail,
                 source,
+                others
             },
             {
                 where: {
-                    users_id: usersId,
+                    jobs_id: jobsId,
                 },
             }
         );
+        console.log(usersId);
         console.log(isSuccess);
         if (isSuccess) {
             res.send(true);
@@ -171,6 +221,7 @@ exports.jobsUpdate = async (req, res) => {
         res.status(500).send("server error");
     }
 };
+
 // DELETE /jobs
 // 공고 삭제
 exports.jobsDelete = async (req, res) => {
@@ -189,21 +240,3 @@ exports.jobsDelete = async (req, res) => {
     }
 };
 
-// GET /jobs/:company
-// 회사명으로 검색
-// 아직 수정중... 여기서부터
-exports.jobsCom = async (req, res) => {
-    try {
-        console.log(req.body);
-        //const companyName = req.params.companyName;
-        const companyName = req.session.companyName;
-        const jobsCom = await jobsModel.findOne({
-            where: { company_name: companyName },
-        });
-        res.send(jobsCom);
-        console.log("회사명 검색 완료");
-    } catch (error) {
-        console.log("error", error);
-        res.status(500).send("server error");
-    }
-};
