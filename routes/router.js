@@ -5,6 +5,9 @@ const jobsCtr = require("../controller/Cjobs");
 const likeCtr = require("../controller/Clike");
 const reviewCtr = require("../controller/Creview");
 
+/* test */
+router.get("/test", mainCtr.test);
+
 /* ========main routing========= */
 router.get("/", mainCtr.index);
 router.get("/main", mainCtr.main);
