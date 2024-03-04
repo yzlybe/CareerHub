@@ -33,17 +33,17 @@ exports.findAllReviews = async (req, res) => {
 exports.createReview = async (req, res) => {
     // if (!req.session.userId) return res.redirect("/");
     try {
-        console.log(req.body);
+        console.log("reqbody", req.body);
         const { jobsId, comment } = req.body;
         // 리뷰 테이블 삽입시 필요한 컬럼 users_id,jobs_id,reviews_comment
         const isSuccess = await reviewsModel.create({
             reviews_comment: comment,
             jobs_id: jobsId,
-            users_id: req.session.userId,
-            // users_id: 2,
+            // users_id: req.session.userId,
+            users_id: 2,
         });
-        console.log(isSuccess);
-        if (isSuccess > 0) {
+        console.log("issuccess", isSuccess);
+        if (isSuccess) {
             res.send({ result: true, data: null, msg: "댓글 등록 성공" });
         } else {
             res.send({ result: false, data: null, msg: "댓글 등록 실패" });
@@ -98,7 +98,7 @@ exports.deleteReview = async (req, res) => {
         });
 
         console.log(isSuccess);
-        if (isSuccess > 0) {
+        if (isSuccess) {
             res.send({ result: true, data: null, msg: "댓글 삭제 성공" });
         } else {
             res.send({ result: false, data: null, msg: "댓글 삭제 실패" });

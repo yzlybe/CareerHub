@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/static/css/post.css" />
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <title><%=data.company_name%> 정보</title>
+    </head>
+    <body>
+        <!-- 회사 정보 -->
+        <div class="company">
+            <div class="imgContainer">
+                <img
+                    class="companyImg"
+                    src="/static/img/default.png"
+                    alt="회사 로고"
+                />
+            </div>
+            <p class="companyName"><%=data.company_name%></p>
+            <p class="experienceLevel"><%=data.levels%></p>
+            <button class="likeButton">❤ <%=data.cnt_likes%></button>
+        </div>
+        <!-- 본문 -->
+        <div class="content">
+            <div class="introduce">
+                <h2>👨‍💻 회사 소개</h2>
+                <p><%=data.introduce%></p>
+            </div>
+            <div class="task">
+                <h2>📌 담당 업무</h2>
+                <p><%=data.task%></p>
+            </div>
+            <div class="condition">
+                <h2>📜 자격 요건</h2>
+                <p><%=data.conditions%></p>
+            </div>
+            <div class="preferentialTreatment">
+                <h2>👍 우대 사항</h2>
+                <p><%=data.prefer%></p>
+            </div>
+            <div class="skills">
+                <h2>🔧 기술 스택</h2>
+                <p><%=data.stack%></p>
+            </div>
+            <div class="welfare">
+                <h2>✨ 회사 복지</h2>
+                <p><%=data.welfare%></p>
+            </div>
+            <div class="deadline">
+                <h2>📅 마감일</h2>
+                <p><%=data.deadline%></p>
+            </div>
+            <div class="location">
+                <h2>📍 위치</h2>
+                <p class="address"><%=data.address%></p>
+                <div class="map"></div>
+            </div>
+            <div class="source">
+                <h2>📎 공고 출처</h2>
+                <p><%=data.source%></p>
+            </div>
+            <div class="other">
+                <h2>💡 기타 추가 정보</h2>
+                <p><%=data.others%></p>
+            </div>
+        </div>
+        <div class="contentButton">
+            <button class="editButton" onclick="editPost()">수정</button>
+            <button
+                class="deleteButton"
+                onclick="deletePost('<%=data.jobs_id%>')"
+            >
+                삭제
+            </button>
+        </div>
+        <br />
+        <!-- 댓글 -->
+        <div class="comments">
+            <form name="inputComment">
+                <input
+                    type="textarea"
+                    name="commentText"
+                    placeholder="댓글 입력"
+                />
+                <button
+                    type="button"
+                    class="commentButton"
+                    onclick="sendComment('<%=data.jobs_id%>')"
+                >
+                    등록
+                </button>
+            </form>
+            <br />
+            <form name="editCmt">
+                <input
+                    type="textarea"
+                    name="editTxt"
+                    placeholder="임시 : 수정용"
+                />
+            </form>
+            <br />
+            <% for (let i= 0; i < reviewsdata.length; i++) { %>
+            <div class="commentBox" id="cmt_<%=reviewsdata[i].reviews_id%>">
+                <p class="writer"><%=reviewsdata[i].users_id%></p>
+                <p class="registerDate"><%=reviewsdata[i].created_at%></p>
+                <div class="commentDiv">
+                    <p class="comment"><%=reviewsdata[i].reviews_comment%></p>
+                    <button
+                        class="editCommentButton"
+                        onclick="editComment('<%=reviewsdata[i].reviews_id%>')"
+                    >
+                        수정
+                    </button>
+                    <button
+                        class="deleteCommentButton"
+                        onclick="deleteComment('<%=reviewsdata[i].reviews_id%>')"
+                    >
+                        삭제
+                    </button>
+                </div>
+                <button
+                    type="button"
+                    class="editBtn"
+                    onclick="edit('<%=reviewsdata[i].reviews_id%>')"
+                >
+                    수정(임시)
+                </button>
+            </div>
+            <%}%>
+        </div>
+
+        <script>
+            // 글 수정 put /jobs
+            // 글 삭제 delete /jobs
+            function deletePost(jobid) {
+                console.log(jobid);
+                axios({
+                    method: "DELETE",
+                    url: "/jobs",
+                    data: { jobid: jobid },
+                }).then((res) => {
+                    if (res) {
+                        alert(
+                            "성공적으로 삭제되었습니다. 목록으로 돌아갑니다."
+                        );
+                        document.location.href = "/jobs";
+                    } else {
+                        alert("게시글을 삭제할 수 없습니다.");
+                    }
+                });
+            }
+
+            // 댓글 등록 post /review
+            const form = document.forms["inputComment"];
+            function sendComment(jobid) {
+                console.log(form.commentText.value);
+                const data = {
+                    comment: form.commentText.value,
+                    jobsId: jobid,
+                };
+                if (form.commentText.value.length === 0) {
+                    alert("내용을 입력해주세요.");
+                    return;
+                } else {
+                    axios({
+                        method: "POST",
+                        url: "/review",
+                        data: data,
+                    })
+                        .then((res) => {
+                            console.log("resdata", res.data);
+                        })
+                        .catch((err) => console.log(err));
+                }
+            }
+
+            // 댓글 수정 put /review
+            function edit(reviewid) {
+                console.log(reviewid);
+                console.log(document.forms["editCmt"].editTxt.value);
+                axios({
+                    url: "/review",
+                    method: "put",
+                    data: {
+                        reviewId: reviewid,
+                        comment: document.forms["editCmt"].editTxt.value,
+                    },
+                }).then((res) => {
+                    console.log(res);
+                });
+                //     // 프론트에서 데이터 변경할 수 있도록
+                //     // const children = document.querySelector(
+                //     //     `#cmt_${reviewid}`
+                //     // ).children;
+                //     // console.log(children);
+                //     // children[1].textContent = form.name.value;
+                //     // children[2].textContent = form.comment.value;
+                //     // editCancel();
+                // });
+                // const children = document.querySelector(
+                //     `#cmt_${reviewid}`
+                // ).children;
+                // console.log(children[2]);
+            }
+
+            // 취소 버튼을 누르거나, 수정이 끝난 후 실행
+            function editCancel() {
+                // 등록 버튼으로 변경
+                btnGroup.innerHTML = `<button type="button" onclick="createVisitor()">방명록 등록</button>`;
+            }
+
+            // 댓글 삭제 delete /review
+            function deleteComment(reviewid) {
+                console.log(reviewid);
+                axios({
+                    method: "DELETE",
+                    url: "/review",
+                    data: { reviewId: reviewid },
+                }).then((res) => {
+                    if (res) {
+                        alert("댓글이 삭제되었습니다.");
+                        document.location.reload();
+                    } else {
+                        alert("댓글을 삭제할 수 없습니다.");
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
