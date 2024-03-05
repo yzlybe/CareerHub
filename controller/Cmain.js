@@ -139,7 +139,8 @@ exports.updateUser = async (req, res) => {
     // if (!req.session.userId) return res.redirect("/");
     try {
         console.log(req.session.userId);
-        const { password, nickname } = req.body;
+        const { password, nickname, userId} = req.body;
+        console.log(req.body);
         const isUpdated = await usersModel.update(
             {
                 users_password: password,
@@ -147,8 +148,8 @@ exports.updateUser = async (req, res) => {
             },
             {
                 where: {
-                    // users_id: 4,
-                    users_id: req.session.userId,
+                    users_id: userId
+                    // users_id: req.session.userId,
                 },
             }
         );

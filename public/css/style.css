@@ -54,13 +54,15 @@ header {
     padding: 5px 9px;
     cursor: pointer;
     font-size: 14px;
-    display: flex;
+    display: inline-flex; 
     align-items: center;
-    gap: 10px;
+    justify-content: center; /* 추가된 부분: 아이템들을 버튼의 중앙에 위치시킵니다. */
+    gap: 10px; /* 아이콘과 텍스트 사이의 간격을 지정합니다. */
 
     margin-right: 10px;
     border-radius: 15px;
 }
+
 .button-container {
     display: flex;
     justify-content: flex-end; /* 오른쪽 정렬 */
@@ -106,6 +108,7 @@ p {
     position: absolute;
     right: 10px;
     top: 50%;
+    vertical-align: middle;
     transform: translateY(-50%); /* 아이콘을 입력 필드의 중앙으로 정렬 */
     pointer-events: none; /* 입력 필드 클릭 시 아이콘에 의해 가로막히지 않게 설정 */
 }
@@ -189,10 +192,14 @@ p {
     background-color: #007bff; /* 마우스 오버 효과 */
     color: white;
 }
+.dropdown, .interest-button {
+    display: none; /* 초기 상태에서 숨김 */
+}
 /* 즐겨찾기 */
 .favorite-container {
     position: absolute;
     top: 10px; /* 상단에서부터의 위치 */
+   
     left: 10px; /* 왼쪽에서부터의 위치 */
 }
 .favorite {
@@ -337,6 +344,7 @@ button[onclick="renderLoginForm()"] {
     position: relative;
     display: inline-block;
 }
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -345,18 +353,24 @@ button[onclick="renderLoginForm()"] {
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
-.dropdown-content a {
+
+.dropdown-content button {
     color: black;
     padding: 12px 16px;
-    display: flex; /* Flexbox 레이아웃 사용 */
     text-decoration: none;
-    display: flex;      /* Flexbox 레이아웃 사용 */
-    align-items: center; /* 세로 중앙 정렬 */
-    white-space: nowrap; /* 텍스트가 줄바꿈 되지 않도록 설정 */
+    display: block; /* 버튼을 위해 display: block 사용 */
+    width: 100%; /* 전체 너비를 차지하도록 설정 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    background: none; /* 기본 배경 제거 */
+    border: none; /* 기본 테두리 제거 */
+    cursor: pointer; /* 마우스 오버 시 커서 변경 */
 }
-.dropdown-content a:hover {
+
+.dropdown-content button:hover {
     background-color: #f1f1f1;
 }
+
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
