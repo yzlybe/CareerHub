@@ -635,17 +635,24 @@ editProfileSubmitButton.addEventListener("click", function(event) {
         return;
     }
 
-    // 회원 정보 수정 요청
-    axios.patch("/mypage", { nickname, password })
-        .then((response) => {
-            console.log(response.data);
-            alert("회원 정보가 성공적으로 수정되었습니다.");
-            editProfileModal.style.display = "none"; // 모달 닫기
-        })
-        .catch((error) => {
-            console.error("회원 정보 수정 중 오류 발생:", error.response.data);
-            alert("회원 정보 수정 중 오류가 발생하였습니다.");
-        });
+   
+    axios({
+        method: "patch",
+        url: "/mypage",
+        data: {
+            nickname: nickname,
+            password: password,
+        },
+    })
+    .then((response) => {
+        console.log(response.data);
+        alert("회원 정보가 성공적으로 수정되었습니다.");
+        document.getElementById("editProfileModal").style.display = "none";
+    })
+    .catch((error) => {
+        console.error("회원 정보 수정 중 오류 발생:", error);
+        alert("회원 정보 수정 중 오류가 발생하였습니다.");
+    });
 });
 
     
