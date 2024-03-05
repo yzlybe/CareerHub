@@ -65,7 +65,7 @@
                 <p><%=data.others%></p>
             </div>
         </div>
-        <div class="contentButton">
+        <div class="contentButtons">
             <button class="editButton" onclick="editPost()">수정</button>
             <button
                 class="deleteButton"
@@ -76,6 +76,7 @@
         </div>
         <br />
         <!-- 댓글 -->
+        <!-- 댓글 등록 -->
         <div class="comments">
             <form name="inputComment">
                 <input
@@ -86,52 +87,68 @@
                 <button
                     type="button"
                     class="commentButton"
-                    onclick="sendComment('<%=data.jobs_id%>')"
+                    onclick="sendCmt('<%=data.jobs_id%>')"
                 >
                     등록
                 </button>
             </form>
             <br />
-            <form name="editCmt">
-                <input
-                    type="textarea"
-                    name="editTxt"
-                    placeholder="임시 : 수정용"
-                />
-            </form>
-            <br />
+            <!-- 댓글 조회 -->
             <% for (let i= 0; i < reviewsdata.length; i++) { %>
             <div class="commentBox" id="cmt_<%=reviewsdata[i].reviews_id%>">
                 <p class="writer"><%=reviewsdata[i].users_id%></p>
                 <p class="registerDate"><%=reviewsdata[i].created_at%></p>
-                <div class="commentDiv">
-                    <p class="comment"><%=reviewsdata[i].reviews_comment%></p>
-                    <!-- <button
-                        class="editCommentButton"
-                        onclick="editComment('<%#=reviewsdata[i].reviews_id%>')"
+                <!-- 수정창 전환 시 사라짐 -->
+                <span class="commentButtons">
+                    <button
+                        class="editReqCommentButton"
+                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>')"
                     >
+                        <!-- 수정창 전환 버튼 -->
                         수정
-                    </button> -->
+                    </button>
+                    <span>|</span>
                     <button
                         class="deleteCommentButton"
-                        onclick="deleteComment('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="deleteCmt('<%=reviewsdata[i].reviews_id%>')"
                     >
                         삭제
                     </button>
-                </div>
-                <button
-                    type="button"
-                    class="editBtn"
-                    onclick="edit('<%=reviewsdata[i].reviews_id%>')"
+                    <div class="commentDiv">
+                        <p class="comment">
+                            <%=reviewsdata[i].reviews_comment%>
+                        </p>
+                    </div>
+                </span>
+
+                <!-- 수정창 전환 시 나타남 -->
+                <form
+                    name="editComment_<%=reviewsdata[i].reviews_id%>"
+                    class="editComment hidden"
                 >
-                    수정(임시)
-                </button>
+                    <input type="text" name="editTxt" value="opoop" />
+                    <button
+                        type="button"
+                        class="editCommentButton"
+                        onclick="editCmt('<%=reviewsdata[i].reviews_id%>')"
+                    >
+                        <!-- 수정 확인 버튼 -->
+                        수정
+                    </button>
+                    <button
+                        type="button"
+                        class="editCancelCommentButton"
+                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>')"
+                    >
+                        취소
+                    </button>
+                </form>
             </div>
             <%}%>
         </div>
 
         <script>
-            // 글 수정 put /jobs
+            // 글 수정 patch /jobs
             // 글 삭제 delete /jobs
             function deletePost(jobid) {
                 console.log(jobid);
@@ -152,8 +169,8 @@
             }
 
             // 댓글 등록 post /review
-            const form = document.forms["inputComment"];
-            function sendComment(jobid) {
+            function sendCmt(jobid) {
+                const form = document.forms["inputComment"];
                 console.log(form.commentText.value);
                 const data = {
                     comment: form.commentText.value,
@@ -176,45 +193,48 @@
                 }
             }
 
-            // 댓글 수정 put /review
-            // 임시로 기능만 구현... 구조는 수정해야 함
-            function edit(reviewid) {
-                console.log(reviewid);
-                console.log(document.forms["editCmt"].editTxt.value);
-                axios({
-                    url: "/review",
-                    method: "put",
-                    data: {
-                        reviewId: reviewid,
-                        comment: document.forms["editCmt"].editTxt.value,
-                    },
-                }).then((res) => {
-                    console.log(res);
-                    document.location.reload();
-                });
-                //     // 프론트에서 데이터 변경할 수 있도록
-                //     // const children = document.querySelector(
-                //     //     `#cmt_${reviewid}`
-                //     // ).children;
-                //     // console.log(children);
-                //     // children[1].textContent = form.name.value;
-                //     // children[2].textContent = form.comment.value;
-                //     // editCancel();
-                // });
-                // const children = document.querySelector(
-                //     `#cmt_${reviewid}`
-                // ).children;
-                // console.log(children[2]);
+            // 댓글 수정창 전환
+            // 사라질 부분 commentButtons
+            // 나올 부분 editComment
+            // 나중에 최적화 하기
+            function editReqCmt(reviewid) {
+                const findCmt = document.getElementById(`cmt_${reviewid}`);
+                const cmtTxt = findCmt.querySelector(".comment").innerText;
+                const onDefault = findCmt.querySelector(".commentButtons");
+                const offDefault = findCmt.querySelector(".editComment");
+                onDefault.classList.toggle("hidden");
+                offDefault.classList.toggle("hidden");
+                const txtbox = findCmt.querySelector("input");
+                txtbox.setAttribute("value", `${cmtTxt}`);
             }
 
-            // 취소 버튼을 누르거나, 수정이 끝난 후 실행
-            // function editCancel() {
-            //     // 등록 버튼으로 변경
-            //     btnGroup.innerHTML = `<button type="button" onclick="createVisitor()">방명록 등록</button>`;
-            // }
+            // 댓글 수정 PATCH /review
+            function editCmt(reviewid) {
+                const form = document.forms[`editComment_${reviewid}`];
+                if (form.editTxt.value.length === 0) {
+                    alert("내용을 입력해주세요.");
+                    return;
+                } else {
+                    axios({
+                        url: "/review",
+                        method: "PATCH",
+                        data: {
+                            reviewId: reviewid,
+                            comment:
+                                document.forms[`editComment_${reviewid}`]
+                                    .editTxt.value,
+                        },
+                    })
+                        .then((res) => {
+                            console.log(res);
+                            document.location.reload();
+                        })
+                        .catch((err) => console.log(err));
+                }
+            }
 
             // 댓글 삭제 delete /review
-            function deleteComment(reviewid) {
+            function deleteCmt(reviewid) {
                 console.log(reviewid);
                 axios({
                     method: "DELETE",
