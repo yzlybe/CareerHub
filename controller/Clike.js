@@ -36,6 +36,8 @@ exports.increCount = async (req, res) => {
         } else {
             res.send({ result: false, msg: "좋아요 증가 실패" });
         }
+        // todo:
+        // 유저가 어떤 공고를 관심등록 했는지 user_likes 테이블에 추가하는 로직
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
