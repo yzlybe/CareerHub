@@ -4,6 +4,7 @@ const {
     jobsModel,
     reviewsModel,
     likesModel,
+    stacksModel,
 } = require("../models");
 const dotenv = require("dotenv").config();
 const axios = require("axios");
@@ -19,7 +20,12 @@ exports.test = (req, res) => {
 // 메인페이지 렌더링
 exports.main = async (req, res) => {
     const foundJobs = await jobsModel.findAll();
-    res.send(foundJobs);
+    for (let jobs of foundJobs) {
+        let stack = ["java", "react"];
+        jobs.stack = stack;
+    }
+    console.log(foundJobs[0]);
+    res.end();
 };
 
 // get /login
