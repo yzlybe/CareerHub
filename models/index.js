@@ -27,6 +27,7 @@ const usersModel = require("./Users")(sequelize, Sequelize);
 const reviewsModel = require("./Reviews")(sequelize, Sequelize);
 const jobsModel = require("./Jobs")(sequelize, Sequelize);
 const likesModel = require("./Likes")(sequelize, Sequelize);
+const stackModel = require("./Stacks")(sequelize, Sequelize);
 
 //테이블 관계 설정
 //회원 -- 공고
@@ -122,6 +123,23 @@ reviewsModel.belongsTo(jobsModel, {
         onDelete: "cascade",
     },
 });
+// 공고 -- 스택
+jobsModel.hasMany(stackModel, {
+    foreignKey: {
+        name: "jobs_id",
+        allowNull: false,
+        onUpdate: "cascade",
+        onDelete: "cascade",
+    },
+});
+stackModel.belongsTo(jobsModel, {
+    foreignKey: {
+        name: "jobs_id",
+        allowNull: false,
+        onUpdate: "cascade",
+        onDelete: "cascade",
+    },
+});
 
 // db 객체 저장
 db.sequelize = sequelize;
@@ -130,5 +148,6 @@ db.usersModel = usersModel;
 db.reviewsModel = reviewsModel;
 db.jobsModel = jobsModel;
 db.likesModel = likesModel;
+db.stackModel = stackModel;
 
 module.exports = db;
