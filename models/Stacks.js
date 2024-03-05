@@ -1,6 +1,6 @@
 const stackModel = (sequelize, DataTypes) => {
     const Stack = sequelize.define(
-        "Stack",
+        "stacks",
         {
             stack_id: {
                 type: DataTypes.INTEGER,
@@ -8,27 +8,39 @@ const stackModel = (sequelize, DataTypes) => {
                 autoIncrement: true,
                 allowNull: false,
             },
-            java: {
-                type: DataTypes.BOOLEAN,
-            },
-            node: {
-                type: DataTypes.BOOLEAN,
-            },
-            spring: {
-                type: DataTypes.BOOLEAN,
-            },
             react: {
-                type: DataTypes.BOOLEAN,
-            },
-            js: {
                 type: DataTypes.BOOLEAN,
             },
             vue: {
                 type: DataTypes.BOOLEAN,
             },
+            css: {
+                type: DataTypes.BOOLEAN,
+            },
+            angular: {
+                type: DataTypes.BOOLEAN,
+            },
+            javascript: {
+                type: DataTypes.BOOLEAN,
+            },
+            html: {
+                type: DataTypes.BOOLEAN,
+            },
+            typescript: {
+                type: DataTypes.BOOLEAN,
+            },
+            sass: {
+                type: DataTypes.BOOLEAN,
+            },
+            jsx: {
+                type: DataTypes.BOOLEAN,
+            },
+            webpack: {
+                type: DataTypes.BOOLEAN,
+            },
         },
         {
-            tableName: "stack",
+            tableName: "stacks",
             timestamps: false,
             freezeTableName: true,
         }

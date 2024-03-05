@@ -4,6 +4,7 @@ const {
     jobsModel,
     reviewsModel,
     likesModel,
+    stackModel,
 } = require("../models");
 const dotenv = require("dotenv").config();
 const axios = require("axios");
@@ -34,8 +35,27 @@ exports.test = (req, res) => {
 
 // get /main
 // 전체 공고 목록 조회
+
 exports.main = async (req, res) => {
-    const foundJobs = await jobsModel.findAll();
+    const foundJobs = await jobsModel.findAll({
+        include: [
+            {
+                model: stackModel,
+                attributes: [
+                    "react",
+                    "vue",
+                    "css",
+                    "angular",
+                    "javascript",
+                    "html",
+                    "typescript",
+                    "sass",
+                    "jsx",
+                    "webpack",
+                ],
+            },
+        ],
+    });
     res.send(foundJobs);
 };
 
@@ -216,7 +236,6 @@ exports.logout = async (req, res) => {
     req.session.destroy((err) => {
         if (err) throw err;
     });
-    res.redirect("/");
 };
 
 // =================== oAuth ===================
