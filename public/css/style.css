@@ -349,10 +349,10 @@ button[onclick="renderLoginForm()"] {
     color: black;
     padding: 12px 16px;
     display: flex; /* Flexbox 레이아웃 사용 */
+    text-decoration: none;
+    display: flex;      /* Flexbox 레이아웃 사용 */
     align-items: center; /* 세로 중앙 정렬 */
     white-space: nowrap; /* 텍스트가 줄바꿈 되지 않도록 설정 */
-    text-decoration: none;
-    display: block;
 }
 .dropdown-content a:hover {
     background-color: #f1f1f1;
