@@ -1,7 +1,4 @@
 
--- Active: 1707101713117@@127.0.0.1@3306@sesac
-
--- 더미 데이터 삽입을 위한 MYSQL 프로시저
 -- 프로시저 삭제
 DROP PROCEDURE IF EXISTS insert_dummy_data;
 -- 프로시저 생성
@@ -28,7 +25,6 @@ BEGIN
             task, 
             conditions, 
             prefer, 
-            stack, 
             deadline, 
             address, 
             source)
@@ -40,15 +36,6 @@ BEGIN
             CONCAT('Task for company ', i), 
             'Conditions', 
             'Prefer', 
-            -- 기술 스택 랜덤 case 문
-            CASE ROUND(RAND() * 5)
-                WHEN 0 THEN 'JAVA'
-                WHEN 1 THEN 'NODE'
-                WHEN 2 THEN 'VUE'
-                WHEN 3 THEN 'REACT'
-                WHEN 4 THEN 'JS'
-                ELSE 'SPRING'
-            END,
             DATE_ADD(NOW(), INTERVAL i DAY), 
             CONCAT('Address ', i), 'Source');
         SET i = i + 1;
@@ -73,4 +60,3 @@ BEGIN
 END;
 -- 프로 시저 실행
 call insert_dummy_data();
-

@@ -1,140 +1,83 @@
-//main.js
-
-// 데이터를 동적으로 렌더링하기 위한 샘플 데이터
-/* const portfolioData = [
-    {
-        id: 1,
-        title: "다음",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "CSS"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 1, // 즐겨찾기한 사람 수
-    },
-
-    {
-        id: 2,
-        title: "네이버",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "Vue"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 724, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 3,
-        title: "토스",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "Angular"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 71, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 4,
-        title: "한게임",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "CSS", "Webpack", "HTML"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 2, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 5,
-        title: "카카오",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "CSS", "Webpack", "HTML"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 5, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 6,
-        title: "노마드",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "CSS", "Webpack", "HTML"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 7,
-        title: "페이스북",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "CSS", "Webpack", "JSX", "TypeScript"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 8,
-        title: "CJ",
-        date: "2020년 01월 31일 작성",
-        tags: ["HTML"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 9,
-        title: "롯데",
-        date: "2020년 01월 31일 작성",
-        tags: ["CSS", "Webpack", "Angular"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 10,
-        title: "넷마블",
-        date: "2020년 01월 31일 작성",
-        tags: ["JavaScript", "CSS", "Webpack", "HTML"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 11,
-        title: "넥슨",
-        date: "2020년 01월 31일 작성",
-        tags: ["JavaScript", "HTML"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 12,
-        title: "NC",
-        date: "2020년 01월 31일 작성",
-        tags: ["React", "JavaScript", "Sass"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    {
-        id: 13,
-        title: "LASTSK",
-        date: "2020년 01월 31일 작성",
-        tags: ["JavaScript", "React", "CSS", "Webpack", "HTML"],
-        imageUrl: "/static/images/naver.jpg", // 이미지 경로 수정
-        favoriteCount: 0, // 즐겨찾기한 사람 수
-    },
-    // 추가 포트폴리오 아이템들...
-]; */
-
 // 데이터 로딩 및 처리
 async function fetchData(url) {
     try {
         const res = await axios.get(url);
-        return res.data.map(dataItem => ({
-            id: dataItem.jobs_id,
-            title: dataItem.company_name,
-            date: dataItem.created_at,
-            tags: ["React", "JavaScript"], // 예시로 React를 기본값으로 설정
-            imageUrl: dataItem.img_path,
-            favoriteCount: dataItem.cnt_likes,
-            isFavorite: false, // 초기 즐겨찾기 상태는 false로 설정
-        }));
+        return res.data.map(dataItem => {
+            const stacks = dataItem.stacks[0]; // 서버에서 스택 배열을 가져오고, 첫 번째 요소를 선택
+            const techStack = Object.keys(stacks).filter(key => stacks[key]); // true인 스택만 필터링하여 배열로 가져옴
+            const tags = techStack.map(tag => tag.charAt(0).toUpperCase() + tag.slice(1)); // 포트폴리오 아이템에 태그 추가 (첫 글자 대문자로 변환)
+            
+            return {
+                id: dataItem.jobs_id,
+                title: dataItem.company_name,
+                date: dataItem.created_at,
+                tags: tags.length > 0 ? tags : [], // 스택이 없으면 기본값으로 설정
+                imageUrl: dataItem.img_path,
+                favoriteCount: dataItem.cnt_likes,
+                isFavorite: false, // 초기 즐겨찾기 상태는 false로 설정
+            };
+        });
     } catch (error) {
         console.error("Error fetching data:", error);
         return [];
     }
+}
+ //로그인시 모달을 닫는 함수
+ function closeAuthModal() {
+    const authModal = document.getElementById("authModal");
+    authModal.style.display = "none";
 }
 let portfolioData = [];
 let currentPage = 1;
 const itemsPerPage = 12;
 let isFavoriteMode = false; // '관심 공고' 모드를 추적하는 상태
 
+function logout() {
+    axios({
+        method: "get",
+        url: "/logout", // 로그아웃을 처리하는 서버의 엔드포인트
+    })
+    .then((res) => {
+        alert('로그아웃되었습니다.'); // 성공 메시지 알림
+        updateLoginState('false'); // 로컬 스토리지에 로그아웃 상태 반영
+        // 페이지 리로드 또는 UI 업데이트 등 필요한 추가 작업 수행
+    })
+    .catch((error) => {
+        console.error("로그아웃 중 오류 발생:", error);
+    });
+    
+    closeAuthModal(); // 로그아웃 시 모달 닫기
+}
 
+function handleLoginClick() {
+    const authModal = document.getElementById("authModal");
+    authModal.style.display = "block";
+}
+function updateLoginState(isLoggedInState) {
+    // 로컬 스토리지의 상태를 업데이트
+    localStorage.setItem('isLoggedIn', isLoggedInState);
+    isLoggedIn = isLoggedInState === 'true'; // 문자열로 저장된 상태를 불리언으로 변환
 
+    const loginButton = document.querySelector(".login-button");
+    const dropdown = document.querySelector(".dropdown");
+    const interestButton = document.querySelector(".interest-button");
+
+    if (isLoggedIn) {
+        // 로그아웃 상태일 때 보여줄 아이콘과 텍스트
+        loginButton.innerHTML = `<span class="material-icons">logout</span> Log Out`;
+        dropdown.style.display = "block";
+        interestButton.style.display = "block";
+        loginButton.removeEventListener("click", handleLoginClick); // 기존 이벤트 리스너 제거
+        loginButton.addEventListener("click", logout); // 새 이벤트 리스너 연결
+    } else {
+        // 로그인 상태일 때 보여줄 아이콘과 텍스트
+        loginButton.innerHTML = `<span class="material-icons">login</span> Log In`;
+        dropdown.style.display = "none";
+        interestButton.style.display = "none";
+        loginButton.removeEventListener("click", logout); // 기존 이벤트 리스너 제거
+        loginButton.addEventListener("click", handleLoginClick); // 새 이벤트 리스너 연결
+    }
+}
 
 
 // 동적 이벤트 리스너 설정 (즐겨찾기 버튼 등)
@@ -142,8 +85,11 @@ function attachDynamicEventListeners() {
     attachFavoriteEventListeners();
     attachCardClickEvent();
 }
-let isLoggedIn = false;
+
 document.addEventListener("DOMContentLoaded", async () => {
+    const storedIsLoggedIn = localStorage.getItem('isLoggedIn') || 'false';
+    updateLoginState(storedIsLoggedIn === 'true' ? 'true' : 'false'); // 로컬 스토리지에서 상태 읽기
+    // 데이터 로딩 및 기타 초기화 로직
     portfolioData = await fetchData("/main");
     initialize();
 });
@@ -224,7 +170,7 @@ function toggleFavoriteLocal(itemId) {
     if (item) {
         // 즐겨찾기 상태를 토글
         const newFavoriteStatus = !item.isFavorite;
-        
+
         // 즐겨찾기 추가 또는 제거에 따른 엔드포인트 선택
         const url = newFavoriteStatus ? '/like' : '/unlike';
 
@@ -304,9 +250,9 @@ function updateTagButtons() {
 // 즐겨찾기 모드 토글 및 뷰 업데이트
 function toggleFavoriteModeAndView() {
 
-    
+
     isFavoriteMode = !isFavoriteMode;
-   
+
     const interestButton = document.querySelector('.interest-button');
     if (isFavoriteMode) {
         interestButton.innerHTML = `
@@ -371,19 +317,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalBody = document.getElementById("modalBody");
     const loginButton = document.querySelector(".login-button");
     const closeButton = document.querySelector(".close-button");
-
     // 이메일 유효성 검사
     function validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email.toLowerCase());
     }
-
     // 비밀번호 유효성 검사
     function validatePassword(password) {
         const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
         return re.test(password);
     }
-
     // 로그인 양식 렌더링
     window.renderLoginForm = function () {
         modalBody.innerHTML = `
@@ -401,7 +344,6 @@ document.addEventListener("DOMContentLoaded", function () {
             login();
         };
     };
-
     // 로그인 폼 렌더링
     renderLoginForm();
     // 회원가입 양식 렌더링
@@ -424,107 +366,43 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     };
     //로그인 db연동
-
-    function updateLoginState(isLoggedIn) {
-        const loginButton = document.querySelector(".login-button");
-        const dropdown = document.querySelector(".dropdown"); // 드롭다운 요소 선택
-        const interestButton = document.querySelector(".interest-button"); // 관심 공고 버튼 선택
-        const iconSpan = loginButton.querySelector(".material-symbols-outlined");
+  
     
-        if (isLoggedIn) {
-            // 사용자가 로그인한 상태일 때
-            iconSpan.textContent = "logout"; // 아이콘을 로그아웃 아이콘으로 변경
-            loginButton.innerHTML = ""; // 버튼의 내용을 지우고
-            loginButton.appendChild(iconSpan); // 아이콘을 먼저 추가한 후
-            loginButton.append(" Log Out"); // 텍스트를 추가합니다.
-            loginButton.removeEventListener("click", handleLoginClick); // 기존 로그인 클릭 이벤트 리스너 제거
-            loginButton.addEventListener("click", logout); // 로그아웃 이벤트 리스너 추가
-        
-            dropdown.style.display = "block"; // 드롭다운 버튼 보이게 설정
-            interestButton.style.display = "block"; // 관심 공고 버튼 보이게 설정
-          
+    
+ function login() {
+    const form = document.forms["loginForm"];
+    const email = form["email"].value;
+    const password = form["password"].value;
+
+    axios({
+        method: "post",
+        url: "/login",
+        data: {
+            email: email,
+            password: password,
+        },
+    })
+    .then((res) => {
+        const { result, msg } = res.data; // 서버 응답 가정
+        if (result) {
+            alert(msg); // 성공 메시지 알림
+            closeAuthModal(); // 모달 닫기
+            updateLoginState('true'); // 로컬 스토리지 업데이트 및 UI 변경
         } else {
-            // 사용자가 로그아웃한 상태일 때
-            iconSpan.textContent = "login"; // 아이콘을 로그인 아이콘으로 변경
-            loginButton.innerHTML = ""; // 버튼의 내용을 지우고
-            loginButton.appendChild(iconSpan); // 아이콘을 먼저 추가한 후
-            loginButton.append(" Log In"); // 텍스트를 추가합니다.
-            loginButton.removeEventListener("click", logout); // 기존 로그아웃 클릭 이벤트 리스너 제거
-            loginButton.addEventListener("click", handleLoginClick); // 로그인 모달 표시 이벤트 리스너 추가
-        
-            dropdown.style.display = "none"; // 드롭다운 버튼 보이게 설정
-            interestButton.style.display = "none"; // 관심 공고 버튼 보이게 설정
-          
-           
+            alert(msg); // 실패 메시지 알림
         }
-        
-    }
+    })
+    .catch((error) => {
+        console.error("로그인 중 오류 발생:", error);
+    });
+}
+
     
-    function login() {
-        const form = document.forms["loginForm"];
-        const email = form["email"].value;
-        const password = form["password"].value;
-
-        axios({
-            method: "post",
-            url: "/login",
-            data: {
-                email: email,
-                password: password,
-            },
-        })
-            .then((res) => {
-                console.log(res.data);
-                const { result, msg} = res.data; // 가정: 서버에서 {result: true/false, msg: '메시지'} 형태로 응답
-                if (result) {
-                    alert(msg); // 성공 메시지 알림
-                    closeAuthModal(); // 모달 닫기 함수 호출
-                    updateLoginState(true);
-                    isLoggedIn = true;
-                } else {
-                    alert(msg); // 실패 메시지 알림
-                }
-            })
-            .catch((error) => {
-                console.error("로그인 중 오류 발생:", error);
-            });
-        
-    }
-    function logout() {
-        axios({
-            method: "get",
-            url: "/logout", // 가정: 로그아웃을 처리하는 서버의 엔드포인트
-        })
-            .then((res) => {
-                // console.log(res.data);
-                // const { result, msg } = res.data; // 가정: 서버에서 {result: true/false, msg: '메시지'} 형태로 응답
-                // if (result) {
-                    
-                    alert('성공'); // 성공 메시지 알림
-                    updateLoginState(false);
-                    isLoggedIn = false;
-                // } else {
-
-                // }
-            })
-            .catch((error) => {
-                console.error("로그아웃 중 오류 발생:", error);
-            });
-        
-        closeAuthModal();
-    }
-    //로그인시 모달을 닫는 함수
-    function closeAuthModal() {
-        const authModal = document.getElementById("authModal");
-        authModal.style.display = "none";
-    }
-    // 로그인 모달을 표시하는 함수
-    function handleLoginClick() {
-        const authModal = document.getElementById("authModal");
-        authModal.style.display = "block";
-    }
+    
    
-
+    // 로그인 모달을 표시하는 함수
+   
+   
     function handleLoginButtonClick() {
         const isLoggedIn =
             document.querySelector(".login-button").textContent === "LogOut";
@@ -534,7 +412,6 @@ document.addEventListener("DOMContentLoaded", function () {
             handleLoginClick();
         }
     }
-
     document.addEventListener("DOMContentLoaded", () => {
         // 초기 로그인 상태는 로그아웃으로 가정
         updateLoginState(false);
@@ -542,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loginButton.addEventListener("click", handleLoginButtonClick);
     });
     // 회원가입 처리
-   
+
 document.addEventListener("DOMContentLoaded", function() {
     const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
     if (editProfileSubmitButton) {
@@ -571,10 +448,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
-
     
     
-
     loginButton.addEventListener("click", function () {
         renderLoginForm();
         authModal.style.display = "block";
@@ -590,7 +465,6 @@ document.addEventListener("DOMContentLoaded", function() {
     //     }
     // });
 });
-
 //드롭다운
 document.addEventListener("DOMContentLoaded", function () {
     // 드롭다운 메뉴를 토글하는 함수
@@ -622,33 +496,27 @@ const editProfileButton = document.getElementById("editProfileButton");
 const editProfileModal = document.getElementById("editProfileModal");
 const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
 const closeButton = document.querySelector(".edit-profile-modal .close-button");
-
 editProfileButton.addEventListener("click", function(event) {
     event.preventDefault(); // 버튼의 기본 동작 방지
     editProfileModal.style.display = "block"; // 모달 표시
 });
-
 // 모달 닫기 버튼 이벤트 핸들러
 if (closeButton) {
     closeButton.addEventListener("click", function () {
         editProfileModal.style.display = "none";
     });
 }
-
 // 회원 정보 수정 버튼 이벤트 핸들러
 editProfileSubmitButton.addEventListener("click", function(event) {
     event.preventDefault(); // 버튼의 기본 동작 방지
-
     // 사용자 입력 값 가져오기
     const nickname = document.querySelector("#editProfileForm input[name='nickname']").value;
     const password = document.querySelector("#editProfileForm input[name='password']").value;
-
     // 유효성 검사
     if (!nickname || !password) {
         alert("닉네임과 비밀번호를 모두 입력하세요.");
         return;
     }
-
    
     axios({
         method: "patch",
@@ -668,9 +536,7 @@ editProfileSubmitButton.addEventListener("click", function(event) {
         alert("회원 정보 수정 중 오류가 발생하였습니다.");
     });
 });
-
     
-
 //회원 탈퇴
 document.addEventListener("DOMContentLoaded", function () {
     // 회원 탈퇴 링크에 클릭 이벤트 리스너 추가
@@ -707,15 +573,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
-
-
 });
 //공고 등록 버튼
 document.addEventListener("DOMContentLoaded", function () {
     // '공고등록' 버튼에 대한 참조를 찾습니다.
     const postJobButton = document.querySelector(".fab");
-    
+
     if (!postJobButton) return; // postJobButton이 없는 경우 이후 로직을 수행하지 않음
 
     // 버튼 클릭 이벤트에 대한 리스너를 추가합니다.
@@ -730,4 +593,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
