@@ -16,7 +16,10 @@ exports.index = (req, res) => {
 exports.jobs = async (req, res) => {
     const writeJobs = await jobsModel.findAll();
     console.log("listjobs", writeJobs);
-    res.render("detail.ejs", { data: writeJobs });
+    res.render("detail.ejs", {
+        data: writeJobs,
+        KAKAO_MAP_API_KEY: process.env.KAKAO_MAP_API_KEY,
+    });
     console.log("공고 작성 페이지_writeJobs");
 };
 
@@ -159,13 +162,13 @@ exports.jobsWrite = async (req, res) => {
             address,
             source,
         });
+
         //기슬스택 코드 관련 추가 작성
         console.log("isSuccess: ", isSuccess);
         res.render("detail.ejs", {
             data: isSuccess,
         });
         console.log("공고 페이지 작성 완료");
-
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
@@ -271,3 +274,4 @@ exports.jobsDelete = async (req, res) => {
         res.status(500).send("server error");
     }
 };
+

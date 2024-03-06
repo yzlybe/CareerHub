@@ -429,8 +429,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const loginButton = document.querySelector(".login-button");
         const dropdown = document.querySelector(".dropdown"); // 드롭다운 요소 선택
         const interestButton = document.querySelector(".interest-button"); // 관심 공고 버튼 선택
-        const iconSpan = loginButton.querySelector(".material-symbols-outlined");
-    
+        const iconSpan = loginButton.querySelector(
+            ".material-symbols-outlined"
+        );
+
         if (isLoggedIn) {
             // 사용자가 로그인한 상태일 때
             iconSpan.textContent = "logout"; // 아이콘을 로그아웃 아이콘으로 변경
@@ -439,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
             loginButton.append(" Log Out"); // 텍스트를 추가합니다.
             loginButton.removeEventListener("click", handleLoginClick); // 기존 로그인 클릭 이벤트 리스너 제거
             loginButton.addEventListener("click", logout); // 로그아웃 이벤트 리스너 추가
-        
+
             dropdown.style.display = "block"; // 드롭다운 버튼 보이게 설정
             interestButton.style.display = "block"; // 관심 공고 버튼 보이게 설정
           
@@ -450,16 +452,12 @@ document.addEventListener("DOMContentLoaded", function () {
             loginButton.appendChild(iconSpan); // 아이콘을 먼저 추가한 후
             loginButton.append(" Log In"); // 텍스트를 추가합니다.
             loginButton.removeEventListener("click", logout); // 기존 로그아웃 클릭 이벤트 리스너 제거
-            loginButton.addEventListener("click", handleLoginClick); // 로그인 모달 표시 이벤트 리스너 추가
-        
+            loginButton.addEventListener("click", handleLoginClick); // 로그인 모달 표시 이벤트 리스너 추가       
             dropdown.style.display = "none"; // 드롭다운 버튼 보이게 설정
             interestButton.style.display = "none"; // 관심 공고 버튼 보이게 설정
-          
-           
         }
-        
     }
-    
+
     function login() {
         const form = document.forms["loginForm"];
         const email = form["email"].value;
@@ -488,7 +486,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch((error) => {
                 console.error("로그인 중 오류 발생:", error);
             });
-        
     }
     function logout() {
         axios({
@@ -498,8 +495,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then((res) => {
                 // console.log(res.data);
                 // const { result, msg } = res.data; // 가정: 서버에서 {result: true/false, msg: '메시지'} 형태로 응답
-                // if (result) {
-                    
+                // if (result) {                    
                     alert('성공'); // 성공 메시지 알림
                     updateLoginState(false);
                     isLoggedIn = false;
@@ -510,7 +506,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch((error) => {
                 console.error("로그아웃 중 오류 발생:", error);
             });
-        
+
         closeAuthModal();
     }
     //로그인시 모달을 닫는 함수
@@ -523,7 +519,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const authModal = document.getElementById("authModal");
         authModal.style.display = "block";
     }
-   
 
     function handleLoginButtonClick() {
         const isLoggedIn =
@@ -542,38 +537,43 @@ document.addEventListener("DOMContentLoaded", function () {
         loginButton.addEventListener("click", handleLoginButtonClick);
     });
     // 회원가입 처리
-   
-document.addEventListener("DOMContentLoaded", function() {
-    const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
-    if (editProfileSubmitButton) {
-        editProfileSubmitButton.addEventListener("click", function() {
-            const nickname = document.querySelector("#editProfileForm input[name='nickname']").value;
-            const password = document.querySelector("#editProfileForm input[name='password']").value;
-        
-            // 여기에 AJAX 요청 로직을 추가합니다.
-            axios({
-                method: "patch",
-                url: "/mypage",
-                data: {
-                    nickname: nickname,
-                    password: password,  
-                },
-            })
-            .then((response) => {
-                console.log(response.data);
-                alert("회원 정보가 성공적으로 수정되었습니다.");
-                document.getElementById("editProfileModal").style.display = "none";
-            })
-            .catch((error) => {
-                console.error("회원 정보 수정 중 오류 발생:", error);
-                alert("회원 정보 수정 중 오류가 발생하였습니다.");
-            });
-        });
-    }
-});
 
-    
-    
+    document.addEventListener("DOMContentLoaded", function () {
+        const editProfileSubmitButton = document.getElementById(
+            "editProfileSubmitButton"
+        );
+        if (editProfileSubmitButton) {
+            editProfileSubmitButton.addEventListener("click", function () {
+                const nickname = document.querySelector(
+                    "#editProfileForm input[name='nickname']"
+                ).value;
+                const password = document.querySelector(
+                    "#editProfileForm input[name='password']"
+                ).value;
+
+                // 여기에 AJAX 요청 로직을 추가합니다.
+                axios({
+                    method: "patch",
+                    url: "/mypage",
+                    data: {
+                        nickname: nickname,
+                        password: password,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response.data);
+                        alert("회원 정보가 성공적으로 수정되었습니다.");
+                        document.getElementById(
+                            "editProfileModal"
+                        ).style.display = "none";
+                    })
+                    .catch((error) => {
+                        console.error("회원 정보 수정 중 오류 발생:", error);
+                        alert("회원 정보 수정 중 오류가 발생하였습니다.");
+                    });
+            });
+        }
+    });
 
     loginButton.addEventListener("click", function () {
         renderLoginForm();
@@ -616,100 +616,103 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-   
+
     // '회원 정보 수정' 모달 열기
-const editProfileButton = document.getElementById("editProfileButton");
-const editProfileModal = document.getElementById("editProfileModal");
-const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
-const closeButton = document.querySelector(".edit-profile-modal .close-button");
+    const editProfileButton = document.getElementById("editProfileButton");
+    const editProfileModal = document.getElementById("editProfileModal");
+    const editProfileSubmitButton = document.getElementById(
+        "editProfileSubmitButton"
+    );
+    const closeButton = document.querySelector(
+        ".edit-profile-modal .close-button"
+    );
 
-editProfileButton.addEventListener("click", function(event) {
-    event.preventDefault(); // 버튼의 기본 동작 방지
-    editProfileModal.style.display = "block"; // 모달 표시
-});
-
-// 모달 닫기 버튼 이벤트 핸들러
-if (closeButton) {
-    closeButton.addEventListener("click", function () {
-        editProfileModal.style.display = "none";
+    editProfileButton.addEventListener("click", function (event) {
+        event.preventDefault(); // 버튼의 기본 동작 방지
+        editProfileModal.style.display = "block"; // 모달 표시
     });
-}
 
-// 회원 정보 수정 버튼 이벤트 핸들러
-editProfileSubmitButton.addEventListener("click", function(event) {
-    event.preventDefault(); // 버튼의 기본 동작 방지
-
-    // 사용자 입력 값 가져오기
-    const nickname = document.querySelector("#editProfileForm input[name='nickname']").value;
-    const password = document.querySelector("#editProfileForm input[name='password']").value;
-
-    // 유효성 검사
-    if (!nickname || !password) {
-        alert("닉네임과 비밀번호를 모두 입력하세요.");
-        return;
+    // 모달 닫기 버튼 이벤트 핸들러
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            editProfileModal.style.display = "none";
+        });
     }
 
-   
-    axios({
-        method: "patch",
-        url: "/mypage",
-        data: {
-            nickname: nickname,
-            password: password,
-        },
-    })
-    .then((response) => {
-        console.log(response.data);
-        alert("회원 정보가 성공적으로 수정되었습니다.");
-        document.getElementById("editProfileModal").style.display = "none";
-    })
-    .catch((error) => {
-        console.error("회원 정보 수정 중 오류 발생:", error);
-        alert("회원 정보 수정 중 오류가 발생하였습니다.");
-    });
-});
+    // 회원 정보 수정 버튼 이벤트 핸들러
+    editProfileSubmitButton.addEventListener("click", function (event) {
+        event.preventDefault(); // 버튼의 기본 동작 방지
 
-    
+        // 사용자 입력 값 가져오기
+        const nickname = document.querySelector(
+            "#editProfileForm input[name='nickname']"
+        ).value;
+        const password = document.querySelector(
+            "#editProfileForm input[name='password']"
+        ).value;
 
-//회원 탈퇴
-document.addEventListener("DOMContentLoaded", function () {
-    // 회원 탈퇴 링크에 클릭 이벤트 리스너 추가
-    const removeAccountLink = document.querySelector('a[href="#2"]'); // 실제 적절한 선택자 사용 필요
-    removeAccountLink.addEventListener("click", function (event) {
-        event.preventDefault(); // 링크의 기본 동작 방지
-        // 회원 탈퇴를 사용자에게 확인
-        if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
-            // fetch API를 사용하여 회원 탈퇴 요청 전송
-            fetch("/api/mypage", {
-                // 실제 백엔드 엔드포인트 URL로 대체 필요
-                method: "POST", // 또는 서버가 요구하는 메소드
-                headers: {
-                    "Content-Type": "application/json",
-                    // 필요한 경우 인증 토큰 등의 추가 헤더를 포함해야 할 수 있음
-                },
-                body: JSON.stringify({
-                    // 회원 탈퇴에 필요한 데이터; 예를 들어 사용자 ID나 토큰 등
-                }),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("회원 탈퇴 처리에 실패했습니다.");
-                    }
-                    return response.json(); // 또는 response.text(), 응답에 따라 다름
-                })
-                .then((data) => {
-                    alert("회원 탈퇴가 성공적으로 처리되었습니다.");
-                    // 회원 탈퇴 후 처리 로직; 예를 들어 로그인 페이지로 리다이렉트
-                })
-                .catch((error) => {
-                    console.error("회원 탈퇴 중 오류 발생:", error);
-                });
+        // 유효성 검사
+        if (!nickname || !password) {
+            alert("닉네임과 비밀번호를 모두 입력하세요.");
+            return;
         }
+
+        axios({
+            method: "patch",
+            url: "/mypage",
+            data: {
+                nickname: nickname,
+                password: password,
+            },
+        })
+            .then((response) => {
+                console.log(response.data);
+                alert("회원 정보가 성공적으로 수정되었습니다.");
+                document.getElementById("editProfileModal").style.display =
+                    "none";
+            })
+            .catch((error) => {
+                console.error("회원 정보 수정 중 오류 발생:", error);
+                alert("회원 정보 수정 중 오류가 발생하였습니다.");
+            });
     });
-});
 
-
-
+    //회원 탈퇴
+    document.addEventListener("DOMContentLoaded", function () {
+        // 회원 탈퇴 링크에 클릭 이벤트 리스너 추가
+        const removeAccountLink = document.querySelector('a[href="#2"]'); // 실제 적절한 선택자 사용 필요
+        removeAccountLink.addEventListener("click", function (event) {
+            event.preventDefault(); // 링크의 기본 동작 방지
+            // 회원 탈퇴를 사용자에게 확인
+            if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
+                // fetch API를 사용하여 회원 탈퇴 요청 전송
+                fetch("/api/mypage", {
+                    // 실제 백엔드 엔드포인트 URL로 대체 필요
+                    method: "POST", // 또는 서버가 요구하는 메소드
+                    headers: {
+                        "Content-Type": "application/json",
+                        // 필요한 경우 인증 토큰 등의 추가 헤더를 포함해야 할 수 있음
+                    },
+                    body: JSON.stringify({
+                        // 회원 탈퇴에 필요한 데이터; 예를 들어 사용자 ID나 토큰 등
+                    }),
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("회원 탈퇴 처리에 실패했습니다.");
+                        }
+                        return response.json(); // 또는 response.text(), 응답에 따라 다름
+                    })
+                    .then((data) => {
+                        alert("회원 탈퇴가 성공적으로 처리되었습니다.");
+                        // 회원 탈퇴 후 처리 로직; 예를 들어 로그인 페이지로 리다이렉트
+                    })
+                    .catch((error) => {
+                        console.error("회원 탈퇴 중 오류 발생:", error);
+                    });
+            }
+        });
+    });
 });
 //공고 등록 버튼
 document.addEventListener("DOMContentLoaded", function () {
@@ -722,7 +725,7 @@ document.addEventListener("DOMContentLoaded", function () {
     postJobButton.addEventListener("click", function () {
         if (isLoggedIn) {
             // 사용자가 로그인한 상태인 경우, detail 페이지로 이동합니다.
-            window.location.href = "/detail";
+            window.location.href = "/jobs";
         } else {
             // 로그인하지 않은 상태에서 버튼을 클릭한 경우, 경고 메시지를 표시합니다.
             alert("로그인이 필요한 기능입니다.");
