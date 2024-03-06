@@ -1,74 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const selectedTechs = [];
-
-    const techTagsContainer = document.getElementById("techTagsContainer");
-
-    const techs = [
-        "React",
-        "Vue",
-        "CSS",
-        "Angular",
-        "JavaScript",
-        "HTML",
-        "TypeScript",
-        "Sass",
-        "JSX",
-        "Webpack",
-    ];
-
-    techs.forEach((tech) => {
-        const techCheckbox = document.createElement("input");
-        techCheckbox.type = "checkbox";
-        techCheckbox.id = tech;
-        techCheckbox.value = tech;
-        techCheckbox.name = tech;
-        techCheckbox.addEventListener("change", function () {
-            handleTechChange(tech);
-        });
-
-        const label = document.createElement("label");
-        label.htmlFor = tech;
-        label.textContent = tech;
-
-        const techTag = document.createElement("div");
-        techTag.className = "tech-tag";
-        techTag.appendChild(techCheckbox);
-        techTag.appendChild(label);
-
-        techTagsContainer.appendChild(techTag);
-    });
-
-    function handleTechChange(tech) {
-        if (selectedTechs.includes(tech)) {
-            // Remove tech if it exists in the array
-            selectedTechs.splice(selectedTechs.indexOf(tech), 1);
-        } else {
-            // Add tech if it doesn't exist in the array
-            selectedTechs.push(tech);
-        }
-
-        const formData = new FormData();
-        selectedTechs.forEach((selectedTech) => {
-            formData.append("task[]", selectedTech);
-        });
-
-        fetch("/result", {
-            method: "POST",
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-
-                // Add debugging logs
-                console.log("Received data from the server:", data.Info);
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    }
-});
-
 // 프로필 사진
 
 function fileUpload() {
@@ -90,4 +19,50 @@ function fileUpload() {
             resultImage.src = `/uploads/${res.data.path}`;
         })
         .catch((err) => console.error(err));
+}
+
+function detailSubmit() {
+    const form = document.forms["detail"];
+
+    // 체크된 체크박스들의 값들을 담을 배열
+    const selectedValues = [];
+
+    // NodeList를 배열로 변환하여 순회
+    Array.from(form.stack).forEach((checkbox) => {
+        if (checkbox.checked) {
+            selectedValues.push(checkbox.value);
+        }
+    });
+
+    // console.log(form);
+    // console.log(form.stack);
+    console.log(form.img_path.value);
+
+    const data = {
+        // usersId,
+        imgPath: form.img_path.value,
+        companyName: form.company_name.value,
+        levels: form.levels.value,
+        introduce: form.introduce.value,
+        task: form.task.value,
+        conditions: form.conditions.value,
+        prefer: form.prefer.value,
+        stack: selectedValues,
+        // stack: form.stack,
+        deadline: form.deadline.value,
+        address: form.address.value,
+        address_detail: form.address_detail.value,
+        source: form.source.value,
+        others: form.others.value,
+    };
+
+    axios({
+        method: "POST",
+        url: "/jobs",
+        data: data,
+    })
+        .then((res) => {
+            console.log("resdata", res.data);
+        })
+        .catch((err) => console.log(err));
 }
