@@ -36,11 +36,9 @@ function detailSubmit() {
 
     // console.log(form);
     // console.log(form.stack);
-    console.log(form.img_path.value);
 
     const data = {
         // usersId,
-        imgPath: form.img_path.value,
         companyName: form.company_name.value,
         levels: form.levels.value,
         introduce: form.introduce.value,
