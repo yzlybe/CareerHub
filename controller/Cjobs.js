@@ -162,6 +162,8 @@ exports.jobsWrite = async (req, res) => {
             address,
             source,
         });
+
+        //기슬스택 코드 관련 추가 작성
         console.log("isSuccess: ", isSuccess);
         res.render("detail.ejs", {
             data: isSuccess,
@@ -272,3 +274,4 @@ exports.jobsDelete = async (req, res) => {
         res.status(500).send("server error");
     }
 };
+
