@@ -122,13 +122,14 @@ p {
     color: #007bff; /* 텍스트 색상 */
     border-radius: 5px; /* 모서리 둥글기 */
     cursor: pointer; /* 마우스 오버 시 커서 변경 */
-    transition: background-color 0.3s; /* 배경색 변경 시 애니메이션 */
+  
 }
-.button-group button.selected,
-.search-filter-section button.selected {
-    background-color: #007bff; /* 선택 시 배경색 */
-    color: white; /* 선택 시 텍스트 색상 */
+.button-group button.selected {
+    background-color: #007bff !important;
+    color: white !important;
 }
+
+
 /* 컨테이너 및 포트폴리오 아이템 스타일 */
 .container {
     max-width: 1300px;
@@ -192,9 +193,7 @@ p {
     background-color: #007bff; /* 마우스 오버 효과 */
     color: white;
 }
-.dropdown, .interest-button {
-    display: none; /* 초기 상태에서 숨김 */
-}
+
 /* 즐겨찾기 */
 .favorite-container {
     position: absolute;
@@ -211,6 +210,10 @@ p {
     bottom: 100px;
     right: 100px;
     z-index: 999; /* 다른 요소들 위에 표시 */
+    
+}
+.dropdown, .interest-button {
+    display: none; /* 초기 상태에서 숨김 */
 }
 .fab {
     width: 80px; /* 버튼의 최소 너비, 필요에 따라 조절 가능 */
@@ -342,7 +345,7 @@ button[onclick="renderLoginForm()"] {
 /* 드롭다운 버튼 */
 .dropdown {
     position: relative;
-    display: inline-block;
+    display: none;
 }
 
 .dropdown-content {
