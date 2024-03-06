@@ -237,6 +237,7 @@ exports.logout = async (req, res) => {
     req.session.destroy((err) => {
         if (err) throw err;
     });
+    res.end();
 };
 
 // =================== oAuth ===================
