@@ -4,6 +4,7 @@ const mainCtr = require("../controller/Cmain");
 const jobsCtr = require("../controller/Cjobs");
 const likeCtr = require("../controller/Clike");
 const reviewCtr = require("../controller/Creview");
+const meCtr = require("../controller/Cme");
 
 /* test */
 router.get("/test", mainCtr.test);
@@ -40,4 +41,8 @@ router.delete("/review", reviewCtr.deleteReview);
 */
 router.patch("/like", likeCtr.increCount);
 router.patch("/unlike", likeCtr.reduceCount);
+
+// ========me routing=========
+router.get("/me/jobs", meCtr.myJobs);
+// router.get("/me/reviews", meCtr.myReviews);
 module.exports = router;
