@@ -4,6 +4,7 @@ const {
     jobsModel,
     reviewsModel,
     likesModel,
+    stackModel,
 } = require("../models");
 
 exports.index = (req, res) => {
@@ -11,13 +12,15 @@ exports.index = (req, res) => {
 };
 
 // GET /jobs
-// 전체 공고 목록 조회
+// 공고 작성 페이지
 exports.jobs = async (req, res) => {
-    const listJobs = await jobsModel.findAll();
-    console.log("listjobs", listJobs);
-    // res.send(listJobs);
-    res.render("jobs", { data: listJobs });
-    console.log("전체 공고 목록_listJobs");
+    const writeJobs = await jobsModel.findAll();
+    console.log("listjobs", writeJobs);
+    res.render("detail.ejs", {
+        data: writeJobs,
+        KAKAO_MAP_API_KEY: process.env.KAKAO_MAP_API_KEY,
+    });
+    console.log("공고 작성 페이지_writeJobs");
 };
 
 // GET /jobs /like
@@ -40,6 +43,23 @@ exports.jobsLike = async (req, res) => {
                 where: {
                     jobs_id: like.jobs_id,
                 },
+                include: [
+                    {
+                        model: stackModel,
+                        attributes: [
+                            "react",
+                            "vue",
+                            "css",
+                            "angular",
+                            "javascript",
+                            "html",
+                            "typescript",
+                            "sass",
+                            "jsx",
+                            "webpack",
+                        ],
+                    },
+                ],
             });
             likedJobs.push(job);
         }
@@ -60,9 +80,26 @@ exports.jobsDetail = async (req, res) => {
         const jobId = req.params.jobId;
         const jobsDetail = await jobsModel.findOne({
             where: { jobs_id: jobId },
+            include: [
+                {
+                    model: stackModel,
+                    attributes: [
+                        "react",
+                        "vue",
+                        "css",
+                        "angular",
+                        "javascript",
+                        "html",
+                        "typescript",
+                        "sass",
+                        "jsx",
+                        "webpack",
+                    ],
+                },
+            ],
         });
         // res.send(jobsDetail);
-        // console.log(jobsDetail);
+        console.log(jobsDetail);
         const reviews = await reviewsModel.findAll({
             where: { jobs_id: jobId },
         });
@@ -91,7 +128,6 @@ exports.jobsWrite = async (req, res) => {
             task,
             conditions,
             prefer,
-            stack,
             deadline,
             address,
             source,
@@ -99,54 +135,51 @@ exports.jobsWrite = async (req, res) => {
 
         let levelValue;
         console.log(levels);
-        switch(levels) {
-            case "신입" :
+        switch (levels) {
+            case "신입":
                 levelValue = 1;
                 break;
-            case "경력" :
+            case "경력":
                 levelValue = 2;
                 break;
-            case "무관" :
+            case "무관":
                 levelValue = 3;
                 break;
             default:
                 throw new Error("올바르지 않은 경력 레벨입니다."); // 예상치 못한 값이 전달된 경우 오류 발생
-
-        };
-        console.log("levelValue:", levelValue); 
-
+        }
+        console.log("levelValue:", levelValue);
 
         const isSuccess = await jobsModel.create({
             users_id: usersId,
             company_name: companyName,
-            levels:levelValue,
+            levels: levelValue,
             introduce,
             task,
             conditions,
             prefer,
-            stack,
             deadline,
             address,
             source,
         });
-        console.log(isSuccess);
 
-        if (isSuccess) {
-            res.send(true);
-        } else {
-            res.send(false);
-        }
+        //기슬스택 코드 관련 추가 작성
+        console.log("isSuccess: ", isSuccess);
+        res.render("detail.ejs", {
+            data: isSuccess,
+        });
+        console.log("공고 페이지 작성 완료");
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
     }
 };
 
-// PUT /jobs
+// PATCH /jobs
 // 공고 수정
 exports.jobsUpdate = async (req, res) => {
     try {
-        console.log(req.body); 
+        console.log(req.body);
         const {
             jobsId,
             usersId,
@@ -158,7 +191,6 @@ exports.jobsUpdate = async (req, res) => {
             task,
             conditions,
             prefer,
-            stack,
             welfaer,
             deadline,
             address,
@@ -169,20 +201,20 @@ exports.jobsUpdate = async (req, res) => {
 
         let levelValue;
         console.log(levels);
-        switch(levels) {
-            case "신입" :
+        switch (levels) {
+            case "신입":
                 levelValue = 1;
                 break;
-            case "경력" :
+            case "경력":
                 levelValue = 2;
                 break;
-            case "무관" :
+            case "무관":
                 levelValue = 3;
                 break;
             default:
                 throw new Error("올바르지 않은 경력 레벨입니다."); // 예상치 못한 값이 전달된 경우 오류 발생
-        };
-        console.log("levelValue:", levelValue); 
+        }
+        console.log("levelValue:", levelValue);
 
         const isSuccess = await jobsModel.update(
             {
@@ -190,18 +222,17 @@ exports.jobsUpdate = async (req, res) => {
                 updated_at,
                 img_path,
                 company_name: companyName,
-                levels:levelValue,
+                levels: levelValue,
                 introduce,
                 task,
                 conditions,
                 prefer,
-                stack,
                 welfaer,
                 deadline,
                 address,
                 address_detail,
                 source,
-                others
+                others,
             },
             {
                 where: {
@@ -211,7 +242,7 @@ exports.jobsUpdate = async (req, res) => {
         );
         console.log(usersId);
         console.log(isSuccess);
-        if (isSuccess) {
+        if (isSuccess > 0) {
             res.send(true);
         } else {
             res.send(false);
@@ -229,11 +260,15 @@ exports.jobsDelete = async (req, res) => {
         console.log("body", req.body);
         const isDeleted = await jobsModel.destroy({
             where: {
-                jobs_id: req.body.jobid,
+                jobs_id: req.body.jobsId,
             },
         });
         console.log(isDeleted);
-        res.end();
+        if (isDeleted > 0) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");

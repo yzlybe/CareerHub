@@ -366,6 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     };
     //로그인 db연동
+
   
     
     
@@ -401,8 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
    
     // 로그인 모달을 표시하는 함수
-   
-   
+
     function handleLoginButtonClick() {
         const isLoggedIn =
             document.querySelector(".login-button").textContent === "LogOut";
@@ -419,6 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loginButton.addEventListener("click", handleLoginButtonClick);
     });
     // 회원가입 처리
+
 
 document.addEventListener("DOMContentLoaded", function() {
     const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
@@ -448,8 +449,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
-    
-    
+
     loginButton.addEventListener("click", function () {
         renderLoginForm();
         authModal.style.display = "block";
@@ -490,6 +490,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
+
    
     // '회원 정보 수정' 모달 열기
 const editProfileButton = document.getElementById("editProfileButton");
@@ -556,23 +557,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify({
                     // 회원 탈퇴에 필요한 데이터; 예를 들어 사용자 ID나 토큰 등
                 }),
+
             })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("회원 탈퇴 처리에 실패했습니다.");
-                    }
-                    return response.json(); // 또는 response.text(), 응답에 따라 다름
-                })
-                .then((data) => {
-                    alert("회원 탈퇴가 성공적으로 처리되었습니다.");
-                    // 회원 탈퇴 후 처리 로직; 예를 들어 로그인 페이지로 리다이렉트
-                })
-                .catch((error) => {
-                    console.error("회원 탈퇴 중 오류 발생:", error);
-                });
-        }
+            .catch((error) => {
+                console.error("회원 정보 수정 중 오류 발생:", error);
+                alert("회원 정보 수정 중 오류가 발생하였습니다.");
+            });
     });
+
 });
+
 });
 //공고 등록 버튼
 document.addEventListener("DOMContentLoaded", function () {
@@ -585,7 +579,7 @@ document.addEventListener("DOMContentLoaded", function () {
     postJobButton.addEventListener("click", function () {
         if (isLoggedIn) {
             // 사용자가 로그인한 상태인 경우, detail 페이지로 이동합니다.
-            window.location.href = "/detail";
+            window.location.href = "/jobs";
         } else {
             // 로그인하지 않은 상태에서 버튼을 클릭한 경우, 경고 메시지를 표시합니다.
             alert("로그인이 필요한 기능입니다.");
