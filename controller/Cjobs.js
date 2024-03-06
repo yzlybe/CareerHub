@@ -130,7 +130,7 @@ exports.jobsWrite = async (req, res) => {
             source,
         });
         console.log("isSuccess: ",isSuccess);
-        res.render("result.ejs",{
+        res.render("detail.ejs",{
             data: isSuccess,
         });
         console.log("공고 페이지 작성 완료");
