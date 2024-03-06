@@ -11,13 +11,13 @@ exports.index = (req, res) => {
 };
 
 // GET /jobs
-// 전체 공고 목록 조회
+// 공고 작성 페이지
 exports.jobs = async (req, res) => {
-    const listJobs = await jobsModel.findAll();
-    console.log("listjobs", listJobs);
-    // res.send(listJobs);
-    res.render("jobs", { data: listJobs });
-    console.log("전체 공고 목록_listJobs");
+    const writeJobs = await jobsModel.findAll();
+    console.log("listjobs", writeJobs);
+    res.render("detail.ejs", 
+        { data: writeJobs });
+    console.log("공고 작성 페이지_writeJobs");
 };
 
 // GET /jobs /like
@@ -57,7 +57,7 @@ exports.jobsDetail = async (req, res) => {
     try {
         console.log("reqparams", req.params);
         console.log("reqparams:", req.params.jobId);
-        const jobId = req.params.jobId;
+        const jobId = req.session.jobId;
         const jobsDetail = await jobsModel.findOne({
             where: { jobs_id: jobId },
         });
@@ -129,18 +129,18 @@ exports.jobsWrite = async (req, res) => {
             address,
             source,
         });
-        console.log(isSuccess);
+        console.log("isSuccess: ",isSuccess);
+        res.render("result.ejs",{
+            data: isSuccess,
+        });
+        console.log("공고 페이지 작성 완료");
 
-        if (isSuccess) {
-            res.send(true);
-        } else {
-            res.send(false);
-        }
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
     }
 };
+
 
 // PUT /jobs
 // 공고 수정
