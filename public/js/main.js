@@ -5,8 +5,12 @@ async function fetchData(url) {
         return res.data.map(dataItem => {
             const stacks = dataItem.stacks[0]; // 서버에서 스택 배열을 가져오고, 첫 번째 요소를 선택
             const techStack = Object.keys(stacks).filter(key => stacks[key]); // true인 스택만 필터링하여 배열로 가져옴
-            const tags = techStack.map(tag => tag.charAt(0).toUpperCase() + tag.slice(1)); // 포트폴리오 아이템에 태그 추가 (첫 글자 대문자로 변환)
-            
+            const tags = techStack.map((tag) => {
+                // 첫 글자 대문자로 변환하여 태그 추가
+                if (tag === "typescript") return "TypeScript";
+                if (tag === "javascript") return "JavaScript";
+                return tag.charAt(0).toUpperCase() + tag.slice(1);
+            })
             return {
                 id: dataItem.jobs_id,
                 title: dataItem.company_name,
@@ -36,11 +40,14 @@ function logout() {
     axios({
         method: "get",
         url: "/logout", // 로그아웃을 처리하는 서버의 엔드포인트
+        
     })
     .then((res) => {
-        alert('로그아웃되었습니다.'); // 성공 메시지 알림
+        portfolioData.forEach(item => item.isFavorite = false);
+        updateDisplay();
         updateLoginState('false'); // 로컬 스토리지에 로그아웃 상태 반영
         // 페이지 리로드 또는 UI 업데이트 등 필요한 추가 작업 수행
+        alert('로그아웃되었습니다.'); // 성공 메시지 알림
     })
     .catch((error) => {
         console.error("로그아웃 중 오류 발생:", error);
@@ -173,13 +180,14 @@ function toggleFavoriteLocal(itemId) {
 
         // 즐겨찾기 추가 또는 제거에 따른 엔드포인트 선택
         const url = newFavoriteStatus ? '/like' : '/unlike';
-
+       
         axios.patch(url, { jobsId: itemId })
             .then(response => {
                 // 서버 요청 성공 후 로컬 상태 업데이트
                 item.isFavorite = newFavoriteStatus;
                 item.favoriteCount += newFavoriteStatus ? 1 : -1;
-                updateDisplay(getCurrentPageItems(), getFilteredData().length);
+                saveFavoritesToLocalStorage();
+                updateDisplay();
                 console.log(response.data);
                 alert(`관심 등록 ${newFavoriteStatus ? '추가' : '삭제'}되었습니다.`);
             })
@@ -189,6 +197,27 @@ function toggleFavoriteLocal(itemId) {
             });
     }
 }
+function saveFavoritesToLocalStorage() {
+    // 즐겨찾기된 항목의 ID만 추출
+    const favoriteIds = portfolioData.filter(item => item.isFavorite).map(item => item.id);
+    
+    // 로컬 스토리지에 JSON 형태로 저장
+    localStorage.setItem('userFavorites', JSON.stringify(favoriteIds));
+}
+function loadFavoritesFromLocalStorage() {
+    // 로컬 스토리지에서 즐겨찾기 상태 불러오기
+    const favorites = JSON.parse(localStorage.getItem('userFavorites'));
+    
+    if (favorites) {
+        portfolioData.forEach(item => {
+            item.isFavorite = favorites.includes(item.id);
+        });
+    }
+    
+    // UI 업데이트
+    updateDisplay();
+}
+
 
 
 // 이벤트 리스너 동적 추가
@@ -335,8 +364,12 @@ document.addEventListener("DOMContentLoaded", function () {
           <input type="email" name="email" placeholder="이메일 주소" required><br>
           <input type="password" name="password" placeholder="비밀번호" required><br>
           <button type="submit" class="login-action">로그인</button>
+          
           <button type="button" onclick="renderSignupForm()">회원 가입</button>
-        </form>
+          <a href="구글 로그인 링크">
+          <img src="/static/img/google.png" alt="Google 로그인" style="margin-top: 5px;" height="55px" width="293px">
+        </a>
+          </form>
       `;
         // 로그인 폼 submit 이벤트 처리
         document.getElementById("loginForm").onsubmit = function (event) {
@@ -366,11 +399,10 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     };
     //로그인 db연동
-
   
     
     
- function login() {
+    async  function login() {
     const form = document.forms["loginForm"];
     const email = form["email"].value;
     const password = form["password"].value;
@@ -383,12 +415,18 @@ document.addEventListener("DOMContentLoaded", function () {
             password: password,
         },
     })
-    .then((res) => {
+    .then(async (res) => {
         const { result, msg } = res.data; // 서버 응답 가정
         if (result) {
+            
             alert(msg); // 성공 메시지 알림
-            closeAuthModal(); // 모달 닫기
-            updateLoginState('true'); // 로컬 스토리지 업데이트 및 UI 변경
+            
+            
+            updateLoginState('true');
+            portfolioData = await fetchData('/main');
+            loadFavoritesFromLocalStorage();
+            updateDisplay();
+            closeAuthModal();
         } else {
             alert(msg); // 실패 메시지 알림
         }
@@ -402,7 +440,8 @@ document.addEventListener("DOMContentLoaded", function () {
     
    
     // 로그인 모달을 표시하는 함수
-
+   
+   
     function handleLoginButtonClick() {
         const isLoggedIn =
             document.querySelector(".login-button").textContent === "LogOut";
@@ -419,7 +458,6 @@ document.addEventListener("DOMContentLoaded", function () {
         loginButton.addEventListener("click", handleLoginButtonClick);
     });
     // 회원가입 처리
-
 
 document.addEventListener("DOMContentLoaded", function() {
     const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
@@ -449,7 +487,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
-
+    
+    
     loginButton.addEventListener("click", function () {
         renderLoginForm();
         authModal.style.display = "block";
@@ -490,7 +529,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-
    
     // '회원 정보 수정' 모달 열기
 const editProfileButton = document.getElementById("editProfileButton");
@@ -547,9 +585,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // 회원 탈퇴를 사용자에게 확인
         if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
             // fetch API를 사용하여 회원 탈퇴 요청 전송
-            fetch("/api/mypage", {
+            fetch("/mypage", {
                 // 실제 백엔드 엔드포인트 URL로 대체 필요
-                method: "POST", // 또는 서버가 요구하는 메소드
+                method: "DELETE", // 또는 서버가 요구하는 메소드
                 headers: {
                     "Content-Type": "application/json",
                     // 필요한 경우 인증 토큰 등의 추가 헤더를 포함해야 할 수 있음
@@ -557,16 +595,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify({
                     // 회원 탈퇴에 필요한 데이터; 예를 들어 사용자 ID나 토큰 등
                 }),
-
             })
-            .catch((error) => {
-                console.error("회원 정보 수정 중 오류 발생:", error);
-                alert("회원 정보 수정 중 오류가 발생하였습니다.");
-            });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("회원 탈퇴 처리에 실패했습니다.");
+                    }
+                    return response.json(); // 또는 response.text(), 응답에 따라 다름
+                })
+                .then((data) => {
+                    alert("회원 탈퇴가 성공적으로 처리되었습니다.");
+                    // 회원 탈퇴 후 처리 로직; 예를 들어 로그인 페이지로 리다이렉트
+                })
+                .catch((error) => {
+                    console.error("회원 탈퇴 중 오류 발생:", error);
+                });
+        }
     });
-
 });
-
 });
 //공고 등록 버튼
 document.addEventListener("DOMContentLoaded", function () {
@@ -579,7 +624,7 @@ document.addEventListener("DOMContentLoaded", function () {
     postJobButton.addEventListener("click", function () {
         if (isLoggedIn) {
             // 사용자가 로그인한 상태인 경우, detail 페이지로 이동합니다.
-            window.location.href = "/jobs";
+            window.location.href = "/detail";
         } else {
             // 로그인하지 않은 상태에서 버튼을 클릭한 경우, 경고 메시지를 표시합니다.
             alert("로그인이 필요한 기능입니다.");
