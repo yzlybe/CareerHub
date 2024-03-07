@@ -35,7 +35,6 @@ exports.test = (req, res) => {
 
 // get /main
 // 전체 공고 목록 조회
-
 exports.main = async (req, res) => {
     const foundJobs = await jobsModel.findAll({
         include: [
@@ -139,7 +138,12 @@ exports.findOneUser = async (req, res) => {
         if (foundUser) {
             req.session.userId = foundUser.users_id;
             req.session.nickname = foundUser.nickname;
-            res.send({ result: true, msg: "로그인 성공" }); // 로그인 성공
+            res.send({
+                result: true,
+                msg: "로그인 성공",
+                userId: foundUser.users_id,
+                nickname: foundUser.nickname,
+            }); // 로그인 성공
         } else {
             // 로그인 실패
             res.send({ result: false, msg: "로그인 실패" });

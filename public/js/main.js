@@ -43,6 +43,8 @@ function logout() {
         url: "/logout", // 로그아웃을 처리하는 서버의 엔드포인트
     })
         .then((res) => {
+            localStorage.removeItem("nickname");
+            localStorage.removeItem("userId");
             alert("로그아웃되었습니다."); // 성공 메시지 알림
             updateLoginState("false"); // 로컬 스토리지에 로그아웃 상태 반영
             // 페이지 리로드 또는 UI 업데이트 등 필요한 추가 작업 수행
@@ -404,11 +406,13 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         })
             .then((res) => {
-                const { result, msg } = res.data; // 서버 응답 가정
+                const { result, msg, userId, nickname } = res.data; // 서버 응답 가정
                 if (result) {
                     alert(msg); // 성공 메시지 알림
                     closeAuthModal(); // 모달 닫기
                     updateLoginState("true"); // 로컬 스토리지 업데이트 및 UI 변경
+                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("nickname", nickname);
                 } else {
                     alert(msg); // 실패 메시지 알림
                 }
