@@ -169,14 +169,14 @@ exports.findUserProfile = async (req, res) => {
         res.status(500).send("server error");
     }
 };
-// put /myapge
+// patch /myapge
 // 사용자 정보 수정
 // 세션 만료되면 다시 로그인 필요하도록
 exports.updateUser = async (req, res) => {
     // if (!req.session.userId) return res.redirect("/");
     try {
         console.log(req.session.userId);
-        const { password, nickname} = req.body;
+        const { password, nickname } = req.body;
         console.log(req.body);
         const isUpdated = await usersModel.update(
             {
@@ -237,6 +237,7 @@ exports.logout = async (req, res) => {
     req.session.destroy((err) => {
         if (err) throw err;
     });
+    res.end();
 };
 
 // =================== oAuth ===================

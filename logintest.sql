@@ -1,4 +1,3 @@
--- Active: 1707101713117@@127.0.0.1@3306@sesac
 show tables;
 
 -- users table
@@ -72,5 +71,25 @@ CREATE TABLE user_likes (
 desc user_likes;
 select * from user_likes;
 
+-- stacks
+desc stacks;
+select * from stacks;
+drop table stacks;
+INSERT INTO stacks 
+VALUES 
+(null, true, false, true, false, true, true, false, true, false, true, 1),
+(null, false, true, false, true, false, true, false, true, false, true, 2),
+(null, true, false, true, false, true, false, true, false, true, false, 3),
+(null, true, true, false, false, true, true, false, false, true, true, 4),
+(null, false, false, true, true, false, true, true, true, false, false, 5),
+(null, true, true, true, true, true, true, true, true, true, true, 6),
+(null, false, false, false, true, false, false, false, false, false, false, 7),
+(null, true, true, true, true, true, true, true, true, true, true, 8),
+(null, false, true, false, true, false, true, false, true, false, true, 9),
+(null, true, false, true, false, true, false, true, false, true, false, 10);
 
-
+drop table users;
+drop table jobs;
+drop table reviews;
+drop table user_likes;
+drop table stacks;

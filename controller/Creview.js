@@ -17,7 +17,11 @@ exports.findAllReviews = async (req, res) => {
         });
         console.log(reviews);
         if (reviews) {
-            res.send({ result: true, data: reviews });
+            res.send({
+                result: true,
+                data: reviews,
+                nickname: req.session.nickname,
+            });
         } else {
             res.send({ result: false, data: reviews, msg: "댓글 조회 실패" });
         }

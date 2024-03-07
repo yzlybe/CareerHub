@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
@@ -9,7 +10,8 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   </head>
 <body>
     <header >
@@ -45,7 +47,7 @@
                 </div>
             </button>
             
-            
+              
               <button class="button login-button">
                 <span class="material-symbols-outlined">login</span> Log In
               </button>
@@ -112,6 +114,11 @@
         <input type="password" name="password" placeholder="비밀번호" required><br>
         <!-- 로그인 함수를 호출하는 버튼 -->
         <button type="button" onclick="login()">로그인</button>
+        <a href="구글 로그인 링크">
+          <img src="public/img/googlelogin.jpg" alt="구글 로그인">
+        </a>
+         
+      
         <button type="button" onclick="showSignup()">회원 가입</button>
       </form>
       <!-- 로그인 폼 끝 -->
