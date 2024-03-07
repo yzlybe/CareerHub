@@ -31,7 +31,8 @@ BEGIN
             stack, 
             deadline, 
             address, 
-            source)
+            source,
+            stack)
         VALUES (
             i, 
             CONCAT('Company', i), 

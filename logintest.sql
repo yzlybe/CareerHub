@@ -1,4 +1,4 @@
--- Active: 1707101713117@@127.0.0.1@3306@sesac
+-- Active: 1707101282876@@127.0.0.1@3306@sesac
 show tables;
 
 -- users table
@@ -27,7 +27,6 @@ CREATE TABLE jobs (
     task MEDIUMTEXT,
     conditions VARCHAR(255),
     prefer VARCHAR(255),
-    stack ENUM('JAVA','NODE','VUE','REACT','JS','SPRING'),
     welfare VARCHAR(255),
     deadline DATETIME NOT NULL,
     address VARCHAR(255) NOT NULL,
@@ -72,5 +71,43 @@ CREATE TABLE user_likes (
 desc user_likes;
 select * from user_likes;
 
+CREATE TABLE stacks (
+    stack_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    jobs_id INT ,
+    Foreign Key (jobs_id) REFERENCES jobs(jobs_id),
+    react BOOLEAN DEFAULT false,
+    vue BOOLEAN DEFAULT false,
+    css BOOLEAN DEFAULT false,
+    angular BOOLEAN DEFAULT false,
+    javascript BOOLEAN DEFAULT false,
+    html BOOLEAN DEFAULT false,
+    typescript BOOLEAN DEFAULT false,
+    sass BOOLEAN DEFAULT false,
+    jsx BOOLEAN DEFAULT false,
+    webpack BOOLEAN DEFAULT false
+);
+
+-- stacks
+desc stacks;
+select * from stacks;
+drop table stacks;
+INSERT INTO stacks 
+VALUES 
+(null, true, false, true, false, true, true, false, true, false, true, 1),
+(null, false, true, false, true, false, true, false, true, false, true, 2),
+(null, true, false, true, false, true, false, true, false, true, false, 3),
+(null, true, true, false, false, true, true, false, false, true, true, 4),
+(null, false, false, true, true, false, true, true, true, false, false, 5),
+(null, true, true, true, true, true, true, true, true, true, true, 6),
+(null, false, false, false, true, false, false, false, false, false, false, 7),
+(null, true, true, true, true, true, true, true, true, true, true, 8),
+(null, false, true, false, true, false, true, false, true, false, true, 9),
+(null, true, false, true, false, true, false, true, false, true, false, 10);
 
 
+
+drop table users;
+drop table jobs;
+drop table reviews;
+drop table user_likes;
+drop table stacks;
