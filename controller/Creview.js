@@ -34,24 +34,23 @@ exports.findAllReviews = async (req, res) => {
 // post /review
 // 댓글 등록
 exports.createReview = async (req, res) => {
-    // 세션의 userId값을 받아와서 등록하는게 원칙
-    // 아직 로그인 연동이 안되므로 임시로 userId 값을 생성해서 테스트
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
-        console.log("reqbody", req.body);
-        const { jobsId, comment, userId } = req.body;
+        const { jobsId, comment } = req.body;
         // 리뷰 테이블 삽입시 필요한 컬럼 users_id,jobs_id,reviews_comment
         const isSuccess = await reviewsModel.create({
             reviews_comment: comment,
             jobs_id: jobsId,
-            // users_id: req.session.userId,
-            users_id: userId,
+            users_id: req.session.userId,
         });
         console.log("issuccess", isSuccess);
         if (isSuccess) {
-            res.send({ result: true, data: null, msg: "댓글 등록 성공" });
+            res.send({ result: true, msg: "댓글 등록 성공" });
         } else {
-            res.send({ result: false, data: null, msg: "댓글 등록 실패" });
+            res.send({ result: false, msg: "댓글 등록 실패" });
         }
     } catch (error) {
         console.log("error", error);
@@ -59,10 +58,13 @@ exports.createReview = async (req, res) => {
     }
 };
 
-// put /review
+// patch /review
 // 댓글 수정
 exports.updateReview = async (req, res) => {
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
         console.log(req.body);
         const { reviewId, comment } = req.body;

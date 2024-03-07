@@ -79,6 +79,12 @@ exports.createUser = async (req, res) => {
             },
         });
         if (checkDup) return res.send({ result: false, msg: "이메일 중복" });
+        // email, password,nickname 값중하나라도 안들어온 경우 예외처리
+        if (!email || !password || !nickname) {
+            return res
+                .status(404)
+                .send({ result: false, msg: "입력 값을 모두 작성해주세요" });
+        }
         // 유저정보 디비 삽입
         const newUser = await usersModel.create({
             users_email: email,
@@ -116,7 +122,12 @@ exports.findOneUser = async (req, res) => {
     try {
         console.log(req.body);
         const { email, password } = req.body;
-
+        // email, password 값중하나라도 안들어온 경우 예외처리
+        if (!email || !password) {
+            return res
+                .status(404)
+                .send({ result: false, msg: "입력 값을 모두 작성해주세요" });
+        }
         const foundUser = await usersModel.findOne({
             where: {
                 users_email: email,
@@ -142,10 +153,11 @@ exports.findOneUser = async (req, res) => {
 
 // get /mypage
 // 세션에 userId 값이 있을 때(로그인 상태) 사용자 정보 표시
-// 없을시 로그인 화면으로 리다이렉트
 exports.findUserProfile = async (req, res) => {
-    // 세션값이 만료시 리다이렉트
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
         console.log(req.session.userId);
         //세션값으로 유저 프로필 조회
@@ -159,10 +171,13 @@ exports.findUserProfile = async (req, res) => {
             res.send({
                 result: true,
                 data: userProfile,
-                msg: "프로필 조회 완료",
+                msg: "회원 정보 조회 완료",
             });
         } else {
-            res.send({ result: false, data: null, msg: "프로필 조회 실패" });
+            res.send({
+                result: false,
+                msg: "로그인이 필요합니다",
+            });
         }
     } catch (error) {
         console.log("error", error);
@@ -171,9 +186,11 @@ exports.findUserProfile = async (req, res) => {
 };
 // patch /myapge
 // 사용자 정보 수정
-// 세션 만료되면 다시 로그인 필요하도록
 exports.updateUser = async (req, res) => {
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
         console.log(req.session.userId);
         const { password, nickname } = req.body;
@@ -195,7 +212,7 @@ exports.updateUser = async (req, res) => {
             // 수정 성공시
             res.send({ result: true, msg: "수정 완료" });
         } else {
-            res.send({ result: false, msg: "수정된 정보 없음" });
+            res.send({ result: false, msg: "수정된 정보가 없습니다." });
         }
     } catch (error) {
         console.log("error", error);
@@ -205,9 +222,11 @@ exports.updateUser = async (req, res) => {
 
 // delete /mypage
 // 사용자 정보 수정
-// 세션 만료되면 다시 로그인 필요하도록
 exports.deleteUser = async (req, res) => {
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
         console.log(req.session.userId);
         const isDeleted = await usersModel.destroy({
@@ -233,11 +252,11 @@ exports.deleteUser = async (req, res) => {
     }
 };
 // get /logout
-exports.logout = async (req, res) => {
+exports.logout = (req, res) => {
     req.session.destroy((err) => {
         if (err) throw err;
     });
-    res.end();
+    res.send({ result: true, msg: "로그아웃 완료" });
 };
 
 // =================== oAuth ===================
