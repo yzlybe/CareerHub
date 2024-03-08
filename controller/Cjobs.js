@@ -122,14 +122,18 @@ exports.jobsWrite = async (req, res) => {
         console.log(req.body);
         const {
             usersId,
+            img_path,
             companyName,
             levels,
             introduce,
             task,
             conditions,
             prefer,
+            welfare,
             deadline,
             address,
+            address_detail,
+            others,
             source,
             stack,
         } = req.body;
@@ -175,14 +179,18 @@ exports.jobsWrite = async (req, res) => {
 
         const isSuccess = await jobsModel.create({
             users_id: usersId,
+            img_path,
             company_name: companyName,
             levels: levelValue,
             introduce,
             task,
             conditions,
             prefer,
+            welfare,
             deadline,
             address,
+            address_detail,
+            others,
             source,
         });
 
@@ -218,7 +226,7 @@ exports.jobsUpdate = async (req, res) => {
         const {
             jobsId,
             usersId,
-            updated_at,
+            //updated_at,
             img_path,
             companyName,
             levels,
@@ -226,12 +234,13 @@ exports.jobsUpdate = async (req, res) => {
             task,
             conditions,
             prefer,
-            welfaer,
+            welfare,
             deadline,
             address,
             address_detail,
             others,
             source,
+            stack,
         } = req.body;
 
         let levelValue;
@@ -251,10 +260,31 @@ exports.jobsUpdate = async (req, res) => {
         }
         console.log("levelValue:", levelValue);
 
+        // 스택 관련 컬럼 목록
+        const stackColumns = [
+            "react",
+            "vue",
+            "css",
+            "angular",
+            "javascript",
+            "html",
+            "typescript",
+            "sass",
+            "jsx",
+            "webpack",
+        ];
+        // 스택 테이블 업데이트
+        const stackModelData = {}; // 스택 데이터 객체 초기화
+
+        // 스택 데이터 객체 업데이트
+        stackColumns.forEach((column) => {
+            stackModelData[column] = stack.includes(column);
+        });
+
         const isSuccess = await jobsModel.update(
             {
                 users_id: usersId,
-                updated_at,
+                //updated_at,
                 img_path,
                 company_name: companyName,
                 levels: levelValue,
@@ -262,7 +292,7 @@ exports.jobsUpdate = async (req, res) => {
                 task,
                 conditions,
                 prefer,
-                welfaer,
+                welfare,
                 deadline,
                 address,
                 address_detail,
@@ -275,9 +305,25 @@ exports.jobsUpdate = async (req, res) => {
                 },
             }
         );
+
+        // 스택 테이블 업데이트
+        const updatedStack = await stackModel.update(stackModelData, {
+            ...stackModelData,
+            where: {
+                jobs_id: jobsId,
+            },
+        });
+/*
+        const createdStack = await stackModel.create({
+            ...stackModelData,
+            jobs_id: job.jobs_id,
+        });
+*/
+        console.log("Updated stack:", updatedStack); 
+
         console.log(usersId);
         console.log(isSuccess);
-        if (isSuccess > 0) {
+        if (isSuccess > 0 && updatedStack > 0) {
             res.send(true);
         } else {
             res.send(false);
@@ -287,6 +333,7 @@ exports.jobsUpdate = async (req, res) => {
         res.status(500).send("server error");
     }
 };
+
 
 // DELETE /jobs
 // 공고 삭제
