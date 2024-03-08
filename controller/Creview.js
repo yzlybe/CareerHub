@@ -58,6 +58,7 @@ exports.createReview = async (req, res) => {
             reviews_comment: comment,
             jobs_id: jobsId,
             users_id: req.session.userId,
+            nickname: req.session.nickname,
         });
         console.log("issuccess", isSuccess);
         if (isSuccess) {
