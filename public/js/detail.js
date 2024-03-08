@@ -1,5 +1,4 @@
 // 프로필 사진
-
 function fileUpload() {
     const fileInput = document.getElementById("img_path");
     const formData = new FormData();
@@ -49,7 +48,6 @@ function detailSubmit() {
         conditions: form.conditions.value,
         welfare: form.welfare.value,
         stack: selectedValues,
-        // stack: form.stack,
         deadline: form.deadline.value,
         address: form.address.value,
         address_detail: form.address_detail.value,
