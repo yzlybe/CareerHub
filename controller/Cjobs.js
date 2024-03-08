@@ -121,6 +121,7 @@ exports.jobsWrite = async (req, res) => {
     try {
         console.log(req.body);
         const {
+            jobsId,
             usersId,
             companyName,
             levels,
@@ -131,6 +132,7 @@ exports.jobsWrite = async (req, res) => {
             deadline,
             address,
             source,
+            stack
         } = req.body;
 
         let levelValue;
@@ -150,6 +152,19 @@ exports.jobsWrite = async (req, res) => {
         }
         console.log("levelValue:", levelValue);
 
+        // stackModel에 있는 컬럼명 배열
+        const stackColumns = ['react', 'vue', 'css', 'angular', 'javascript', 'html', 'typescript', 'sass', 'jsx', 'webpack'];
+
+        // stackModel에 삽입할 데이터 객체 초기화
+        const stackModelData = {};
+
+        // 스택 컬럼명에 대해 순회하면서 해당 값이 스택 데이터에 포함되어 있는지 확인하여 true 또는 false 설정
+        stackColumns.forEach(column => {
+            stackModelData[column] = stack.includes(column);
+        });
+
+
+
         const isSuccess = await jobsModel.create({
             users_id: usersId,
             company_name: companyName,
@@ -162,6 +177,20 @@ exports.jobsWrite = async (req, res) => {
             address,
             source,
         });
+
+        const job = await jobsModel.findOne({where:{company_name: companyName}})
+
+        console.log(job.jobs_id)
+
+        const temp = {
+            ...stackModelData,
+            jobs_id: job.jobs_id
+        }
+
+        // stackModel에 데이터 삽입
+        const createdStack = await stackModel.create(
+            temp
+        )
 
         //기슬스택 코드 관련 추가 작성
         console.log("isSuccess: ", isSuccess);

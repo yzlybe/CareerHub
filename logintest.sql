@@ -1,3 +1,4 @@
+
 show tables;
 
 -- users table
@@ -26,7 +27,6 @@ CREATE TABLE jobs (
     task MEDIUMTEXT,
     conditions VARCHAR(255),
     prefer VARCHAR(255),
-    stack ENUM('JAVA','NODE','VUE','REACT','JS','SPRING'),
     welfare VARCHAR(255),
     deadline DATETIME NOT NULL,
     address VARCHAR(255) NOT NULL,
@@ -70,6 +70,22 @@ CREATE TABLE user_likes (
 );
 desc user_likes;
 select * from user_likes;
+
+CREATE TABLE stacks (
+    stack_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    jobs_id INT ,
+    Foreign Key (jobs_id) REFERENCES jobs(jobs_id),
+    react BOOLEAN DEFAULT false,
+    vue BOOLEAN DEFAULT false,
+    css BOOLEAN DEFAULT false,
+    angular BOOLEAN DEFAULT false,
+    javascript BOOLEAN DEFAULT false,
+    html BOOLEAN DEFAULT false,
+    typescript BOOLEAN DEFAULT false,
+    sass BOOLEAN DEFAULT false,
+    jsx BOOLEAN DEFAULT false,
+    webpack BOOLEAN DEFAULT false
+);
 
 -- stacks
 desc stacks;
