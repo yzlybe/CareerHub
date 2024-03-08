@@ -20,7 +20,7 @@ async function fetchData(url) {
             return {
                 id: dataItem.jobs_id,
                 title: dataItem.company_name,
-                date: dataItem.created_at,
+                date: dataItem.createdAt,
                 tags: finalTags, // 스택이 없으면 "없음" 태그로 설정
                 imageUrl: dataItem.img_path,
                 favoriteCount: dataItem.cnt_likes,
@@ -793,7 +793,7 @@ async function fetchMyJobs() {
             return {
                 id: dataItem.jobs_id,
                 title: dataItem.company_name,
-                date: dataItem.created_at,
+                date: dataItem.createdAt,
                 tags: finalTags, // 스택이 없으면 "없음" 태그로 설정
                 imageUrl: dataItem.img_path,
                 favoriteCount: dataItem.cnt_likes,

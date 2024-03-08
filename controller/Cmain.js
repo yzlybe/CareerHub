@@ -54,6 +54,7 @@ exports.main = async (req, res) => {
                 ],
             },
         ],
+        order: [["created_at", "DESC"]], // createdAt을 기준으로 내림차순 정렬
     });
     res.send(foundJobs);
 };
