@@ -12,18 +12,31 @@ exports.findAllReviews = async (req, res) => {
     try {
         console.log(req.params);
         const { jobsId } = req.params;
+        const foundJobsId = await jobsModel.findOne({
+            where: {
+                jobs_id: jobsId,
+            },
+        });
+        //파라미터 유효성 검증
+        if (!foundJobsId)
+            return res
+                .status(404)
+                .send({ result: false, msg: "존재하지 않는 공고입니다." });
+
         const reviews = await reviewsModel.findAll({
             where: { jobs_id: jobsId },
         });
         console.log(reviews);
-        if (reviews) {
+        if (reviews.length > 0) {
             res.send({
                 result: true,
                 data: reviews,
-                nickname: req.session.nickname,
             });
         } else {
-            res.send({ result: false, data: reviews, msg: "댓글 조회 실패" });
+            res.send({
+                result: false,
+                msg: "댓글이 없습니다.",
+            });
         }
     } catch (error) {
         console.log("error", error);
@@ -34,24 +47,23 @@ exports.findAllReviews = async (req, res) => {
 // post /review
 // 댓글 등록
 exports.createReview = async (req, res) => {
-    // 세션의 userId값을 받아와서 등록하는게 원칙
-    // 아직 로그인 연동이 안되므로 임시로 userId 값을 생성해서 테스트
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
-        console.log("reqbody", req.body);
-        const { jobsId, comment, userId } = req.body;
+        const { jobsId, comment } = req.body;
         // 리뷰 테이블 삽입시 필요한 컬럼 users_id,jobs_id,reviews_comment
         const isSuccess = await reviewsModel.create({
             reviews_comment: comment,
             jobs_id: jobsId,
-            // users_id: req.session.userId,
-            users_id: userId,
+            users_id: req.session.userId,
         });
         console.log("issuccess", isSuccess);
         if (isSuccess) {
-            res.send({ result: true, data: null, msg: "댓글 등록 성공" });
+            res.send({ result: true, msg: "댓글 등록 성공" });
         } else {
-            res.send({ result: false, data: null, msg: "댓글 등록 실패" });
+            res.send({ result: false, msg: "댓글 등록 실패" });
         }
     } catch (error) {
         console.log("error", error);
@@ -59,13 +71,31 @@ exports.createReview = async (req, res) => {
     }
 };
 
-// put /review
+// patch /review
 // 댓글 수정
 exports.updateReview = async (req, res) => {
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
         console.log(req.body);
-        const { reviewId, comment } = req.body;
+        const { reviewId, comment, jobsId } = req.body;
+        // 작성자만 수정 할 수 있는 로직
+        // 프론트에 저장된 닉네임과 디비 값 비교후 작성자일 경우 auth값 보내기
+        const authUserId = await reviewsModel.findAll({
+            where: {
+                users_id: req.session.userId,
+                reviews_id: reviewId,
+                jobs_id: jobsId,
+            },
+        });
+        console.log(authUserId.length);
+        if (authUserId.length === 0)
+            return res
+                .status(404)
+                .send({ auth: false, msg: "권한이 없습니다." }); // 로그인 했지만 본인이 작성한 리뷰가 아닐경우
+        // 권한이 있을 경우
         const isSuccess = await reviewsModel.update(
             {
                 reviews_comment: comment,
@@ -76,12 +106,10 @@ exports.updateReview = async (req, res) => {
                 },
             }
         );
-
-        console.log(isSuccess);
         if (isSuccess > 0) {
-            res.send({ result: true, data: null, msg: "댓글 수정 성공" });
+            res.send({ result: true, msg: "댓글 수정 성공", auth: true });
         } else {
-            res.send({ result: false, data: null, msg: "댓글 수정 내용없음" });
+            res.send({ result: false, msg: "댓글 수정 내용없음", auth: true });
         }
     } catch (error) {
         console.log("error", error);
@@ -92,7 +120,10 @@ exports.updateReview = async (req, res) => {
 // delete /review
 // 댓글 삭제
 exports.deleteReview = async (req, res) => {
-    // if (!req.session.userId) return res.redirect("/");
+    if (!req.session.userId)
+        return res
+            .status(404)
+            .send({ result: false, msg: "로그인이 필요합니다" });
     try {
         console.log(req.body);
         const { reviewId } = req.body;

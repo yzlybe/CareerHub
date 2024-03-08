@@ -1,215 +1,430 @@
 <!DOCTYPE html>
 <html lang="ko">
-   <head>
+    <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>detail</title>
 
         <link rel="stylesheet" href="/static/css/detail.css" />
-        
+
         <!-- axios CDN -->
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= KAKAO_MAP_API_KEY %>&libraries=services"></script> 
-<script src="/static/js/detail.js"></script>       
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= KAKAO_MAP_API_KEY %>&libraries=services"></script>
+
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    </head>
 
     <body>
         <div name="jobs">
-
             <!-- <form name="detail" action="/result" method="post"> -->
             <form name="detail">
+                <h1>📕 회사 로고</h1>
+                <img
+                    id="resultImage"
+                    src="/static/img/default.png"
+                    alt="기본 프로필 이미지"
+                    width="100"
+                    height="100"
+                    class="profile"
+                />
 
+                <span class="filebox">
+                    <label for="img_path" class="input-file-button"
+                        >회사 로고 업로드</label
+                    >
+                    <input
+                        type="file"
+                        id="img_path"
+                        name="img_path"
+                        onchange="fileUpload()"
+                        style="display: none"
+                    />
+                </span>
+                <br />
 
-            <h1>📕 회사 로고</h1>
-            <img
-                id="resultImage"
-                src="/static/img/default.png"
-                alt="기본 프로필 이미지"
-                width="100"
-                height="100"
-                class="profile"
-            />
+                <h1>📗 회사명</h1>
+                <input
+                    type="text"
+                    name="company_name"
+                    placeholder="회사명을 입력해주세요"
+                    class="text-input"
+                    required
+                />
+                <br />
 
-            <span class="filebox">
-            <label for="img_path" class="input-file-button">회사 로고 업로드</label>
-            <input type="file" id="img_path" name="img_path" onchange="fileUpload()" style="display: none;" />
-            </span>
-            <br />
+                <h1>📘 경력</h1>
+                <div name="form-check-label">
+                    <label class="form-check-label">
+                        <input
+                            type="radio"
+                            name="levels"
+                            value="신입"
+                            class="form-check-input"
+                        />
+                        신입
+                    </label>
+                    <label class="form-check-label">
+                        <input
+                            type="radio"
+                            name="levels"
+                            value="경력"
+                            class="form-check-input"
+                        />
+                        경력
+                    </label>
+                    <label class="form-check-label">
+                        <input
+                            type="radio"
+                            name="levels"
+                            value="무관"
+                            class="form-check-input"
+                        />
+                        경력 무관
+                    </label>
+                </div>
 
+                <h1>👨‍💻 회사 소개</h1>
+                <textarea
+                    name="introduce"
+                    placeholder="회사에 대한 소개를 적어주세요"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-            <h1>📗 회사명</h1>
-            <input type="text" name="company_name" placeholder="회사명을 입력해주세요"  class="text-input" required/>
-            <br />
+                <h1>📌 담당 업무</h1>
+                <textarea
+                    name="task"
+                    placeholder="회사에 입사하면 어떤 일을 하게 되나요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-            <h1>📘 경력</h1>
-            <div name="form-check-label"> 
-            <label class="form-check-label">
-            <input type="radio" name="levels" value="신입" class="form-check-input"> 신입
-            </label>
-            <label class="form-check-label">
-            <input type="radio" name="levels" value="경력" class="form-check-input"> 경력
-            </label>
-            <label class="form-check-label">
-            <input type="radio" name="levels" value="무관" class="form-check-input"> 경력 무관
-            </label>
-            </div>
+                <h1>📜 자격요건</h1>
+                <textarea
+                    name="conditions"
+                    placeholder="회사에 입사하려면 어떤 준비가 되어있어야 하나요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-            <h1>👨‍💻 회사 소개</h1>
-            <textarea name="introduce" placeholder="회사에 대한 소개를 적어주세요"  class="textarea-input"></textarea>
-            </textarea>
+                <h1>👍 우대 사항</h1>
+                <textarea
+                    name="prefer"
+                    placeholder="회사에 입사하는데 우대하는 사항은 무엇인가요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-            <h1>📌 담당 업무</h1>
-            <textarea name="task"  placeholder="회사에 입사하면 어떤 일을 하게 되나요?"  class="textarea-input"></textarea>
+                <h1>🔧 기술 스택</h1>
+                <div class="Checkbox" id="stackButtons">
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="reactCheckbox"
+                        value="React"
+                        class="form-check-input"
+                        style="resize: none"
+                    />
+                    <label
+                        for="reactCheckbox"
+                        class="form-check-label button-label"
+                        >React</label
+                    >
 
-            <h1>📜 자격요건</h1>
-            <textarea name="conditions"  placeholder="회사에 입사하려면 어떤 준비가 되어있어야 하나요?"  class="textarea-input"></textarea>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="vueCheckbox"
+                        value="Vue"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="vueCheckbox"
+                        class="form-check-label button-label"
+                        >Vue</label
+                    >
 
-            <h1>👍 우대 사항</h1>
-            <textarea name="prefer"  placeholder="회사에 입사하는데 우대하는 사항은 무엇인가요?"  class="textarea-input"></textarea>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="cssCheckbox"
+                        value="CSS"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="cssCheckbox"
+                        class="form-check-label button-label"
+                        >CSS</label
+                    >
 
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="angularCheckbox"
+                        value="Angular"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="angularCheckbox"
+                        class="form-check-label button-label"
+                        >Angular</label
+                    >
 
-            <h1>🔧 기술 스택</h1>
-            <div class="Checkbox" id="stackButtons">
-            <input type="checkbox" name="stack" id="reactCheckbox" value="React" class="form-check-input">
-            <label for="reactCheckbox" class="form-check-label button-label">React</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="javascriptCheckbox"
+                        value="JavaScript"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="javascriptCheckbox"
+                        class="form-check-label button-label"
+                        >JavaScript</label
+                    >
 
-            <input type="checkbox" name="stack" id="vueCheckbox" value="Vue" class="form-check-input">
-            <label for="vueCheckbox" class="form-check-label button-label">Vue</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="htmlCheckbox"
+                        value="HTML"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="htmlCheckbox"
+                        class="form-check-label button-label"
+                        >HTML</label
+                    >
 
-            <input type="checkbox" name="stack" id="cssCheckbox" value="CSS" class="form-check-input">
-            <label for="cssCheckbox" class="form-check-label button-label">CSS</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="typescriptCheckbox"
+                        value="TypeScript"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="typescriptCheckbox"
+                        class="form-check-label button-label"
+                        >TypeScript</label
+                    >
 
-            <input type="checkbox" name="stack" id="angularCheckbox" value="Angular" class="form-check-input">
-            <label for="angularCheckbox" class="form-check-label button-label">Angular</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="sassCheckbox"
+                        value="Sass"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="sassCheckbox"
+                        class="form-check-label button-label"
+                        >Sass</label
+                    >
 
-            <input type="checkbox" name="stack" id="javascriptCheckbox" value="JavaScript" class="form-check-input">
-            <label for="javascriptCheckbox" class="form-check-label button-label">JavaScript</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="jsxCheckbox"
+                        value="JSX"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="jsxCheckbox"
+                        class="form-check-label button-label"
+                        >JSX</label
+                    >
 
-            <input type="checkbox" name="stack" id="htmlCheckbox" value="HTML" class="form-check-input">
-            <label for="htmlCheckbox" class="form-check-label button-label">HTML</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="webpackCheckbox"
+                        value="Webpack"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="webpackCheckbox"
+                        class="form-check-label button-label"
+                        >Webpack</label
+                    >
+                </div>
 
-            <input type="checkbox" name="stack" id="typescriptCheckbox" value="TypeScript" class="form-check-input">
-            <label for="typescriptCheckbox" class="form-check-label button-label">TypeScript</label>
+                <h1>✨ 회사 복지</h1>
+                <textarea
+                    name="welfaer"
+                    placeholder="어떤 복지와 혜택이 있나요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-            <input type="checkbox" name="stack" id="sassCheckbox" value="Sass" class="form-check-input">
-            <label for="sassCheckbox" class="form-check-label button-label">Sass</label>
+                <h1>📅 마감일</h1>
+                <input
+                    type="datetime-local"
+                    id="deadline"
+                    name="deadline"
+                    required
+                />
+                까지
 
-            <input type="checkbox" name="stack" id="jsxCheckbox" value="JSX" class="form-check-input">
-            <label for="jsxCheckbox" class="form-check-label button-label">JSX</label>
+                <h1>📍 위치</h1>
 
-            <input type="checkbox" name="stack" id="webpackCheckbox" value="Webpack" class="form-check-input">
-            <label for="webpackCheckbox" class="form-check-label button-label">Webpack</label>
-            </div>
+                <div
+                    id="map"
+                    style="width: 900px; height: 400px; margin-top: 10px"
+                ></div>
+                <br />
+                <!-- 주소 검색 버튼 -->
+                <input
+                    type="button"
+                    class="input-file-button"
+                    onclick="sample5_execDaumPostcode()"
+                    value="주소 검색"
+                />
+                <!-- 현위치 버튼 -->
+                <input
+                    type="button"
+                    class="input-file-button"
+                    onclick="getCurrentLocation()"
+                    value="현위치 찾기"
+                /><br /><br />
 
-            <h1>✨ 회사 복지</h1>
-            <textarea name="welfaer"  placeholder="어떤 복지와 혜택이 있나요?"  class="textarea-input"></textarea>
+                <!-- 주소 입력 필드 -->
+                <input
+                    type="text"
+                    name="address"
+                    id="sample5_address"
+                    placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다"
+                    class="text-input"
+                    readonly
+                /><br /><br />
+                <!-- 상세 주소 입력 필드 -->
+                <input
+                    type="text"
+                    name="address_detail"
+                    placeholder="상세 주소를 적어주세요 (선택)"
+                    class="text-input"
+                /><br /><br />
 
-            <h1>📅 마감일</h1>
-            <input type="datetime-local" id="deadline" name="deadline" required/> 까지
+                <h1>📎 공고 출처</h1>
+                <input
+                    type="text"
+                    name="source"
+                    placeholder="어떤 사이트에서 정보를 받았는지 출처를 꼭 밝혀주세요!"
+                    class="text-input"
+                />
 
-<h1>📍 위치</h1>
+                <h1>💡 기타 추가 정보</h1>
+                <textarea
+                    name="others"
+                    placeholder="회사에 대한 추가 정보 혹은 여러분의 자유로운 의견을 써주세요(선택)"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
+                <br /><br />
 
+                <label name="warning">
+                    <input type="checkbox" name="deleteCheckbox" />
+                    욕설 혹은 거짓 정보 등 다른 유저들에게 불쾌함을 줄 수 있는
+                    공고는 관리자에 의해 삭제될 수 있습니다.
+                </label>
 
-<div id="map" style="width:900px;height:400px;margin-top:10px;"></div>
-<br/>
-<!-- 주소 검색 버튼 -->
-<input type="button"  class="input-file-button"  onclick="sample5_execDaumPostcode()" value="주소 검색">
-<!-- 현위치 버튼 -->
-<input type="button"  class="input-file-button"  onclick="getCurrentLocation()" value="현위치 찾기"><br/><br/>
+                <button
+                    type="button"
+                    class="input-file-button"
+                    id="submit-button"
+                    onclick="detailSubmit()"
+                >
+                    제출
+                </button>
+            </form>
+        </div>
 
-<!-- 주소 입력 필드 -->
-<input type="text" name="address" id="sample5_address" placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다" class="text-input" readonly /><br/><br/>
-<!-- 상세 주소 입력 필드 -->
-<input type="text" name="address_detail" placeholder="상세 주소를 적어주세요 (선택)" class="text-input"/><br/><br/>
+        <script>
+            var mapContainer = document.getElementById("map"); // 지도를 표시할 div
+            var mapOption = {
+                center: new daum.maps.LatLng(37.537187, 127.005476), // 기본 중심좌표
+                level: 1, // 지도의 확대 레벨
+            };
 
-
-<script>
-var mapContainer = document.getElementById("map"); // 지도를 표시할 div
-var mapOption = {
-    center: new daum.maps.LatLng(37.537187, 127.005476), // 기본 중심좌표
-    level: 1, // 지도의 확대 레벨
-};
-
-// 지도를 미리 생성
-var map = new daum.maps.Map(mapContainer, mapOption);
-// 주소-좌표 변환 객체를 생성
-var geocoder = new daum.maps.services.Geocoder();
-// 마커를 미리 생성
-var marker = new daum.maps.Marker({
-    position: new daum.maps.LatLng(37.537187, 127.005476),
-    map: map,
-});
-
-// 페이지 로딩 시 현위치로 지도의 중심을 이동하고 주소 입력 필드에 기본값 설정
-getCurrentLocation();
-
-// 주소 검색 함수
-function sample5_execDaumPostcode() {
-    new daum.Postcode({
-        oncomplete: function (data) {
-            var addr = data.address; // 최종 주소 변수
-
-            // 주소 정보를 해당 필드에 넣는다.
-            document.getElementById("sample5_address").value = addr;
-            // 주소로 상세 정보를 검색
-            geocoder.addressSearch(data.address, function (results, status) {
-                // 정상적으로 검색이 완료됐으면
-                if (status === daum.maps.services.Status.OK) {
-                    var result = results[0]; //첫번째 결과의 값을 활용
-
-                    // 해당 주소에 대한 좌표를 받아서
-                    var coords = new daum.maps.LatLng(result.y, result.x);
-                    // 지도 중심을 변경한다.
-                    map.setCenter(coords);
-                    // 마커를 결과값으로 받은 위치로 옮긴다.
-                    marker.setPosition(coords);
-                }
+            // 지도를 미리 생성
+            var map = new daum.maps.Map(mapContainer, mapOption);
+            // 주소-좌표 변환 객체를 생성
+            var geocoder = new daum.maps.services.Geocoder();
+            // 마커를 미리 생성
+            var marker = new daum.maps.Marker({
+                position: new daum.maps.LatLng(37.537187, 127.005476),
+                map: map,
             });
-        },
-    }).open();
-}
 
-// 현위치 찾기 함수
-function getCurrentLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var lat = position.coords.latitude; // 위도
-            var lng = position.coords.longitude; // 경도
+            // 페이지 로딩 시 현위치로 지도의 중심을 이동하고 주소 입력 필드에 기본값 설정
+            getCurrentLocation();
 
-            var currentPos = new daum.maps.LatLng(lat, lng);
-            map.setCenter(currentPos);
-            marker.setPosition(currentPos);
+            // 주소 검색 함수
+            function sample5_execDaumPostcode() {
+                new daum.Postcode({
+                    oncomplete: function (data) {
+                        var addr = data.address; // 최종 주소 변수
 
-            // 주소로 변환하여 입력 필드에 넣기
-            geocoder.coord2Address(lng, lat, function (result, status) {
-                if (status === daum.maps.services.Status.OK) {
-                    var address = result[0].address.address_name;
-                    document.getElementById("sample5_address").value = address;
+                        // 주소 정보를 해당 필드에 넣는다.
+                        document.getElementById("sample5_address").value = addr;
+                        // 주소로 상세 정보를 검색
+                        geocoder.addressSearch(
+                            data.address,
+                            function (results, status) {
+                                // 정상적으로 검색이 완료됐으면
+                                if (status === daum.maps.services.Status.OK) {
+                                    var result = results[0]; //첫번째 결과의 값을 활용
+
+                                    // 해당 주소에 대한 좌표를 받아서
+                                    var coords = new daum.maps.LatLng(
+                                        result.y,
+                                        result.x
+                                    );
+                                    // 지도 중심을 변경한다.
+                                    map.setCenter(coords);
+                                    // 마커를 결과값으로 받은 위치로 옮긴다.
+                                    marker.setPosition(coords);
+                                }
+                            }
+                        );
+                    },
+                }).open();
+            }
+
+            // 현위치 찾기 함수
+            function getCurrentLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (
+                        position
+                    ) {
+                        var lat = position.coords.latitude; // 위도
+                        var lng = position.coords.longitude; // 경도
+
+                        var currentPos = new daum.maps.LatLng(lat, lng);
+                        map.setCenter(currentPos);
+                        marker.setPosition(currentPos);
+
+                        // 주소로 변환하여 입력 필드에 넣기
+                        geocoder.coord2Address(
+                            lng,
+                            lat,
+                            function (result, status) {
+                                if (status === daum.maps.services.Status.OK) {
+                                    var address =
+                                        result[0].address.address_name;
+                                    document.getElementById(
+                                        "sample5_address"
+                                    ).value = address;
+                                }
+                            }
+                        );
+                    });
+                } else {
+                    alert("현위치를 찾을 수 없습니다.");
                 }
-            });
-        });
-    } else {
-        alert("현위치를 찾을 수 없습니다.");
-    }
-}
-</script>
-
-            <h1>📎 공고 출처</h1>
-            <input type="text" name="source"  placeholder="어떤 사이트에서 정보를 받았는지 출처를 꼭 밝혀주세요!" class="text-input"/>
-
-            <h1>💡 기타 추가 정보</h1>
-            <textarea name="others"   placeholder="회사에 대한 추가 정보 혹은 여러분의 자유로운 의견을 써주세요(선택)"  class="textarea-input"></textarea>
-<br/><br/>
-
-
-        <label name="warning">
-            <input type="checkbox" name="deleteCheckbox"/>
-            욕설 혹은 거짓 정보 등 다른 유저들에게 불쾌함을 줄 수 있는 공고는 관리자에 의해 삭제될 수 있습니다.
-        </label>
-
-        <button type="button" class="input-file-button" id="submit-button" onclick=detailSubmit()>제출</button>
-    </form>
-</div>
-
+            }
+        </script>
+        <script src="/static/js/detail.js"></script>
+    </body>
 </html>
