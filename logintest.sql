@@ -1,4 +1,4 @@
--- Active: 1707101282876@@127.0.0.1@3306@sesac
+
 show tables;
 
 -- users table
@@ -103,8 +103,6 @@ VALUES
 (null, true, true, true, true, true, true, true, true, true, true, 8),
 (null, false, true, false, true, false, true, false, true, false, true, 9),
 (null, true, false, true, false, true, false, true, false, true, false, 10);
-
-
 
 drop table users;
 drop table jobs;
