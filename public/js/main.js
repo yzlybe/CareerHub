@@ -26,6 +26,8 @@ async function fetchData(url) {
         return [];
     }
 }
+
+
  //로그인시 모달을 닫는 함수
  function closeAuthModal() {
     const authModal = document.getElementById("authModal");
@@ -44,6 +46,8 @@ function logout() {
     })
     .then((res) => {
         portfolioData.forEach(item => item.isFavorite = false);
+        localStorage.removeItem("nickname");
+        localStorage.removeItem("userId");
         updateDisplay();
         updateLoginState('false'); // 로컬 스토리지에 로그아웃 상태 반영
         // 페이지 리로드 또는 UI 업데이트 등 필요한 추가 작업 수행
@@ -236,10 +240,14 @@ function attachCardClickEvent() {
     document.querySelectorAll('.portfolioCard').forEach(card => {
         card.addEventListener('click', () => {
             const itemId = card.getAttribute('data-item-id');
+            // 먼저 클릭 이벤트를 처리하고,
+            handlePortfolioCardClick(itemId);
+            // 그 다음 페이지 이동을 수행합니다.
             window.location.href = `/jobs/${itemId}`;
         });
     });
 }
+
 
 // 검색 처리
 let currentSearchText = '';
@@ -416,12 +424,12 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     })
     .then(async (res) => {
-        const { result, msg } = res.data; // 서버 응답 가정
+        const { result, msg, userId, nickname } = res.data; // 서버 응답 가정
         if (result) {
             
             alert(msg); // 성공 메시지 알림
-            
-            
+            localStorage.setItem("userId", userId);
+            localStorage.setItem("nickname", nickname);
             updateLoginState('true');
             portfolioData = await fetchData('/main');
             loadFavoritesFromLocalStorage();
@@ -631,4 +639,42 @@ document.addEventListener("DOMContentLoaded", function () {
             // 여기서 로그인 페이지로 리다이렉트하거나 로그인 모달을 표시하는 등의 추가 동작을 구현할 수 있습니다.
         }
     });
+});
+// 현재 표시 중인 페이지가 최근 본 공고인지를 추적하는 상태 변수 추가
+let viewingRecentPortfolios = false;
+// '내가 최근 본 공고' 버튼 클릭 이벤트 리스너
+document.getElementById('viewRecentPortfolios').addEventListener('click', function() {
+    if (viewingRecentPortfolios) {
+        // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
+        renderItems(portfolioData);
+        viewingRecentPortfolios = false; // 상태 업데이트
+    } else {
+        // 최근 본 공고 목록을 보여줌
+        const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedPortfolios')) || [];
+        renderRecentlyViewedPortfolios(recentlyViewed);
+        viewingRecentPortfolios = true; // 상태 업데이트
+    }
+    // 페이지네이션 컨트롤 및 이벤트 리스너 재설정
+    renderPaginationControls(filteredData.length);
+    attachDynamicEventListeners();
+});
+function handlePortfolioCardClick(portfolioId) {
+    let recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedPortfolios')) || [];
+    if (!recentlyViewed.includes(portfolioId)) {
+        recentlyViewed.unshift(portfolioId); // 배열의 맨 앞에 추가
+        recentlyViewed = recentlyViewed.slice(0, 12); // 최대 10개 항목만 유지
+        localStorage.setItem('recentlyViewedPortfolios', JSON.stringify(recentlyViewed));
+    }
+}
+function renderRecentlyViewedPortfolios(portfolioIds) {
+    const filteredPortfolios = portfolioData.filter(item => portfolioIds.includes(item.id.toString()));
+    renderItems(filteredPortfolios);
+    attachCardClickEvent();
+}
+
+// 초기 로딩 시 이벤트 리스너 등록 및 기타 설정
+document.addEventListener('DOMContentLoaded', () => {
+    
+    fetchData().then(data => { portfolioData = data; attachCardClickEvent(); });
+    attachCardClickEvent();
 });
