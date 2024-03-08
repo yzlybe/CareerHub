@@ -124,7 +124,7 @@ reviewsModel.belongsTo(jobsModel, {
     },
 });
 // 공고 -- 스택
-jobsModel.hasMany(stackModel, {
+jobsModel.hasOne(stackModel, {
     foreignKey: {
         name: "jobs_id",
         allowNull: false,
