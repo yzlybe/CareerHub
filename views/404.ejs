@@ -4,11 +4,39 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>404 Error</title>
-        <link rel="stylesheet" href="/static/css/err.css" />
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
+                background-color: #ffffff; /* 배경 색상 설정 */
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+            }
+
+            button {
+                margin-top: 20px; /* 버튼과 이미지 간의 간격 설정 */
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #ffc801; /* 버튼 배경 색상 설정 */
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        </style>
     </head>
     <body>
-        <h1>404</h1>
-        <h3>Page Not Found</h3>
-        <p>죄송합니다. 현재 페이지는 찾을 수 없는 페이지입니다.</p>
+        <img src="/static/img/404.jpg" alt="404 Not Found" width="600px" />
+        <a href="/"><button>main</button></a>
     </body>
 </html>
