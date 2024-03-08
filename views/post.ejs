@@ -8,6 +8,7 @@
         <title><%=data.company_name%> 정보</title>
     </head>
     <body>
+        <button type="button" onclick="session()">세션 확인</button>
         <!-- 회사 정보 -->
         <div class="company">
             <div class="imgContainer">
@@ -18,55 +19,387 @@
                 />
             </div>
             <p class="companyName"><%=data.company_name%></p>
-            <p class="experienceLevel"><%=data.levels%></p>
-            <button class="likeButton">❤ <%=data.cnt_likes%></button>
+            <p class="experienceLevel"><%=data.levels%><%=data.levelValue%></p>
+            <button class="likeButton" onclick="increLike('<%=data.jobs_id%>')">
+                ❤ <%=data.cnt_likes%>
+            </button>
+            <button
+                class="unlikeButton"
+                onclick="reduceLike('<%=data.jobs_id%>')"
+            >
+                ❤ <%=data.cnt_likes%>
+            </button>
         </div>
         <!-- 본문 -->
-        <div class="content">
-            <div class="introduce">
-                <h2>👨‍💻 회사 소개</h2>
-                <p><%=data.introduce%></p>
+        <div class="content mainBlock">
+            <!-- 본문 조회 -->
+            <div class="viewContent">
+                <div class="introduce">
+                    <h2>👨‍💻 회사 소개</h2>
+                    <p><%=data.introduce%></p>
+                </div>
+                <div class="task">
+                    <h2>📌 담당 업무</h2>
+                    <p><%=data.task%></p>
+                </div>
+                <div class="condition">
+                    <h2>📜 자격 요건</h2>
+                    <p><%=data.conditions%></p>
+                </div>
+                <div class="preferentialTreatment">
+                    <h2>👍 우대 사항</h2>
+                    <p><%=data.prefer%></p>
+                </div>
+                <div class="skills">
+                    <h2>🔧 기술 스택</h2>
+                    <p><%=data.stack%></p>
+                </div>
+                <div class="welfare">
+                    <h2>✨ 회사 복지</h2>
+                    <p><%=data.welfare%></p>
+                </div>
+                <div class="deadline">
+                    <h2>📅 마감일</h2>
+                    <p><%=data.deadline%></p>
+                </div>
+                <div class="location">
+                    <h2>📍 위치</h2>
+                    <p class="address"><%=data.address%></p>
+                    <div class="map"></div>
+                </div>
+                <div class="source">
+                    <h2>📎 공고 출처</h2>
+                    <p><%=data.source%></p>
+                </div>
+                <div class="other">
+                    <h2>💡 기타 추가 정보</h2>
+                    <p><%=data.others%></p>
+                </div>
             </div>
-            <div class="task">
-                <h2>📌 담당 업무</h2>
-                <p><%=data.task%></p>
-            </div>
-            <div class="condition">
-                <h2>📜 자격 요건</h2>
-                <p><%=data.conditions%></p>
-            </div>
-            <div class="preferentialTreatment">
-                <h2>👍 우대 사항</h2>
-                <p><%=data.prefer%></p>
-            </div>
-            <div class="skills">
-                <h2>🔧 기술 스택</h2>
-                <p><%=data.stack%></p>
-            </div>
-            <div class="welfare">
-                <h2>✨ 회사 복지</h2>
-                <p><%=data.welfare%></p>
-            </div>
-            <div class="deadline">
-                <h2>📅 마감일</h2>
-                <p><%=data.deadline%></p>
-            </div>
-            <div class="location">
-                <h2>📍 위치</h2>
-                <p class="address"><%=data.address%></p>
-                <div class="map"></div>
-            </div>
-            <div class="source">
-                <h2>📎 공고 출처</h2>
-                <p><%=data.source%></p>
-            </div>
-            <div class="other">
-                <h2>💡 기타 추가 정보</h2>
-                <p><%=data.others%></p>
+            <!-- 본문 수정 -->
+            <div class="editContent hidden">
+                <form name="editContent">
+                    <h2>📕 회사 로고</h2>
+                    <img
+                        id="resultImage"
+                        src="/static/img/default.png"
+                        alt="기본 프로필 이미지"
+                        width="100"
+                        height="100"
+                        class="profile"
+                    />
+
+                    <span class="filebox">
+                        <label for="img_path" class="input-file-button">
+                            회사 로고 업로드
+                        </label>
+                        <input
+                            type="file"
+                            id="img_path"
+                            name="img_path"
+                            onchange="fileUpload()"
+                            style="display: none"
+                        />
+                    </span>
+                    <br />
+
+                    <h2>📗 회사명</h2>
+                    <input
+                        type="text"
+                        name="company_name"
+                        placeholder="회사명을 입력해주세요"
+                        class="text-input"
+                        value="<%=data.introduce%>"
+                        required
+                    />
+                    <br />
+
+                    <h2>📘 경력</h2>
+                    <div name="form-check-label">
+                        <label class="form-check-label">
+                            <input
+                                type="radio"
+                                name="levels"
+                                value="신입"
+                                class="form-check-input"
+                            />
+                            신입
+                        </label>
+                        <label class="form-check-label">
+                            <input
+                                type="radio"
+                                name="levels"
+                                value="경력"
+                                class="form-check-input"
+                            />
+                            경력
+                        </label>
+                        <label class="form-check-label">
+                            <input
+                                type="radio"
+                                name="levels"
+                                value="무관"
+                                class="form-check-input"
+                            />
+                            경력 무관
+                        </label>
+                    </div>
+
+                    <h2>👨‍💻 회사 소개</h2>
+                    <textarea
+                        name="introduce"
+                        placeholder="회사에 대한 소개를 적어주세요"
+                        class="textarea-input"
+                        style="resize: none"
+                    >
+                    </textarea>
+
+                    <h2>📌 담당 업무</h2>
+                    <textarea
+                        name="task"
+                        placeholder="회사에 입사하면 어떤 일을 하게 되나요?"
+                        class="textarea-input"
+                        style="resize: none"
+                    ></textarea>
+
+                    <h2>📜 자격요건</h2>
+                    <textarea
+                        name="conditions"
+                        placeholder="회사에 입사하려면 어떤 준비가 되어있어야 하나요?"
+                        class="textarea-input"
+                        style="resize: none"
+                    ></textarea>
+
+                    <h2>👍 우대 사항</h2>
+                    <textarea
+                        name="prefer"
+                        placeholder="회사에 입사하는데 우대하는 사항은 무엇인가요?"
+                        class="textarea-input"
+                        style="resize: none"
+                    ></textarea>
+
+                    <!-- 스택 박스 -->
+                    <h2>🔧 기술 스택</h2>
+                    <div class="Checkbox" id="stackButtons">
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="reactCheckbox"
+                            value="React"
+                            class="form-check-input"
+                            style="resize: none"
+                        />
+                        <label
+                            for="reactCheckbox"
+                            class="form-check-label button-label"
+                            >React</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="vueCheckbox"
+                            value="Vue"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="vueCheckbox"
+                            class="form-check-label button-label"
+                            >Vue</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="cssCheckbox"
+                            value="CSS"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="cssCheckbox"
+                            class="form-check-label button-label"
+                            >CSS</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="angularCheckbox"
+                            value="Angular"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="angularCheckbox"
+                            class="form-check-label button-label"
+                            >Angular</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="javascriptCheckbox"
+                            value="JavaScript"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="javascriptCheckbox"
+                            class="form-check-label button-label"
+                            >JavaScript</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="htmlCheckbox"
+                            value="HTML"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="htmlCheckbox"
+                            class="form-check-label button-label"
+                            >HTML</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="typescriptCheckbox"
+                            value="TypeScript"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="typescriptCheckbox"
+                            class="form-check-label button-label"
+                            >TypeScript</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="sassCheckbox"
+                            value="Sass"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="sassCheckbox"
+                            class="form-check-label button-label"
+                            >Sass</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="jsxCheckbox"
+                            value="JSX"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="jsxCheckbox"
+                            class="form-check-label button-label"
+                            >JSX</label
+                        >
+
+                        <input
+                            type="checkbox"
+                            name="stack"
+                            id="webpackCheckbox"
+                            value="Webpack"
+                            class="form-check-input"
+                        />
+                        <label
+                            for="webpackCheckbox"
+                            class="form-check-label button-label"
+                            >Webpack</label
+                        >
+                    </div>
+
+                    <h2>✨ 회사 복지</h2>
+                    <textarea
+                        name="welfaer"
+                        placeholder="어떤 복지와 혜택이 있나요?"
+                        class="textarea-input"
+                        style="resize: none"
+                    ></textarea>
+
+                    <h2>📅 마감일</h2>
+                    <input
+                        type="datetime-local"
+                        id="deadline"
+                        name="deadline"
+                        required
+                    />
+                    까지
+
+                    <h2>📍 위치</h2>
+
+                    <div
+                        id="map"
+                        style="width: 900px; height: 400px; margin-top: 10px"
+                    ></div>
+                    <br />
+                    <!-- 주소 검색 버튼 -->
+                    <input
+                        type="button"
+                        class="input-file-button"
+                        onclick="sample5_execDaumPostcode()"
+                        value="주소 검색"
+                    />
+                    <!-- 현위치 버튼 -->
+                    <input
+                        type="button"
+                        class="input-file-button"
+                        onclick="getCurrentLocation()"
+                        value="현위치 찾기"
+                    /><br /><br />
+
+                    <!-- 주소 입력 필드 -->
+                    <input
+                        type="text"
+                        name="address"
+                        id="sample5_address"
+                        placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다"
+                        class="text-input"
+                        readonly
+                    /><br /><br />
+                    <!-- 상세 주소 입력 필드 -->
+                    <input
+                        type="text"
+                        name="address_detail"
+                        placeholder="상세 주소를 적어주세요 (선택)"
+                        class="text-input"
+                    /><br /><br />
+
+                    <h2>📎 공고 출처</h2>
+                    <input
+                        type="text"
+                        name="source"
+                        placeholder="어떤 사이트에서 정보를 받았는지 출처를 꼭 밝혀주세요!"
+                        class="text-input"
+                    />
+
+                    <h2>💡 기타 추가 정보</h2>
+                    <textarea
+                        name="others"
+                        placeholder="회사에 대한 추가 정보 혹은 여러분의 자유로운 의견을 써주세요(선택)"
+                        class="textarea-input"
+                        style="resize: none"
+                    ></textarea>
+                    <br />
+                    <!-- 수정 확인 버튼 -->
+                    <button type="button" onclick="editPost()">
+                        수정(완료)
+                    </button>
+                </form>
             </div>
         </div>
         <div class="contentButtons">
-            <button class="editButton" onclick="editPost()">수정</button>
+            <!-- 수정창 전환 버튼 -->
+            <button
+                class="editReqButton"
+                onclick="editReqPost('<%=data.userId%>')"
+            >
+                수정(전환)
+            </button>
             <button
                 class="deleteButton"
                 onclick="deletePost('<%=data.jobs_id%>')"
@@ -76,8 +409,8 @@
         </div>
         <br />
         <!-- 댓글 -->
-        <!-- 댓글 등록 -->
-        <div class="comments">
+        <div class="comments mainBlock">
+            <!-- 댓글 등록 -->
             <form name="inputComment">
                 <input
                     type="textarea"
@@ -94,9 +427,10 @@
             </form>
             <br />
             <!-- 댓글 조회 -->
+            <!-- Todo: 예외처리 추가하기 -->
             <% for (let i= 0; i < reviewsdata.length; i++) { %>
             <div class="commentBox" id="cmt_<%=reviewsdata[i].reviews_id%>">
-                <p class="writer"><%=reviewsdata[i].users_id%></p>
+                <p class="writer"><%=reviewsdata[i].nickname%></p>
                 <p class="registerDate"><%=reviewsdata[i].created_at%></p>
                 <!-- 수정창 전환 시 사라짐 -->
                 <span class="commentButtons">
@@ -148,7 +482,73 @@
         </div>
 
         <script>
+            // 좋아요 증가 patch /like
+            function increLike(jobid) {
+                console.log(jobid);
+                axios({
+                    url: "/like",
+                    method: "PATCH",
+                    data: {
+                        jobsId: jobid,
+                    },
+                });
+            }
+            // 좋아요 감소 patch /unlike
+            function reduceLike(jobid) {
+                console.log(jobid);
+                axios({
+                    url: "/unlike",
+                    method: "PATCH",
+                    data: {
+                        jobsId: jobid,
+                    },
+                });
+            }
+
+            // 글 수정창 전환
+            function editReqPost(userid) {
+                window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+                const post = document.querySelector(".content");
+                const onDefault = post.querySelector(".viewContent");
+                const offDefault = post.querySelector(".editContent");
+                onDefault.classList.toggle("hidden");
+                offDefault.classList.toggle("hidden");
+            }
+
             // 글 수정 patch /jobs
+            function editPost(jobid) {
+                const form = document.forms["editContent"];
+                console.log(form);
+                //     axios({
+                //         url: "/jobs",
+                //         method: "PATCH",
+                //         data: {
+                //             jobsId: jobid,
+                //             usersId,
+                //             updated_at,
+                //             img_path,
+                //             companyName,
+                //             levels,
+                //             introduce,
+                //             task,
+                //             conditions,
+                //             prefer,
+                //             welfaer,
+                //             deadline,
+                //             address,
+                //             address_detail,
+                //             others,
+                //             source,
+                //         },
+                //     })
+                //         .then((res) => {
+                //             console.log(res);
+                //             document.location.reload();
+                //         })
+                //         .catch((err) => console.log(err));
+                window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+            }
+
             // 글 삭제 delete /jobs
             function deletePost(jobid) {
                 console.log(jobid);
@@ -159,9 +559,9 @@
                 }).then((res) => {
                     if (res) {
                         alert(
-                            "성공적으로 삭제되었습니다. 목록으로 돌아갑니다."
+                            "성공적으로 삭제되었습니다. 메인페이지로 돌아갑니다."
                         );
-                        document.location.href = "/jobs";
+                        document.location.href = "/";
                     } else {
                         alert("게시글을 삭제할 수 없습니다.");
                     }
@@ -170,32 +570,41 @@
 
             // 댓글 등록 post /review
             function sendCmt(jobid) {
-                const form = document.forms["inputComment"];
-                console.log(form.commentText.value);
-                const data = {
-                    comment: form.commentText.value,
-                    jobsId: jobid,
-                };
-                if (form.commentText.value.length === 0) {
-                    alert("내용을 입력해주세요.");
-                    return;
-                } else {
-                    axios({
-                        method: "POST",
-                        url: "/review",
-                        data: data,
-                    })
-                        .then((res) => {
-                            console.log("resdata", res.data);
-                            document.location.reload();
+                const checkLogin = JSON.parse(localStorage.isLoggedIn);
+                if (checkLogin) {
+                    const form = document.forms["inputComment"];
+                    console.log("comment", form.commentText.value);
+                    console.log("jobsId", jobid);
+                    console.log("userId", localStorage.userId);
+                    const data = {
+                        jobsId: jobid,
+                        comment: form.commentText.value,
+                        userId: localStorage.userId,
+                    };
+                    if (form.commentText.value.length === 0) {
+                        alert("내용을 입력해주세요.");
+                        return;
+                    } else {
+                        axios({
+                            method: "POST",
+                            url: "/review",
+                            data: data,
                         })
-                        .catch((err) => console.log(err));
+                            .then((res) => {
+                                console.log("resdata", res.data);
+                                document.location.reload();
+                                // window.scrollBy(0, window.innerHeight);
+                            })
+                            .catch((err) => console.log(err));
+                    }
+                } else {
+                    alert("로그인이 필요합니다.");
+                    return;
                 }
             }
 
             // 댓글 수정창 전환
-            // 사라질 부분 commentButtons
-            // 나올 부분 editComment
+            // 사라질 부분 commentButtons 나올 부분 editComment
             // 나중에 최적화 하기
             function editReqCmt(reviewid) {
                 const findCmt = document.getElementById(`cmt_${reviewid}`);
@@ -248,6 +657,12 @@
                         alert("댓글을 삭제할 수 없습니다.");
                     }
                 });
+            }
+
+            function session() {
+                console.log(localStorage.isLoggedIn);
+                console.log(localStorage.userId);
+                console.log(localStorage.nickname);
             }
         </script>
     </body>

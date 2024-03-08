@@ -13,6 +13,10 @@ button:hover {
     display: none;
 }
 
+.mainBlock {
+    width: 60vw;
+}
+
 /* 회사 정보 */
 .company {
     display: flex;
@@ -40,12 +44,14 @@ button:hover {
     border-radius: 5px;
     color: white;
 }
-
-/* 본문 */
-.content {
-    width: 60vw;
+.unlikeButton {
+    background-color: #c9c9c9;
+    border: 0px;
+    border-radius: 5px;
+    color: #c41b1b;
 }
 
+/* 본문 */
 .skills p {
     display: inline;
     padding: 0 3px;
@@ -61,7 +67,7 @@ button:hover {
     background-color: bisque;
 }
 
-.editButton {
+.editReqButton {
     background-color: #6767d4;
     border: 0px;
     border-radius: 5px;
@@ -79,7 +85,7 @@ button:hover {
     width: 60vw;
 }
 
-input {
+.comments form input {
     width: 100%;
     height: 3em;
     margin: 5px 0;
