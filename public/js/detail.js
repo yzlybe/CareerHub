@@ -1,3 +1,4 @@
+Detail.js;
 // 프로필 사진
 function fileUpload() {
     const fileInput = document.getElementById("img_path");
@@ -62,6 +63,13 @@ function detailSubmit() {
     })
         .then((res) => {
             console.log("resdata", res.data);
+            if (res.data.result) {
+                alert(res.data.msg);
+                window.location.href = `/jobs/${res.data.jobsId}`;
+            } else {
+                alert(res.data.msg);
+                form.reset;
+            }
         })
         .catch((err) => console.log(err));
 }
