@@ -1,4 +1,3 @@
-main.js;
 // 데이터 로딩 및 처리
 async function fetchData(url) {
     try {

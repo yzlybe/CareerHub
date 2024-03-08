@@ -1,4 +1,3 @@
-Detail.js;
 // 프로필 사진
 function fileUpload() {
     const fileInput = document.getElementById("img_path");

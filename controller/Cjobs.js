@@ -1,4 +1,3 @@
-Jobs.js;
 //model 불러오기
 const {
     usersModel,
