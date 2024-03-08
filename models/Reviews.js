@@ -21,10 +21,10 @@ const reviewsModel = (Sequelize, DataTypes) => {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
-            nickname: {
+             nickname: {
                 type: DataTypes.STRING(255),
                 allowNull: false,
-            },
+         },
         },
         {
             tableName: "reviews",

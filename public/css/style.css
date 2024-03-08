@@ -351,7 +351,7 @@ button[onclick="renderLoginForm()"] {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
+    background-color: white;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
@@ -377,3 +377,8 @@ button[onclick="renderLoginForm()"] {
     display: block;
 }
 
+
+.active-background {
+    background-color:#007bff !important; /* 어두운 회색 */
+    color: white !important; /* 텍스트 색상을 흰색으로 */
+}
