@@ -1,35 +1,37 @@
 // 데이터 로딩 및 처리
 async function fetchData(url) {
     try {
-        const res = await axios.get(url);
-        return res.data.map(dataItem => {
-            const stacks = dataItem.stacks[0]; // 서버에서 스택 배열을 가져오고, 첫 번째 요소를 선택
-            const techStack = Object.keys(stacks).filter(key => stacks[key]); // true인 스택만 필터링하여 배열로 가져옴
+        url = "/main";
+        const res = await axios.get(url); // 주어진 URL에서 데이터 가져오기
+        return res.data.map((dataItem) => {
+            // 가져온 데이터를 변환하여 반환
+            const stacks = dataItem.stack; // 서버에서 스택 객체를 가져와 저장
+            const techStack = Object.keys(stacks).filter((key) => stacks[key]); // true인 스택만 필터링하여 배열로 가져옴
             const tags = techStack.map((tag) => {
                 // 첫 글자 대문자로 변환하여 태그 추가
                 if (tag === "typescript") return "TypeScript";
                 if (tag === "javascript") return "JavaScript";
                 return tag.charAt(0).toUpperCase() + tag.slice(1);
-            })
+            });
+            const finalTags = tags.length > 0 ? tags : ["없음"]; // 스택이 없으면 "없음" 태그를 사용
             return {
                 id: dataItem.jobs_id,
                 title: dataItem.company_name,
                 date: dataItem.created_at,
-                tags: tags.length > 0 ? tags : [], // 스택이 없으면 기본값으로 설정
+                tags: finalTags, // 스택이 없으면 "없음" 태그로 설정
                 imageUrl: dataItem.img_path,
                 favoriteCount: dataItem.cnt_likes,
                 isFavorite: false, // 초기 즐겨찾기 상태는 false로 설정
             };
         });
     } catch (error) {
-        console.error("Error fetching data:", error);
-        return [];
+        console.error("Error fetching data:", error); // 오류 발생 시 콘솔에 오류 메시지 출력
+        return []; // 오류가 발생했을 때는 빈 배열 반환
     }
 }
 
-
- //로그인시 모달을 닫는 함수
- function closeAuthModal() {
+//로그인시 모달을 닫는 함수
+function closeAuthModal() {
     const authModal = document.getElementById("authModal");
     authModal.style.display = "none";
 }
@@ -37,42 +39,37 @@ let portfolioData = [];
 let currentPage = 1;
 const itemsPerPage = 12;
 let isFavoriteMode = false; // '관심 공고' 모드를 추적하는 상태
-
 function logout() {
     axios({
         method: "get",
         url: "/logout", // 로그아웃을 처리하는 서버의 엔드포인트
-        
     })
-    .then((res) => {
-        portfolioData.forEach(item => item.isFavorite = false);
-        localStorage.removeItem("nickname");
-        localStorage.removeItem("userId");
-        updateDisplay();
-        updateLoginState('false'); // 로컬 스토리지에 로그아웃 상태 반영
-        // 페이지 리로드 또는 UI 업데이트 등 필요한 추가 작업 수행
-        alert('로그아웃되었습니다.'); // 성공 메시지 알림
-    })
-    .catch((error) => {
-        console.error("로그아웃 중 오류 발생:", error);
-    });
-    
+        .then((res) => {
+            portfolioData.forEach((item) => (item.isFavorite = false));
+            localStorage.removeItem("nickname");
+            localStorage.removeItem("userId");
+            updateDisplay();
+            updateLoginState("false"); // 로컬 스토리지에 로그아웃 상태 반영
+            // 페이지 리로드 또는 UI 업데이트 등 필요한 추가 작업 수행
+            alert("로그아웃되었습니다."); // 성공 메시지 알림
+        })
+        .catch((error) => {
+            console.error("로그아웃 중 오류 발생:", error);
+        });
+
     closeAuthModal(); // 로그아웃 시 모달 닫기
 }
-
 function handleLoginClick() {
     const authModal = document.getElementById("authModal");
     authModal.style.display = "block";
 }
 function updateLoginState(isLoggedInState) {
     // 로컬 스토리지의 상태를 업데이트
-    localStorage.setItem('isLoggedIn', isLoggedInState);
-    isLoggedIn = isLoggedInState === 'true'; // 문자열로 저장된 상태를 불리언으로 변환
-
+    localStorage.setItem("isLoggedIn", isLoggedInState);
+    isLoggedIn = isLoggedInState === "true"; // 문자열로 저장된 상태를 불리언으로 변환
     const loginButton = document.querySelector(".login-button");
     const dropdown = document.querySelector(".dropdown");
     const interestButton = document.querySelector(".interest-button");
-
     if (isLoggedIn) {
         // 로그아웃 상태일 때 보여줄 아이콘과 텍스트
         loginButton.innerHTML = `<span class="material-icons">logout</span> Log Out`;
@@ -89,28 +86,23 @@ function updateLoginState(isLoggedInState) {
         loginButton.addEventListener("click", handleLoginClick); // 새 이벤트 리스너 연결
     }
 }
-
-
 // 동적 이벤트 리스너 설정 (즐겨찾기 버튼 등)
 function attachDynamicEventListeners() {
     attachFavoriteEventListeners();
     attachCardClickEvent();
 }
-
 document.addEventListener("DOMContentLoaded", async () => {
-    const storedIsLoggedIn = localStorage.getItem('isLoggedIn') || 'false';
-    updateLoginState(storedIsLoggedIn === 'true' ? 'true' : 'false'); // 로컬 스토리지에서 상태 읽기
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn") || "false";
+    updateLoginState(storedIsLoggedIn === "true" ? "true" : "false"); // 로컬 스토리지에서 상태 읽기
     // 데이터 로딩 및 기타 초기화 로직
     portfolioData = await fetchData("/main");
     initialize();
 });
-
 // 초기화 및 이벤트 리스너 설정
 function initialize() {
     updateDisplay(getCurrentPageItems(), portfolioData.length);
     attachStaticEventListeners();
 }
-
 // 현재 페이지 아이템 가져오기
 function getCurrentPageItems(filteredData = getFilteredData()) {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -120,54 +112,68 @@ function getCurrentPageItems(filteredData = getFilteredData()) {
 // 필터링된 데이터 반환
 function getFilteredData() {
     // 현재 검색어, 즐겨찾기 상태, 선택된 태그를 모두 고려하여 데이터를 필터링
-    return portfolioData.filter(item => {
-        const matchesSearchText = item.title.toLowerCase().includes(currentSearchText);
+    return portfolioData.filter((item) => {
+        const matchesSearchText = item.title
+            .toLowerCase()
+            .includes(currentSearchText);
         const matchesFavorite = !isFavoriteMode || item.isFavorite;
-        const matchesTags = selectedTags.length === 0 || selectedTags.every(tag => item.tags.includes(tag));
+        const matchesTags =
+            selectedTags.length === 0 ||
+            selectedTags.every((tag) => item.tags.includes(tag));
         return matchesSearchText && matchesFavorite && matchesTags;
     });
 }
-
-
 // 정적 이벤트 리스너 설정 (검색 입력, 관심 공고 버튼 등)
 function attachStaticEventListeners() {
-    document.getElementById("searchInput").addEventListener("input", handleSearchInput);
-    document.querySelector(".interest-button").addEventListener("click", toggleFavoriteModeAndView);
+    document
+        .getElementById("searchInput")
+        .addEventListener("input", handleSearchInput);
+    document
+        .querySelector(".interest-button")
+        .addEventListener("click", toggleFavoriteModeAndView);
     // 태그 필터링 버튼 이벤트 리스너 등록 등
 }
-
 // 아이템 렌더링
 function renderItems(items) {
     const container = document.getElementById("portfolioItems");
-    container.innerHTML = items.map(item => `
+    container.innerHTML = items
+        .map(
+            (item) => `
         <div class="portfolioCard" data-item-id="${item.id}">
-            <div class="favorite-container" onclick="event.stopPropagation(); toggleFavoriteLocal('${item.id}')">
-                <span class="material-symbols-outlined favorite" style="color: ${item.isFavorite ? 'red' : 'inherit'};">${item.isFavorite ? 'favorite' : 'favorite_border'}</span>
+            <div class="favorite-container" onclick="event.stopPropagation(); toggleFavoriteLocal('${
+                item.id
+            }')">
+                <span class="material-symbols-outlined favorite" style="color: ${
+                    item.isFavorite ? "red" : "inherit"
+                };">${item.isFavorite ? "favorite" : "favorite_border"}</span>
                 <span class="favorite-count">${item.favoriteCount}</span>
             </div>
             <img src="${item.imageUrl}" alt="${item.title}">
             <h3>${item.title}</h3>
             <p>${item.date}</p>
-            <div class="tags-container">${item.tags.map(tag => `<span class="tag-button">${tag}</span>`).join(' ')}</div>
+            <div class="tags-container">${item.tags
+                .map((tag) => `<span class="tag-button">${tag}</span>`)
+                .join(" ")}</div>
         </div>
-    `).join('');
+    `
+        )
+        .join("");
 }
-
 // 페이지네이션 컨트롤
 function renderPaginationControls(totalItems) {
     const pageCount = Math.ceil(totalItems / itemsPerPage);
     const paginationContainer = document.getElementById("pagination");
-    paginationContainer.innerHTML = '';
+    paginationContainer.innerHTML = "";
     for (let i = 1; i <= pageCount; i++) {
-        paginationContainer.innerHTML += `<button class="${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+        paginationContainer.innerHTML += `<button class="${
+            currentPage === i ? "active" : ""
+        }" onclick="changePage(${i})">${i}</button>`;
     }
 }
-
 function changePage(page) {
     currentPage = page;
     updateDisplay(getCurrentPageItems(), getFilteredData().length);
 }
-
 // 즐겨찾기 토글(수정 jobs like)
 function toggleFavoriteLocal(itemId) {
     // 로그인 상태가 아니라면 기능 수행을 막음
@@ -175,27 +181,31 @@ function toggleFavoriteLocal(itemId) {
         alert("로그인이 필요한 기능입니다.");
         return;
     }
-
     itemId = parseInt(itemId);
-    const item = portfolioData.find(item => item.id === itemId);
+    const item = portfolioData.find((item) => item.id === itemId);
     if (item) {
         // 즐겨찾기 상태를 토글
         const newFavoriteStatus = !item.isFavorite;
 
         // 즐겨찾기 추가 또는 제거에 따른 엔드포인트 선택
-        const url = newFavoriteStatus ? '/like' : '/unlike';
-       
-        axios.patch(url, { jobsId: itemId })
-            .then(response => {
+        const url = newFavoriteStatus ? "/like" : "/unlike";
+
+        axios
+            .patch(url, { jobsId: itemId })
+            .then((response) => {
                 // 서버 요청 성공 후 로컬 상태 업데이트
                 item.isFavorite = newFavoriteStatus;
                 item.favoriteCount += newFavoriteStatus ? 1 : -1;
                 saveFavoritesToLocalStorage();
                 updateDisplay();
                 console.log(response.data);
-                alert(`관심 등록 ${newFavoriteStatus ? '추가' : '삭제'}되었습니다.`);
+                alert(
+                    `관심 등록 ${
+                        newFavoriteStatus ? "추가" : "삭제"
+                    }되었습니다.`
+                );
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("관심 등록 변경 중 오류 발생:", error);
                 alert("관심 등록 변경 중 오류가 발생했습니다.");
             });
@@ -203,43 +213,41 @@ function toggleFavoriteLocal(itemId) {
 }
 function saveFavoritesToLocalStorage() {
     // 즐겨찾기된 항목의 ID만 추출
-    const favoriteIds = portfolioData.filter(item => item.isFavorite).map(item => item.id);
-    
+    const favoriteIds = portfolioData
+        .filter((item) => item.isFavorite)
+        .map((item) => item.id);
+
     // 로컬 스토리지에 JSON 형태로 저장
-    localStorage.setItem('userFavorites', JSON.stringify(favoriteIds));
+    localStorage.setItem("userFavorites", JSON.stringify(favoriteIds));
 }
 function loadFavoritesFromLocalStorage() {
     // 로컬 스토리지에서 즐겨찾기 상태 불러오기
-    const favorites = JSON.parse(localStorage.getItem('userFavorites'));
-    
+    const favorites = JSON.parse(localStorage.getItem("userFavorites"));
+
     if (favorites) {
-        portfolioData.forEach(item => {
+        portfolioData.forEach((item) => {
             item.isFavorite = favorites.includes(item.id);
         });
     }
-    
+
     // UI 업데이트
     updateDisplay();
 }
 
-
-
 // 이벤트 리스너 동적 추가
 function attachFavoriteEventListeners() {
-    document.querySelectorAll('.favorite-container').forEach(container => {
+    document.querySelectorAll(".favorite-container").forEach((container) => {
         container.onclick = (event) => {
             event.stopPropagation(); // 이벤트 전파 중지
-            const itemId = container.parentElement.getAttribute('data-item-id');
+            const itemId = container.parentElement.getAttribute("data-item-id");
             toggleFavoriteLocal(itemId);
         };
     });
 }
-
-
 function attachCardClickEvent() {
-    document.querySelectorAll('.portfolioCard').forEach(card => {
-        card.addEventListener('click', () => {
-            const itemId = card.getAttribute('data-item-id');
+    document.querySelectorAll(".portfolioCard").forEach((card) => {
+        card.addEventListener("click", () => {
+            const itemId = card.getAttribute("data-item-id");
             // 먼저 클릭 이벤트를 처리하고,
             handlePortfolioCardClick(itemId);
             // 그 다음 페이지 이동을 수행합니다.
@@ -248,16 +256,13 @@ function attachCardClickEvent() {
     });
 }
 
-
 // 검색 처리
-let currentSearchText = '';
+let currentSearchText = "";
 function handleSearchInput(e) {
     currentSearchText = e.target.value.toLowerCase(); // 검색어 상태 업데이트
     filterAndDisplayItems(); // 변경된 검색어를 반영하여 아이템 필터링 및 화면 업데이트
 }
-
 let selectedTags = []; // 사용자가 선택한 태그를 추적하기 위한 배열
-
 // 태그에 따라 아이템을 필터링하는 함수
 function filterItems(tag) {
     const index = selectedTags.indexOf(tag);
@@ -270,27 +275,19 @@ function filterItems(tag) {
     updateTagButtons();
 }
 function updateTagButtons() {
-    document.querySelectorAll('.button-group button').forEach(button => {
+    document.querySelectorAll(".button-group button").forEach((button) => {
         const tag = button.textContent.trim();
         if (selectedTags.includes(tag)) {
-            button.classList.add('selected'); // 'selected' 클래스 추가
+            button.classList.add("selected"); // 'selected' 클래스 추가
         } else {
-            button.classList.remove('selected'); // 'selected' 클래스 제거
+            button.classList.remove("selected"); // 'selected' 클래스 제거
         }
     });
 }
-
-
-
-
-
 // 즐겨찾기 모드 토글 및 뷰 업데이트
 function toggleFavoriteModeAndView() {
-
-
     isFavoriteMode = !isFavoriteMode;
-
-    const interestButton = document.querySelector('.interest-button');
+    const interestButton = document.querySelector(".interest-button");
     if (isFavoriteMode) {
         interestButton.innerHTML = `
         <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
@@ -306,27 +303,21 @@ function toggleFavoriteModeAndView() {
     }
     filterAndDisplayItems(); // 모드 전환 시 필터링 및 렌더링을 적절히 처리
 }
-
 function filterAndDisplayItems() {
     // 현재 검색어, 즐겨찾기 모드, 선택된 태그를 기준으로 데이터를 필터링
     const filteredData = getFilteredData(); // 이 함수 내부에서 currentSearchText를 사용하여 필터링
     updateDisplay(filteredData, filteredData.length);
 }
 
-function updateDisplay() {
-    const filteredData = getFilteredData(); // 현재 상태를 기반으로 데이터 필터링
-    const itemsToShow = getCurrentPageItems(filteredData); // 필터링된 아이템을 기반으로 현재 페이지 아이템 결정
-    renderItems(itemsToShow);
-    renderPaginationControls(filteredData.length); // 필터링된 아이템의 총 수를 기반으로 페이지네이션 컨트롤 렌더링
-    attachDynamicEventListeners(); // 동적 이벤트 리스너 재설정
-}
-
 // 정적 이벤트 리스너 설정
 function attachStaticEventListeners() {
-    document.getElementById('searchInput').addEventListener('input', handleSearchInput);
-    document.querySelector('.interest-button').addEventListener('click', toggleFavoriteModeAndView);
+    document
+        .getElementById("searchInput")
+        .addEventListener("input", handleSearchInput);
+    document
+        .querySelector(".interest-button")
+        .addEventListener("click", toggleFavoriteModeAndView);
 }
-
 // 데이터 및 페이지 업데이트
 function updateDisplay() {
     // getFilteredData 함수를 호출하면 현재 검색어, 즐겨찾기 상태, 선택된 태그를 고려한 데이터 필터링을 수행
@@ -341,13 +332,10 @@ function initialize() {
     attachStaticEventListeners();
     updateDisplay(getCurrentPageItems(), portfolioData.length);
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-    portfolioData = await fetchData('/main');
+document.addEventListener("DOMContentLoaded", async () => {
+    portfolioData = await fetchData("/main");
     initialize();
 });
-
-
 //로그인,회원가입 모달
 document.addEventListener("DOMContentLoaded", function () {
     const authModal = document.getElementById("authModal");
@@ -407,49 +395,41 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     };
     //로그인 db연동
-  
-    
-    
-    async  function login() {
-    const form = document.forms["loginForm"];
-    const email = form["email"].value;
-    const password = form["password"].value;
 
-    axios({
-        method: "post",
-        url: "/login",
-        data: {
-            email: email,
-            password: password,
-        },
-    })
-    .then(async (res) => {
-        const { result, msg, userId, nickname } = res.data; // 서버 응답 가정
-        if (result) {
-            
-            alert(msg); // 성공 메시지 알림
-            localStorage.setItem("userId", userId);
-            localStorage.setItem("nickname", nickname);
-            updateLoginState('true');
-            portfolioData = await fetchData('/main');
-            loadFavoritesFromLocalStorage();
-            updateDisplay();
-            closeAuthModal();
-        } else {
-            alert(msg); // 실패 메시지 알림
-        }
-    })
-    .catch((error) => {
-        console.error("로그인 중 오류 발생:", error);
-    });
-}
+    async function login() {
+        const form = document.forms["loginForm"];
+        const email = form["email"].value;
+        const password = form["password"].value;
+        axios({
+            method: "post",
+            url: "/login",
+            data: {
+                email: email,
+                password: password,
+            },
+        })
+            .then(async (res) => {
+                const { result, msg, userId, nickname } = res.data; // 서버 응답 가정
+                if (result) {
+                    alert(msg); // 성공 메시지 알림
+                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("nickname", nickname);
+                    updateLoginState("true");
+                    portfolioData = await fetchData("/main");
+                    loadFavoritesFromLocalStorage();
+                    updateDisplay();
+                    closeAuthModal();
+                } else {
+                    alert(msg); // 실패 메시지 알림
+                }
+            })
+            .catch((error) => {
+                console.error("로그인 중 오류 발생:", error);
+            });
+    }
 
-    
-    
-   
     // 로그인 모달을 표시하는 함수
-   
-   
+
     function handleLoginButtonClick() {
         const isLoggedIn =
             document.querySelector(".login-button").textContent === "LogOut";
@@ -467,36 +447,43 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     // 회원가입 처리
 
-document.addEventListener("DOMContentLoaded", function() {
-    const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
-    if (editProfileSubmitButton) {
-        editProfileSubmitButton.addEventListener("click", function() {
-            const nickname = document.querySelector("#editProfileForm input[name='nickname']").value;
-            const password = document.querySelector("#editProfileForm input[name='password']").value;
-        
-            // 여기에 AJAX 요청 로직을 추가합니다.
-            axios({
-                method: "patch",
-                url: "/mypage",
-                data: {
-                    nickname: nickname,
-                    password: password,  
-                },
-            })
-            .then((response) => {
-                console.log(response.data);
-                alert("회원 정보가 성공적으로 수정되었습니다.");
-                document.getElementById("editProfileModal").style.display = "none";
-            })
-            .catch((error) => {
-                console.error("회원 정보 수정 중 오류 발생:", error);
-                alert("회원 정보 수정 중 오류가 발생하였습니다.");
+    document.addEventListener("DOMContentLoaded", function () {
+        const editProfileSubmitButton = document.getElementById(
+            "editProfileSubmitButton"
+        );
+        if (editProfileSubmitButton) {
+            editProfileSubmitButton.addEventListener("click", function () {
+                const nickname = document.querySelector(
+                    "#editProfileForm input[name='nickname']"
+                ).value;
+                const password = document.querySelector(
+                    "#editProfileForm input[name='password']"
+                ).value;
+
+                // 여기에 AJAX 요청 로직을 추가합니다.
+                axios({
+                    method: "patch",
+                    url: "/mypage",
+                    data: {
+                        nickname: nickname,
+                        password: password,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response.data);
+                        alert("회원 정보가 성공적으로 수정되었습니다.");
+                        document.getElementById(
+                            "editProfileModal"
+                        ).style.display = "none";
+                    })
+                    .catch((error) => {
+                        console.error("회원 정보 수정 중 오류 발생:", error);
+                        alert("회원 정보 수정 중 오류가 발생하였습니다.");
+                    });
             });
-        });
-    }
-});
-    
-    
+        }
+    });
+
     loginButton.addEventListener("click", function () {
         renderLoginForm();
         authModal.style.display = "block";
@@ -537,97 +524,104 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-   
+
     // '회원 정보 수정' 모달 열기
-const editProfileButton = document.getElementById("editProfileButton");
-const editProfileModal = document.getElementById("editProfileModal");
-const editProfileSubmitButton = document.getElementById("editProfileSubmitButton");
-const closeButton = document.querySelector(".edit-profile-modal .close-button");
-editProfileButton.addEventListener("click", function(event) {
-    event.preventDefault(); // 버튼의 기본 동작 방지
-    editProfileModal.style.display = "block"; // 모달 표시
-});
-// 모달 닫기 버튼 이벤트 핸들러
-if (closeButton) {
-    closeButton.addEventListener("click", function () {
-        editProfileModal.style.display = "none";
+    const editProfileButton = document.getElementById("editProfileButton");
+    const editProfileModal = document.getElementById("editProfileModal");
+    const editProfileSubmitButton = document.getElementById(
+        "editProfileSubmitButton"
+    );
+    const closeButton = document.querySelector(
+        ".edit-profile-modal .close-button"
+    );
+    editProfileButton.addEventListener("click", function (event) {
+        event.preventDefault(); // 버튼의 기본 동작 방지
+        editProfileModal.style.display = "block"; // 모달 표시
     });
-}
-// 회원 정보 수정 버튼 이벤트 핸들러
-editProfileSubmitButton.addEventListener("click", function(event) {
-    event.preventDefault(); // 버튼의 기본 동작 방지
-    // 사용자 입력 값 가져오기
-    const nickname = document.querySelector("#editProfileForm input[name='nickname']").value;
-    const password = document.querySelector("#editProfileForm input[name='password']").value;
-    // 유효성 검사
-    if (!nickname || !password) {
-        alert("닉네임과 비밀번호를 모두 입력하세요.");
-        return;
+    // 모달 닫기 버튼 이벤트 핸들러
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            editProfileModal.style.display = "none";
+        });
     }
-   
-    axios({
-        method: "patch",
-        url: "/mypage",
-        data: {
-            nickname: nickname,
-            password: password,
-        },
-    })
-    .then((response) => {
-        console.log(response.data);
-        alert("회원 정보가 성공적으로 수정되었습니다.");
-        document.getElementById("editProfileModal").style.display = "none";
-    })
-    .catch((error) => {
-        console.error("회원 정보 수정 중 오류 발생:", error);
-        alert("회원 정보 수정 중 오류가 발생하였습니다.");
-    });
-});
-    
-//회원 탈퇴
-document.addEventListener("DOMContentLoaded", function () {
-    // 회원 탈퇴 링크에 클릭 이벤트 리스너 추가
-    const removeAccountLink = document.querySelector('a[href="#2"]'); // 실제 적절한 선택자 사용 필요
-    removeAccountLink.addEventListener("click", function (event) {
-        event.preventDefault(); // 링크의 기본 동작 방지
-        // 회원 탈퇴를 사용자에게 확인
-        if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
-            // fetch API를 사용하여 회원 탈퇴 요청 전송
-            fetch("/mypage", {
-                // 실제 백엔드 엔드포인트 URL로 대체 필요
-                method: "DELETE", // 또는 서버가 요구하는 메소드
-                headers: {
-                    "Content-Type": "application/json",
-                    // 필요한 경우 인증 토큰 등의 추가 헤더를 포함해야 할 수 있음
-                },
-                body: JSON.stringify({
-                    // 회원 탈퇴에 필요한 데이터; 예를 들어 사용자 ID나 토큰 등
-                }),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("회원 탈퇴 처리에 실패했습니다.");
-                    }
-                    return response.json(); // 또는 response.text(), 응답에 따라 다름
-                })
-                .then((data) => {
-                    alert("회원 탈퇴가 성공적으로 처리되었습니다.");
-                    // 회원 탈퇴 후 처리 로직; 예를 들어 로그인 페이지로 리다이렉트
-                })
-                .catch((error) => {
-                    console.error("회원 탈퇴 중 오류 발생:", error);
-                });
+    // 회원 정보 수정 버튼 이벤트 핸들러
+    editProfileSubmitButton.addEventListener("click", function (event) {
+        event.preventDefault(); // 버튼의 기본 동작 방지
+        // 사용자 입력 값 가져오기
+        const nickname = document.querySelector(
+            "#editProfileForm input[name='nickname']"
+        ).value;
+        const password = document.querySelector(
+            "#editProfileForm input[name='password']"
+        ).value;
+        // 유효성 검사
+        if (!nickname || !password) {
+            alert("닉네임과 비밀번호를 모두 입력하세요.");
+            return;
         }
+
+        axios({
+            method: "patch",
+            url: "/mypage",
+            data: {
+                nickname: nickname,
+                password: password,
+            },
+        })
+            .then((response) => {
+                console.log(response.data);
+                alert("회원 정보가 성공적으로 수정되었습니다.");
+                document.getElementById("editProfileModal").style.display =
+                    "none";
+            })
+            .catch((error) => {
+                console.error("회원 정보 수정 중 오류 발생:", error);
+                alert("회원 정보 수정 중 오류가 발생하였습니다.");
+            });
     });
-});
+
+    //회원 탈퇴
+    document.addEventListener("DOMContentLoaded", function () {
+        // 회원 탈퇴 링크에 클릭 이벤트 리스너 추가
+        const removeAccountLink = document.querySelector('a[href="#2"]'); // 실제 적절한 선택자 사용 필요
+        removeAccountLink.addEventListener("click", function (event) {
+            event.preventDefault(); // 링크의 기본 동작 방지
+            // 회원 탈퇴를 사용자에게 확인
+            if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
+                // fetch API를 사용하여 회원 탈퇴 요청 전송
+                fetch("/mypage", {
+                    // 실제 백엔드 엔드포인트 URL로 대체 필요
+                    method: "DELETE", // 또는 서버가 요구하는 메소드
+                    headers: {
+                        "Content-Type": "application/json",
+                        // 필요한 경우 인증 토큰 등의 추가 헤더를 포함해야 할 수 있음
+                    },
+                    body: JSON.stringify({
+                        // 회원 탈퇴에 필요한 데이터; 예를 들어 사용자 ID나 토큰 등
+                    }),
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("회원 탈퇴 처리에 실패했습니다.");
+                        }
+                        return response.json(); // 또는 response.text(), 응답에 따라 다름
+                    })
+                    .then((data) => {
+                        alert("회원 탈퇴가 성공적으로 처리되었습니다.");
+                        // 회원 탈퇴 후 처리 로직; 예를 들어 로그인 페이지로 리다이렉트
+                    })
+                    .catch((error) => {
+                        console.error("회원 탈퇴 중 오류 발생:", error);
+                    });
+            }
+        });
+    });
 });
 //공고 등록 버튼
 document.addEventListener("DOMContentLoaded", function () {
     // '공고등록' 버튼에 대한 참조를 찾습니다.
     const postJobButton = document.querySelector(".fab");
-
     if (!postJobButton) return; // postJobButton이 없는 경우 이후 로직을 수행하지 않음
-
     // 버튼 클릭 이벤트에 대한 리스너를 추가합니다.
     postJobButton.addEventListener("click", function () {
         if (isLoggedIn) {
@@ -643,38 +637,50 @@ document.addEventListener("DOMContentLoaded", function () {
 // 현재 표시 중인 페이지가 최근 본 공고인지를 추적하는 상태 변수 추가
 let viewingRecentPortfolios = false;
 // '내가 최근 본 공고' 버튼 클릭 이벤트 리스너
-document.getElementById('viewRecentPortfolios').addEventListener('click', function() {
-    if (viewingRecentPortfolios) {
-        // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
-        renderItems(portfolioData);
-        viewingRecentPortfolios = false; // 상태 업데이트
-    } else {
-        // 최근 본 공고 목록을 보여줌
-        const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedPortfolios')) || [];
-        renderRecentlyViewedPortfolios(recentlyViewed);
-        viewingRecentPortfolios = true; // 상태 업데이트
-    }
-    // 페이지네이션 컨트롤 및 이벤트 리스너 재설정
-    renderPaginationControls(filteredData.length);
-    attachDynamicEventListeners();
-});
+document
+    .getElementById("viewRecentPortfolios")
+    .addEventListener("click", function () {
+        if (viewingRecentPortfolios) {
+            // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
+            renderItems(portfolioData);
+            viewingRecentPortfolios = false; // 상태 업데이트
+        } else {
+            // 최근 본 공고 목록을 보여줌
+            const recentlyViewed =
+                JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) ||
+                [];
+            renderRecentlyViewedPortfolios(recentlyViewed);
+            viewingRecentPortfolios = true; // 상태 업데이트
+        }
+        // 페이지네이션 컨트롤 및 이벤트 리스너 재설정
+        renderPaginationControls(filteredData.length);
+        attachDynamicEventListeners();
+    });
 function handlePortfolioCardClick(portfolioId) {
-    let recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedPortfolios')) || [];
+    let recentlyViewed =
+        JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) || [];
     if (!recentlyViewed.includes(portfolioId)) {
         recentlyViewed.unshift(portfolioId); // 배열의 맨 앞에 추가
         recentlyViewed = recentlyViewed.slice(0, 12); // 최대 10개 항목만 유지
-        localStorage.setItem('recentlyViewedPortfolios', JSON.stringify(recentlyViewed));
+        localStorage.setItem(
+            "recentlyViewedPortfolios",
+            JSON.stringify(recentlyViewed)
+        );
     }
 }
 function renderRecentlyViewedPortfolios(portfolioIds) {
-    const filteredPortfolios = portfolioData.filter(item => portfolioIds.includes(item.id.toString()));
+    const filteredPortfolios = portfolioData.filter((item) =>
+        portfolioIds.includes(item.id.toString())
+    );
     renderItems(filteredPortfolios);
     attachCardClickEvent();
 }
 
 // 초기 로딩 시 이벤트 리스너 등록 및 기타 설정
-document.addEventListener('DOMContentLoaded', () => {
-    
-    fetchData().then(data => { portfolioData = data; attachCardClickEvent(); });
+document.addEventListener("DOMContentLoaded", () => {
+    fetchData().then((data) => {
+        portfolioData = data;
+        attachCardClickEvent();
+    });
     attachCardClickEvent();
 });
