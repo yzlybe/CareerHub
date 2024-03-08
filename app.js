@@ -80,3 +80,7 @@ app.post("/upload", uploadDetail.single("img_path"), function (req, res) {
         Info: req.body,
     });
 });
+
+app.get("*", (req, res) => {
+    res.render("404");
+});
