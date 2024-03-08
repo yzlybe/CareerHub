@@ -118,9 +118,10 @@ exports.jobsDetail = async (req, res) => {
 // 공고 등록
 exports.jobsWrite = async (req, res) => {
     try {
-        console.log(req.body);
+        const userId = req.session.userId;
+        console.log("ffffffff====================",req.session.userId);
         const {
-            usersId,
+            
             img_path,
             companyName,
             levels,
@@ -136,6 +137,7 @@ exports.jobsWrite = async (req, res) => {
             source,
             stack,
         } = req.body;
+        console.log(req.body);
 
         let levelValue;
         console.log(levels);
@@ -177,22 +179,24 @@ exports.jobsWrite = async (req, res) => {
         });
 
         const isSuccess = await jobsModel.create({
-            users_id: usersId,
-            img_path,
+            users_id: userId,
+            img_path: img_path,
             company_name: companyName,
             levels: levelValue,
-            introduce,
-            task,
-            conditions,
-            prefer,
-            welfare,
-            deadline,
-            address,
-            address_detail,
-            others,
-            source,
+            introduce: introduce,
+            task: task,
+            conditions: conditions,
+            prefer: prefer,
+            welfare: welfare,
+            deadline: deadline,
+            address: address,
+            address_detail: address_detail,
+            others: others,
+            source: source,
         });
 
+        
+        
         console.log(stackModelData);
         const job = await jobsModel.findOne({
             where: { company_name: companyName },
