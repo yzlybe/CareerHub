@@ -8,6 +8,7 @@
         <title><%=data.company_name%> 정보</title>
     </head>
     <body>
+        <button type="button" onclick="session()">세션 확인</button>
         <!-- 회사 정보 -->
         <div class="company">
             <div class="imgContainer">
@@ -393,7 +394,10 @@
         </div>
         <div class="contentButtons">
             <!-- 수정창 전환 버튼 -->
-            <button class="editReqButton" onclick="editReqPost()">
+            <button
+                class="editReqButton"
+                onclick="editReqPost('<%=data.userId%>')"
+            >
                 수정(전환)
             </button>
             <button
@@ -426,7 +430,7 @@
             <!-- Todo: 예외처리 추가하기 -->
             <% for (let i= 0; i < reviewsdata.length; i++) { %>
             <div class="commentBox" id="cmt_<%=reviewsdata[i].reviews_id%>">
-                <p class="writer"><%=reviewsdata[i].users_id%></p>
+                <p class="writer"><%=reviewsdata[i].nickname%></p>
                 <p class="registerDate"><%=reviewsdata[i].created_at%></p>
                 <!-- 수정창 전환 시 사라짐 -->
                 <span class="commentButtons">
@@ -502,7 +506,7 @@
             }
 
             // 글 수정창 전환
-            function editReqPost(jobid) {
+            function editReqPost(userid) {
                 window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
                 const post = document.querySelector(".content");
                 const onDefault = post.querySelector(".viewContent");
@@ -566,29 +570,36 @@
 
             // 댓글 등록 post /review
             function sendCmt(jobid) {
-                const usertest = Math.floor(Math.random() * 10) + 1; // 임시 userId 1~10 랜덤 생성
-                const form = document.forms["inputComment"];
-                console.log(form.commentText.value);
-                const data = {
-                    comment: form.commentText.value,
-                    jobsId: jobid,
-                    userId: usertest,
-                };
-                if (form.commentText.value.length === 0) {
-                    alert("내용을 입력해주세요.");
-                    return;
-                } else {
-                    axios({
-                        method: "POST",
-                        url: "/review",
-                        data: data,
-                    })
-                        .then((res) => {
-                            console.log("resdata", res.data);
-                            document.location.reload();
-                            window.scrollBy(0, window.innerHeight);
+                const checkLogin = JSON.parse(localStorage.isLoggedIn);
+                if (checkLogin) {
+                    const form = document.forms["inputComment"];
+                    console.log("comment", form.commentText.value);
+                    console.log("jobsId", jobid);
+                    console.log("userId", localStorage.userId);
+                    const data = {
+                        jobsId: jobid,
+                        comment: form.commentText.value,
+                        userId: localStorage.userId,
+                    };
+                    if (form.commentText.value.length === 0) {
+                        alert("내용을 입력해주세요.");
+                        return;
+                    } else {
+                        axios({
+                            method: "POST",
+                            url: "/review",
+                            data: data,
                         })
-                        .catch((err) => console.log(err));
+                            .then((res) => {
+                                console.log("resdata", res.data);
+                                document.location.reload();
+                                // window.scrollBy(0, window.innerHeight);
+                            })
+                            .catch((err) => console.log(err));
+                    }
+                } else {
+                    alert("로그인이 필요합니다.");
+                    return;
                 }
             }
 
@@ -646,6 +657,12 @@
                         alert("댓글을 삭제할 수 없습니다.");
                     }
                 });
+            }
+
+            function session() {
+                console.log(localStorage.isLoggedIn);
+                console.log(localStorage.userId);
+                console.log(localStorage.nickname);
             }
         </script>
     </body>
