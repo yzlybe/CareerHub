@@ -1,0 +1,16 @@
+body {
+    color: #333;
+    text-align: center;
+    padding: 50px;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #a22d2d;
+}
+
+p {
+    font-size: 1.2em;
+    margin-top: 0;
+}
