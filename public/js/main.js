@@ -751,9 +751,14 @@ if (myJobsButton) {
 
 async function fetchMyJobs() {
     try {
-        const response = await axios.get('/me/jobs', { withCredentials: true });
-        const myJobsData = response.data;
-        displayMyJobs(myJobsData);
+        const response = await axios.get('/me/jobs',  { withCredentials: true });
+        //const myJobsData = response.data;
+        if (response.data && Array.isArray(response.data)) {
+           console.log(response.data);
+            displayMyJobs(response.data); // 수정된 부분
+        } else {
+            console.error("fetchMyJobs: Unexpected response format", response.data);
+        }
     } catch (error) {
         console.error("내가 쓴 공고를 가져오는 중 오류 발생:", error);
     }
