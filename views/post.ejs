@@ -8,7 +8,6 @@
         <title><%=data.company_name%> 정보</title>
     </head>
     <body>
-        <button type="button" onclick="session()">세션 확인</button>
         <!-- 회사 정보 -->
         <div class="company">
             <div class="imgContainer">
@@ -657,12 +656,6 @@
                         alert("댓글을 삭제할 수 없습니다.");
                     }
                 });
-            }
-
-            function session() {
-                console.log(localStorage.isLoggedIn);
-                console.log(localStorage.userId);
-                console.log(localStorage.nickname);
             }
         </script>
     </body>
