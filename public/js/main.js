@@ -11,6 +11,9 @@ async function fetchData(url) {
                 // 첫 글자 대문자로 변환하여 태그 추가
                 if (tag === "typescript") return "TypeScript";
                 if (tag === "javascript") return "JavaScript";
+				if (tag === "css") return "CSS";
+                if (tag === "jsx") return "JSX";
+                if (tag === "html") return "HTML";
                 return tag.charAt(0).toUpperCase() + tag.slice(1);
             });
             const finalTags = tags.length > 0 ? tags : ["없음"]; // 스택이 없으면 "없음" 태그를 사용
@@ -93,11 +96,20 @@ function attachDynamicEventListeners() {
 }
 document.addEventListener("DOMContentLoaded", async () => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn") || "false";
-    updateLoginState(storedIsLoggedIn === "true" ? "true" : "false"); // 로컬 스토리지에서 상태 읽기
-    // 데이터 로딩 및 기타 초기화 로직
+    updateLoginState(storedIsLoggedIn === "true" ? "true" : "false");
+    
+    // 메인 데이터 로딩
     portfolioData = await fetchData("/main");
+    
+    // 초기화 함수 호출
     initialize();
+
+    // 로그인 상태일 경우에만 즐겨찾기 목록 로드
+    if (storedIsLoggedIn === "true") {
+        await loadFavorites(); // 즐겨찾기 목록 로드
+    }
 });
+
 // 초기화 및 이벤트 리스너 설정
 function initialize() {
     updateDisplay(getCurrentPageItems(), portfolioData.length);
@@ -161,15 +173,21 @@ function renderItems(items) {
 }
 // 페이지네이션 컨트롤
 function renderPaginationControls(totalItems) {
-    const pageCount = Math.ceil(totalItems / itemsPerPage);
     const paginationContainer = document.getElementById("pagination");
     paginationContainer.innerHTML = "";
-    for (let i = 1; i <= pageCount; i++) {
-        paginationContainer.innerHTML += `<button class="${
-            currentPage === i ? "active" : ""
-        }" onclick="changePage(${i})">${i}</button>`;
+
+    // "최근 본 공고"를 보고 있을 때는 항상 1페이지만 나타나도록 설정
+    if (viewingRecentPortfolios) {
+        paginationContainer.innerHTML = `<button class="active" onclick="changePage(1)">1</button>`;
+    } else {
+        // 전체 공고 목록을 보고 있을 때는 전체 페이지네이션 렌더링
+        const pageCount = Math.ceil(totalItems / itemsPerPage);
+        for (let i = 1; i <= pageCount; i++) {
+            paginationContainer.innerHTML += `<button class="${currentPage === i ? "active" : ""}" onclick="changePage(${i})">${i}</button>`;
+        }
     }
 }
+
 function changePage(page) {
     currentPage = page;
     updateDisplay(getCurrentPageItems(), getFilteredData().length);
@@ -220,19 +238,29 @@ function saveFavoritesToLocalStorage() {
     // 로컬 스토리지에 JSON 형태로 저장
     localStorage.setItem("userFavorites", JSON.stringify(favoriteIds));
 }
-function loadFavoritesFromLocalStorage() {
-    // 로컬 스토리지에서 즐겨찾기 상태 불러오기
-    const favorites = JSON.parse(localStorage.getItem("userFavorites"));
-
-    if (favorites) {
-        portfolioData.forEach((item) => {
-            item.isFavorite = favorites.includes(item.id);
-        });
+async function loadFavorites() {
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+        console.log("User is not logged in.");
+        return;
     }
 
-    // UI 업데이트
-    updateDisplay();
+    try {
+        const response = await axios.get('/jobs/like', { withCredentials: true });
+        if (response.status === 200 && response.data) {
+            const favoriteIds = new Set(response.data.map(item => item.jobs_id));
+            portfolioData.forEach(item => {
+                item.isFavorite = favoriteIds.has(item.id);
+            });
+
+            updateDisplay(); // UI 업데이트 함수 호출
+        }
+    } catch (error) {
+        console.error("Failed to load favorites:", error);
+    }
 }
+
+
+
 
 // 이벤트 리스너 동적 추가
 function attachFavoriteEventListeners() {
@@ -323,6 +351,7 @@ function updateDisplay() {
     // getFilteredData 함수를 호출하면 현재 검색어, 즐겨찾기 상태, 선택된 태그를 고려한 데이터 필터링을 수행
     const filteredData = getFilteredData();
     const itemsToShow = getCurrentPageItems(filteredData); // 필터링된 아이템을 기반으로 현재 페이지 아이템을 결정
+    
     renderItems(itemsToShow);
     renderPaginationControls(filteredData.length); // 필터링된 아이템의 총 수를 기반으로 페이지네이션 컨트롤을 렌더링
     attachDynamicEventListeners(); // 동적 이벤트 리스너 재설정
@@ -332,10 +361,8 @@ function initialize() {
     attachStaticEventListeners();
     updateDisplay(getCurrentPageItems(), portfolioData.length);
 }
-document.addEventListener("DOMContentLoaded", async () => {
-    portfolioData = await fetchData("/main");
-    initialize();
-});
+
+
 //로그인,회원가입 모달
 document.addEventListener("DOMContentLoaded", function () {
     const authModal = document.getElementById("authModal");
@@ -416,7 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     localStorage.setItem("nickname", nickname);
                     updateLoginState("true");
                     portfolioData = await fetchData("/main");
-                    loadFavoritesFromLocalStorage();
+                    loadFavorites();
                     updateDisplay();
                     closeAuthModal();
                 } else {
@@ -526,7 +553,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // '회원 정보 수정' 모달 열기
-    const editProfileButton = document.getElementById("editProfileButton");
+    const editProfileButton = document.getElementById('editProfileButton');
+
     const editProfileModal = document.getElementById("editProfileModal");
     const editProfileSubmitButton = document.getElementById(
         "editProfileSubmitButton"
@@ -581,42 +609,43 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     //회원 탈퇴
-    document.addEventListener("DOMContentLoaded", function () {
-        // 회원 탈퇴 링크에 클릭 이벤트 리스너 추가
-        const removeAccountLink = document.querySelector('a[href="#2"]'); // 실제 적절한 선택자 사용 필요
-        removeAccountLink.addEventListener("click", function (event) {
-            event.preventDefault(); // 링크의 기본 동작 방지
+    if (removeAccountButton) {
+        removeAccountButton.addEventListener("click", function (event) {
+            event.preventDefault(); // 버튼의 기본 동작 방지
             // 회원 탈퇴를 사용자에게 확인
             if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
-                // fetch API를 사용하여 회원 탈퇴 요청 전송
-                fetch("/mypage", {
-                    // 실제 백엔드 엔드포인트 URL로 대체 필요
-                    method: "DELETE", // 또는 서버가 요구하는 메소드
+                // axios를 사용하여 회원 탈퇴 요청 전송
+                axios({
+                    method: "delete",
+                    url: "/mypage",
                     headers: {
                         "Content-Type": "application/json",
-                        // 필요한 경우 인증 토큰 등의 추가 헤더를 포함해야 할 수 있음
+                        // 필요한 경우 인증 정보를 헤더에 추가
                     },
-                    body: JSON.stringify({
-                        // 회원 탈퇴에 필요한 데이터; 예를 들어 사용자 ID나 토큰 등
-                    }),
+                    data: {
+                        // 필요한 경우, 회원 탈퇴에 필요한 데이터를 포함
+                    }
                 })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("회원 탈퇴 처리에 실패했습니다.");
-                        }
-                        return response.json(); // 또는 response.text(), 응답에 따라 다름
-                    })
-                    .then((data) => {
-                        alert("회원 탈퇴가 성공적으로 처리되었습니다.");
-                        // 회원 탈퇴 후 처리 로직; 예를 들어 로그인 페이지로 리다이렉트
-                    })
-                    .catch((error) => {
-                        console.error("회원 탈퇴 중 오류 발생:", error);
-                    });
+                .then((response) => {
+                    alert("회원 탈퇴가 성공적으로 처리되었습니다.");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("password");
+                    localStorage.removeItem("email");
+
+                    // 회원 탈퇴 후 처리 로직, 예: 로그아웃 처리 및 로그인 페이지로 리다이렉트
+                    updateLoginState(false); 
+                })
+                .catch((error) => {
+                    console.error("회원 탈퇴 중 오류 발생:", error);
+                    alert("회원 탈퇴 처리 중 오류가 발생했습니다.");
+                });
             }
         });
+    }
+    
     });
-});
+    
+
 //공고 등록 버튼
 document.addEventListener("DOMContentLoaded", function () {
     // '공고등록' 버튼에 대한 참조를 찾습니다.
@@ -626,7 +655,7 @@ document.addEventListener("DOMContentLoaded", function () {
     postJobButton.addEventListener("click", function () {
         if (isLoggedIn) {
             // 사용자가 로그인한 상태인 경우, detail 페이지로 이동합니다.
-            window.location.href = "/detail";
+            window.location.href = "/jobs";
         } else {
             // 로그인하지 않은 상태에서 버튼을 클릭한 경우, 경고 메시지를 표시합니다.
             alert("로그인이 필요한 기능입니다.");
@@ -634,28 +663,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
 // 현재 표시 중인 페이지가 최근 본 공고인지를 추적하는 상태 변수 추가
 let viewingRecentPortfolios = false;
+const viewButton = document.getElementById("viewRecentPortfolios"); 
 // '내가 최근 본 공고' 버튼 클릭 이벤트 리스너
-document
-    .getElementById("viewRecentPortfolios")
-    .addEventListener("click", function () {
-        if (viewingRecentPortfolios) {
-            // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
-            renderItems(portfolioData);
-            viewingRecentPortfolios = false; // 상태 업데이트
-        } else {
-            // 최근 본 공고 목록을 보여줌
-            const recentlyViewed =
-                JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) ||
-                [];
-            renderRecentlyViewedPortfolios(recentlyViewed);
-            viewingRecentPortfolios = true; // 상태 업데이트
-        }
-        // 페이지네이션 컨트롤 및 이벤트 리스너 재설정
-        renderPaginationControls(filteredData.length);
-        attachDynamicEventListeners();
-    });
+document.getElementById("viewRecentPortfolios").addEventListener("click", function () {
+    if (viewingRecentPortfolios) {
+        // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
+        viewingRecentPortfolios = false; // 상태 업데이트
+        currentPage = 1; // 페이지를 첫 페이지로 리셋
+        updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페이지네이션 적용하여 업데이트
+        this.classList.remove("active-background");
+    } else {
+        // 최근 본 공고 목록을 보여줌
+        viewingRecentPortfolios = true; // 상태 업데이트
+        const recentlyViewed =
+            JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) || [];
+        renderRecentlyViewedPortfolios(recentlyViewed);
+        currentPage = 1; // 항상 첫 페이지로 설정
+        renderPaginationControls(1); // 페이지네이션 컨트롤을 1페이지로 설정
+       this.classList.add("active-background"); // 배경색 변경 클래스 추가
+    }
+});
+
+
 function handlePortfolioCardClick(portfolioId) {
     let recentlyViewed =
         JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) || [];
@@ -668,13 +700,17 @@ function handlePortfolioCardClick(portfolioId) {
         );
     }
 }
+
+
 function renderRecentlyViewedPortfolios(portfolioIds) {
-    const filteredPortfolios = portfolioData.filter((item) =>
+    const filteredPortfolios = portfolioData.filter(item =>
         portfolioIds.includes(item.id.toString())
-    );
-    renderItems(filteredPortfolios);
-    attachCardClickEvent();
+    ).slice(0, 12); // 최근 본 공고 중 처음 12개만 추출
+    renderItems(filteredPortfolios); // 최근 본 공고를 화면에 표시
+    attachCardClickEvent(); // 동적으로 추가된 요소에 이벤트 리스너 재부착
 }
+
+
 
 // 초기 로딩 시 이벤트 리스너 등록 및 기타 설정
 document.addEventListener("DOMContentLoaded", () => {
@@ -684,3 +720,61 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     attachCardClickEvent();
 });
+
+
+//내가 쓴 공고 보기 
+let viewingMyJobs = false; // "내가 쓴 공고" 보기 상태를 추적하는 변수
+
+
+const myJobsButton = document.getElementById('myJobsButton');
+if (myJobsButton) {
+    myJobsButton.addEventListener("click", function () {
+        if (!viewingMyJobs) {
+            // "내가 쓴 공고"를 보여주는 경우
+            fetchMyJobs().then(data => {
+                portfolioData = data; // "내가 쓴 공고" 데이터로 업데이트
+                currentPage = 1; // 페이지를 첫 번째로 리셋
+                updateDisplay(); // 화면 업데이트
+            });
+        } else {
+            // "전체 공고"를 보여주는 경우
+            fetchData("/main").then(data => {
+                portfolioData = data; // 전체 공고 데이터로 업데이트
+                currentPage = 1; // 페이지를 첫 번째로 리셋
+                updateDisplay(); // 화면 업데이트
+            });
+        }
+        viewingMyJobs = !viewingMyJobs; // 상태 토글
+    });
+}
+
+
+async function fetchMyJobs() {
+    try {
+        const response = await axios.get('/me/jobs', { withCredentials: true });
+        const myJobsData = response.data;
+        displayMyJobs(myJobsData);
+    } catch (error) {
+        console.error("내가 쓴 공고를 가져오는 중 오류 발생:", error);
+    }
+}
+
+function displayMyJobs(jobs) {
+    const container = document.getElementById("portfolioItems"); // 공고를 표시할 컨테이너의 ID
+    container.innerHTML = ''; // 컨테이너 초기화
+
+    jobs.forEach(job => {
+        const jobElement = document.createElement('div');
+        jobElement.classList.add('portfolioCard');
+        jobElement.innerHTML = `
+            <div class="favorite-container">
+                <span class="material-symbols-outlined favorite">favorite_border</span>
+            </div>
+            <img src="${job.imageUrl}" alt="${job.title}">
+            <h3>${job.title}</h3>
+            <p>${job.date}</p>
+            <div class="tags-container">${job.tags.map(tag => `<span class="tag-button">${tag}</span>`).join(' ')}</div>
+        `;
+        container.appendChild(jobElement);
+    });
+}

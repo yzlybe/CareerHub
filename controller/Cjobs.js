@@ -27,8 +27,7 @@ exports.jobs = async (req, res) => {
 // 사용자가 관심 등록한 공고 목록 조회(메뉴바에서 관심 목록 클릭시)
 exports.jobsLike = async (req, res) => {
     try {
-        //const userId = req.session.users_id;
-        const userId = req.query.userId;
+        const userId = req.session.userId;
         const userLikes = await likesModel.findAll({
             where: {
                 users_id: userId,
