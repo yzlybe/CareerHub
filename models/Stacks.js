@@ -38,9 +38,6 @@ const stackModel = (sequelize, DataTypes) => {
             webpack: {
                 type: DataTypes.BOOLEAN,
             },
-            jobs_id: {
-                type: DataTypes.INTEGER,
-            },
         },
         {
             tableName: "stacks",
