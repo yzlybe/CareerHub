@@ -36,15 +36,18 @@ function detailSubmit() {
 
     // console.log(form);
     // console.log(form.stack);
+    const fileInput = document.getElementById("img_path");
+    const fileName = fileInput.value.split("\\").pop();
+    const imgPath = `/uploads/${fileName}`;
 
     const data = {
-        // usersId,
+        imgPath: imgPath,
         companyName: form.company_name.value,
         levels: form.levels.value,
         introduce: form.introduce.value,
         task: form.task.value,
         conditions: form.conditions.value,
-        prefer: form.prefer.value,
+        welfare: form.welfare.value,
         stack: selectedValues,
         // stack: form.stack,
         deadline: form.deadline.value,
