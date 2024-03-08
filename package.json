@@ -3,7 +3,7 @@
         "test": "",
         "start": "cross-env NODE_ENV=prod pm2 start app.js",
         "start:watch": "cross-env NODE_ENV=prod pm2 start app.js --watch",
-        "dev": "cross-env NODE_ENV=development node app.js"
+        "dev": "cross-env NODE_ENV= node app.js"
     },
     "dependencies": {
         "axios": "^1.6.7",
