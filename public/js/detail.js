@@ -62,6 +62,13 @@ function detailSubmit() {
     })
         .then((res) => {
             console.log("resdata", res.data);
+            if (res.data.result) {
+                alert(res.data.msg);
+                window.location.href = `/jobs/${res.data.jobsId}`;
+            } else {
+                alert(res.data.msg);
+                form.reset;
+            }
         })
         .catch((err) => console.log(err));
 }

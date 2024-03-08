@@ -11,7 +11,7 @@ async function fetchData(url) {
                 // 첫 글자 대문자로 변환하여 태그 추가
                 if (tag === "typescript") return "TypeScript";
                 if (tag === "javascript") return "JavaScript";
-				if (tag === "css") return "CSS";
+                if (tag === "css") return "CSS";
                 if (tag === "jsx") return "JSX";
                 if (tag === "html") return "HTML";
                 return tag.charAt(0).toUpperCase() + tag.slice(1);
@@ -55,6 +55,7 @@ function logout() {
             updateLoginState("false"); // 로컬 스토리지에 로그아웃 상태 반영
             // 페이지 리로드 또는 UI 업데이트 등 필요한 추가 작업 수행
             alert("로그아웃되었습니다."); // 성공 메시지 알림
+            window.location.href = "/";
         })
         .catch((error) => {
             console.error("로그아웃 중 오류 발생:", error);
@@ -97,10 +98,10 @@ function attachDynamicEventListeners() {
 document.addEventListener("DOMContentLoaded", async () => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn") || "false";
     updateLoginState(storedIsLoggedIn === "true" ? "true" : "false");
-    
+
     // 메인 데이터 로딩
     portfolioData = await fetchData("/main");
-    
+
     // 초기화 함수 호출
     initialize();
 
@@ -183,7 +184,9 @@ function renderPaginationControls(totalItems) {
         // 전체 공고 목록을 보고 있을 때는 전체 페이지네이션 렌더링
         const pageCount = Math.ceil(totalItems / itemsPerPage);
         for (let i = 1; i <= pageCount; i++) {
-            paginationContainer.innerHTML += `<button class="${currentPage === i ? "active" : ""}" onclick="changePage(${i})">${i}</button>`;
+            paginationContainer.innerHTML += `<button class="${
+                currentPage === i ? "active" : ""
+            }" onclick="changePage(${i})">${i}</button>`;
         }
     }
 }
@@ -245,10 +248,14 @@ async function loadFavorites() {
     }
 
     try {
-        const response = await axios.get('/jobs/like', { withCredentials: true });
+        const response = await axios.get("/jobs/like", {
+            withCredentials: true,
+        });
         if (response.status === 200 && response.data) {
-            const favoriteIds = new Set(response.data.map(item => item.jobs_id));
-            portfolioData.forEach(item => {
+            const favoriteIds = new Set(
+                response.data.map((item) => item.jobs_id)
+            );
+            portfolioData.forEach((item) => {
                 item.isFavorite = favoriteIds.has(item.id);
             });
 
@@ -258,9 +265,6 @@ async function loadFavorites() {
         console.error("Failed to load favorites:", error);
     }
 }
-
-
-
 
 // 이벤트 리스너 동적 추가
 function attachFavoriteEventListeners() {
@@ -351,7 +355,7 @@ function updateDisplay() {
     // getFilteredData 함수를 호출하면 현재 검색어, 즐겨찾기 상태, 선택된 태그를 고려한 데이터 필터링을 수행
     const filteredData = getFilteredData();
     const itemsToShow = getCurrentPageItems(filteredData); // 필터링된 아이템을 기반으로 현재 페이지 아이템을 결정
-    
+
     renderItems(itemsToShow);
     renderPaginationControls(filteredData.length); // 필터링된 아이템의 총 수를 기반으로 페이지네이션 컨트롤을 렌더링
     attachDynamicEventListeners(); // 동적 이벤트 리스너 재설정
@@ -361,7 +365,6 @@ function initialize() {
     attachStaticEventListeners();
     updateDisplay(getCurrentPageItems(), portfolioData.length);
 }
-
 
 //로그인,회원가입 모달
 document.addEventListener("DOMContentLoaded", function () {
@@ -421,8 +424,33 @@ document.addEventListener("DOMContentLoaded", function () {
             signup();
         };
     };
-    //로그인 db연동
+    //회원 가입 db 연동
+    async function signup() {
+        const form = document.forms["signupForm"];
+        await axios({
+            method: "post",
+            url: "/register",
+            data: {
+                email: form.email.value,
+                nickname: form.username.value,
+                password: form.password.value,
+            },
+        })
+            .then((res) => {
+                console.log(res.data);
+                if (res.data.result) {
+                    alert(res.data.msg);
+                    closeAuthModal();
+                } else {
+                    alert(res.data.msg);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 
+    //로그인 db연동
     async function login() {
         const form = document.forms["loginForm"];
         const email = form["email"].value;
@@ -553,7 +581,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // '회원 정보 수정' 모달 열기
-    const editProfileButton = document.getElementById('editProfileButton');
+    const editProfileButton = document.getElementById("editProfileButton");
 
     const editProfileModal = document.getElementById("editProfileModal");
     const editProfileSubmitButton = document.getElementById(
@@ -624,27 +652,25 @@ document.addEventListener("DOMContentLoaded", function () {
                     },
                     data: {
                         // 필요한 경우, 회원 탈퇴에 필요한 데이터를 포함
-                    }
+                    },
                 })
-                .then((response) => {
-                    alert("회원 탈퇴가 성공적으로 처리되었습니다.");
-                    localStorage.removeItem("userId");
-                    localStorage.removeItem("password");
-                    localStorage.removeItem("email");
+                    .then((response) => {
+                        alert("회원 탈퇴가 성공적으로 처리되었습니다.");
+                        localStorage.removeItem("userId");
+                        localStorage.removeItem("password");
+                        localStorage.removeItem("email");
 
-                    // 회원 탈퇴 후 처리 로직, 예: 로그아웃 처리 및 로그인 페이지로 리다이렉트
-                    updateLoginState(false); 
-                })
-                .catch((error) => {
-                    console.error("회원 탈퇴 중 오류 발생:", error);
-                    alert("회원 탈퇴 처리 중 오류가 발생했습니다.");
-                });
+                        // 회원 탈퇴 후 처리 로직, 예: 로그아웃 처리 및 로그인 페이지로 리다이렉트
+                        updateLoginState(false);
+                    })
+                    .catch((error) => {
+                        console.error("회원 탈퇴 중 오류 발생:", error);
+                        alert("회원 탈퇴 처리 중 오류가 발생했습니다.");
+                    });
             }
         });
     }
-    
-    });
-    
+});
 
 //공고 등록 버튼
 document.addEventListener("DOMContentLoaded", function () {
@@ -666,27 +692,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // 현재 표시 중인 페이지가 최근 본 공고인지를 추적하는 상태 변수 추가
 let viewingRecentPortfolios = false;
-const viewButton = document.getElementById("viewRecentPortfolios"); 
+const viewButton = document.getElementById("viewRecentPortfolios");
 // '내가 최근 본 공고' 버튼 클릭 이벤트 리스너
-document.getElementById("viewRecentPortfolios").addEventListener("click", function () {
-    if (viewingRecentPortfolios) {
-        // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
-        viewingRecentPortfolios = false; // 상태 업데이트
-        currentPage = 1; // 페이지를 첫 페이지로 리셋
-        updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페이지네이션 적용하여 업데이트
-        this.classList.remove("active-background");
-    } else {
-        // 최근 본 공고 목록을 보여줌
-        viewingRecentPortfolios = true; // 상태 업데이트
-        const recentlyViewed =
-            JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) || [];
-        renderRecentlyViewedPortfolios(recentlyViewed);
-        currentPage = 1; // 항상 첫 페이지로 설정
-        renderPaginationControls(1); // 페이지네이션 컨트롤을 1페이지로 설정
-       this.classList.add("active-background"); // 배경색 변경 클래스 추가
-    }
-});
-
+document
+    .getElementById("viewRecentPortfolios")
+    .addEventListener("click", function () {
+        if (viewingRecentPortfolios) {
+            // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
+            viewingRecentPortfolios = false; // 상태 업데이트
+            currentPage = 1; // 페이지를 첫 페이지로 리셋
+            updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페이지네이션 적용하여 업데이트
+            this.classList.remove("active-background");
+        } else {
+            // 최근 본 공고 목록을 보여줌
+            viewingRecentPortfolios = true; // 상태 업데이트
+            const recentlyViewed =
+                JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) ||
+                [];
+            renderRecentlyViewedPortfolios(recentlyViewed);
+            currentPage = 1; // 항상 첫 페이지로 설정
+            renderPaginationControls(1); // 페이지네이션 컨트롤을 1페이지로 설정
+            this.classList.add("active-background"); // 배경색 변경 클래스 추가
+        }
+    });
 
 function handlePortfolioCardClick(portfolioId) {
     let recentlyViewed =
@@ -701,16 +729,13 @@ function handlePortfolioCardClick(portfolioId) {
     }
 }
 
-
 function renderRecentlyViewedPortfolios(portfolioIds) {
-    const filteredPortfolios = portfolioData.filter(item =>
-        portfolioIds.includes(item.id.toString())
-    ).slice(0, 12); // 최근 본 공고 중 처음 12개만 추출
+    const filteredPortfolios = portfolioData
+        .filter((item) => portfolioIds.includes(item.id.toString()))
+        .slice(0, 12); // 최근 본 공고 중 처음 12개만 추출
     renderItems(filteredPortfolios); // 최근 본 공고를 화면에 표시
     attachCardClickEvent(); // 동적으로 추가된 요소에 이벤트 리스너 재부착
 }
-
-
 
 // 초기 로딩 시 이벤트 리스너 등록 및 기타 설정
 document.addEventListener("DOMContentLoaded", () => {
@@ -721,24 +746,20 @@ document.addEventListener("DOMContentLoaded", () => {
     attachCardClickEvent();
 });
 
-
-//내가 쓴 공고 보기 
+//내가 쓴 공고 보기
 let viewingMyJobs = false; // "내가 쓴 공고" 보기 상태를 추적하는 변수
 
-
-const myJobsButton = document.getElementById('myJobsButton');
+const myJobsButton = document.getElementById("myJobsButton");
 if (myJobsButton) {
-    myJobsButton.addEventListener("click", function () {
+    myJobsButton.addEventListener("click", async function () {
         if (!viewingMyJobs) {
             // "내가 쓴 공고"를 보여주는 경우
-            fetchMyJobs().then(data => {
-                portfolioData = data; // "내가 쓴 공고" 데이터로 업데이트
-                currentPage = 1; // 페이지를 첫 번째로 리셋
-                updateDisplay(); // 화면 업데이트
-            });
+            portfolioData = await fetchMyJobs();
+            currentPage = 1; // 페이지를 첫 번째로 리셋
+            updateDisplay(); // 화면 업데이트
         } else {
             // "전체 공고"를 보여주는 경우
-            fetchData("/main").then(data => {
+            fetchData("/main").then((data) => {
                 portfolioData = data; // 전체 공고 데이터로 업데이트
                 currentPage = 1; // 페이지를 첫 번째로 리셋
                 updateDisplay(); // 화면 업데이트
@@ -748,17 +769,37 @@ if (myJobsButton) {
     });
 }
 
-
 async function fetchMyJobs() {
     try {
-        const response = await axios.get('/me/jobs',  { withCredentials: true });
-        //const myJobsData = response.data;
-        if (response.data && Array.isArray(response.data)) {
-           console.log(response.data);
-            displayMyJobs(response.data); // 수정된 부분
-        } else {
-            console.error("fetchMyJobs: Unexpected response format", response.data);
-        }
+        const res = await axios.get("/me/jobs", { withCredentials: true });
+        console.log(res.data);
+        return res.data.map((dataItem) => {
+            // 가져온 데이터를 변환하여 반환
+            const stacks = dataItem.stack; // 서버에서 스택 객체를 가져와 저장
+            console.log("stacks", stacks);
+            const techStack = Object.keys(stacks).filter((key) => stacks[key]); // true인 스택만 필터링하여 배열로 가져옴
+            console.log("techStack", techStack);
+            const tags = techStack.map((tag) => {
+                // 첫 글자 대문자로 변환하여 태그 추가
+                if (tag === "typescript") return "TypeScript";
+                if (tag === "javascript") return "JavaScript";
+                if (tag === "css") return "CSS";
+                if (tag === "jsx") return "JSX";
+                if (tag === "html") return "HTML";
+                return tag.charAt(0).toUpperCase() + tag.slice(1);
+            });
+            const finalTags = tags.length > 0 ? tags : ["없음"]; // 스택이 없으면 "없음" 태그를 사용
+            console.log("finalTags", finalTags);
+            return {
+                id: dataItem.jobs_id,
+                title: dataItem.company_name,
+                date: dataItem.created_at,
+                tags: finalTags, // 스택이 없으면 "없음" 태그로 설정
+                imageUrl: dataItem.img_path,
+                favoriteCount: dataItem.cnt_likes,
+                isFavorite: false, // 초기 즐겨찾기 상태는 false로 설정
+            };
+        });
     } catch (error) {
         console.error("내가 쓴 공고를 가져오는 중 오류 발생:", error);
     }
@@ -766,11 +807,11 @@ async function fetchMyJobs() {
 
 function displayMyJobs(jobs) {
     const container = document.getElementById("portfolioItems"); // 공고를 표시할 컨테이너의 ID
-    container.innerHTML = ''; // 컨테이너 초기화
+    container.innerHTML = ""; // 컨테이너 초기화
 
-    jobs.forEach(job => {
-        const jobElement = document.createElement('div');
-        jobElement.classList.add('portfolioCard');
+    jobs.forEach((job) => {
+        const jobElement = document.createElement("div");
+        jobElement.classList.add("portfolioCard");
         jobElement.innerHTML = `
             <div class="favorite-container">
                 <span class="material-symbols-outlined favorite">favorite_border</span>
@@ -778,7 +819,9 @@ function displayMyJobs(jobs) {
             <img src="${job.imageUrl}" alt="${job.title}">
             <h3>${job.title}</h3>
             <p>${job.date}</p>
-            <div class="tags-container">${job.tags.map(tag => `<span class="tag-button">${tag}</span>`).join(' ')}</div>
+            <div class="tags-container">${job.tags
+                .map((tag) => `<span class="tag-button">${tag}</span>`)
+                .join(" ")}</div>
         `;
         container.appendChild(jobElement);
     });

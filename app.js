@@ -38,21 +38,6 @@ app.use((req, res, next) => {
 app.use("/", router);
 app.use("/google", OauthRouter);
 
-/* 시퀄라이즈 설정 */
-sequelize
-    .sync({ force: false })
-    .then(() => {
-        app.listen(process.env.PORT, () => {
-            console.log("Database connection succeeded!");
-            console.log(`http://localhost:${process.env.PORT}`);
-        });
-    })
-    .catch((error) => {
-        console.error(error);
-    });
-
-//
-
 const uploadDetail = multer({
     storage: multer.diskStorage({
         destination(req, file, cb) {
@@ -69,16 +54,25 @@ const uploadDetail = multer({
     }),
     limits: { fileSize: 5 * 1024 * 1024 },
 });
+/* 시퀄라이즈 설정 */
+sequelize
+    .sync({ force: false })
+    .then(() => {
+        app.listen(process.env.PORT, () => {
+            console.log("Database connection succeeded!");
+            console.log(`http://localhost:${process.env.PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+
+//
 
 app.post("/upload", uploadDetail.single("img_path"), function (req, res) {
     console.log(req.body);
     console.log(req.file);
     res.send({ path: req.file.filename });
-
-    res.render("result", {
-        src: req.file.path,
-        Info: req.body,
-    });
 });
 
 app.get("*", (req, res) => {

@@ -74,8 +74,6 @@ exports.jobsLike = async (req, res) => {
 // 공고 상세 페이지 조회
 exports.jobsDetail = async (req, res) => {
     try {
-        console.log("reqparams", req.params);
-        console.log("reqparams:", req.params.jobId);
         const jobId = req.params.jobId;
         const jobsDetail = await jobsModel.findOne({
             where: { jobs_id: jobId },
@@ -97,8 +95,6 @@ exports.jobsDetail = async (req, res) => {
                 },
             ],
         });
-        // res.send(jobsDetail);
-        console.log(jobsDetail);
         const reviews = await reviewsModel.findAll({
             where: { jobs_id: jobId },
         });
@@ -119,10 +115,8 @@ exports.jobsDetail = async (req, res) => {
 exports.jobsWrite = async (req, res) => {
     try {
         const userId = req.session.userId;
-        console.log("ffffffff====================",req.session.userId);
         const {
-            
-            img_path,
+            imgPath,
             companyName,
             levels,
             introduce,
@@ -137,10 +131,8 @@ exports.jobsWrite = async (req, res) => {
             source,
             stack,
         } = req.body;
-        console.log(req.body);
 
         let levelValue;
-        console.log(levels);
         switch (levels) {
             case "신입":
                 levelValue = 1;
@@ -154,8 +146,6 @@ exports.jobsWrite = async (req, res) => {
             default:
                 throw new Error("올바르지 않은 경력 레벨입니다."); // 예상치 못한 값이 전달된 경우 오류 발생
         }
-        console.log("levelValue:", levelValue);
-
         // stackModel에 있는 컬럼명 배열
         const stackColumns = [
             "react",
@@ -169,18 +159,16 @@ exports.jobsWrite = async (req, res) => {
             "jsx",
             "webpack",
         ];
-
         // stackModel에 삽입할 데이터 객체 초기화
         const stackModelData = {};
-
         // 스택 컬럼명에 대해 순회하면서 해당 값이 스택 데이터에 포함되어 있는지 확인하여 true 또는 false 설정
         stackColumns.forEach((column) => {
             stackModelData[column] = stack.includes(column);
         });
-
+        console.log("디비넣기전 img_path", imgPath);
         const isSuccess = await jobsModel.create({
             users_id: userId,
-            img_path: img_path,
+            img_path: imgPath,
             company_name: companyName,
             levels: levelValue,
             introduce: introduce,
@@ -195,26 +183,26 @@ exports.jobsWrite = async (req, res) => {
             source: source,
         });
 
-        
-        
-        console.log(stackModelData);
         const job = await jobsModel.findOne({
             where: { company_name: companyName },
         });
-
-        console.log("추가된 공고 번호====", job.jobs_id);
 
         const createdStack = await stackModel.create({
             ...stackModelData,
             jobs_id: job.jobs_id,
         });
-        console.log(createdStack);
-        //기슬스택 코드 관련 추가 작성
+
         console.log("isSuccess: ", isSuccess);
-        res.render("detail.ejs", {
-            data: isSuccess,
-        });
-        console.log("공고 페이지 작성 완료");
+        if (isSuccess)
+            return res.send({
+                result: true,
+                msg: "공고 등록 성공",
+                jobsId: isSuccess.jobs_id,
+            });
+        else
+            return res
+                .status(404)
+                .send({ result: false, msg: "공고 등록 실패" });
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
@@ -316,13 +304,13 @@ exports.jobsUpdate = async (req, res) => {
                 jobs_id: jobsId,
             },
         });
-/*
+        /*
         const createdStack = await stackModel.create({
             ...stackModelData,
             jobs_id: job.jobs_id,
         });
 */
-        console.log("Updated stack:", updatedStack); 
+        console.log("Updated stack:", updatedStack);
 
         console.log(usersId);
         console.log(isSuccess);
@@ -336,7 +324,6 @@ exports.jobsUpdate = async (req, res) => {
         res.status(500).send("server error");
     }
 };
-
 
 // DELETE /jobs
 // 공고 삭제
