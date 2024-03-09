@@ -10,7 +10,10 @@ button:hover {
 }
 
 .hidden {
-    display: none;
+    /* display: none; */
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
 }
 
 .mainBlock {
