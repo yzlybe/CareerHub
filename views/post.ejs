@@ -4,8 +4,30 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/static/css/post.css" />
+        <link rel="stylesheet" href="/static/css/dark.css" />
+        <script src="/static/js/detail.js"></script>
+
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <title><%=data.company_name%> 정보</title>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const darkModeEnabled =
+                    localStorage.getItem("darkModeEnabled") === "true";
+
+                // 로컬 스토리지에 저장된 값에 따라 다크 모드 클래스를 추가/제거
+                if (darkModeEnabled) {
+                    document.body.classList.add("dark-mode");
+                }
+            });
+
+            // 페이지를 벗어날 때 현재 다크 모드 상태를 로컬 스토리지에 저장
+            window.addEventListener("beforeunload", function () {
+                const isDarkModeEnabled =
+                    document.body.classList.contains("dark-mode");
+                localStorage.setItem("darkModeEnabled", isDarkModeEnabled);
+            });
+        </script>
     </head>
     <body>
         <!-- 회사 정보 -->

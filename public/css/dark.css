@@ -1,0 +1,171 @@
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #222;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #222;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+}
+
+/* 메인 */
+body.dark-mode {
+    background-color: #222;
+    color: #ffffff;
+}
+
+.dark-mode .top-bar,
+.dark-mode .title-container,
+.dark-mode .button-container,
+.dark-mode .content-container,
+.dark-mode .search-input-container,
+.dark-mode .portfolioCard {
+    background-color: #333;
+    border-color: #333;
+}
+
+.dark-mode .button,
+.dark-mode .favorite,
+.dark-mode .material-symbols-outlined {
+    background-color: #333;
+    color: #ffffff;
+}
+
+.dark-mode .search-input-container input[type="text"] {
+    color: #ffffff;
+    background-color: #333;
+    border-color: #555;
+}
+
+.dark-mode .button-group button {
+    background-color: white !important;
+    color: #333 !important;
+}
+.dark-mode .button-group button.selected {
+    background-color: #333 !important;
+    color: white !important;
+}
+
+.dark-mode .tag-button {
+    background-color: #333 !important;
+    color: white !important;
+}
+
+.dark-mode #pagination button.active {
+    background-color: #333 !important;
+    color: white;
+}
+.dark-mode #pagination button {
+    padding: 5px 15px;
+    margin: 0 5px;
+    background-color: #222 !important;
+    color: white;
+
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 50%;
+}
+
+.dark-mode .modal-content {
+    background-color: #222 !important;
+}
+
+.dark-mode .modal button {
+    background-color: #333 !important;
+    color: white;
+    border: none;
+}
+
+.dark-mode .modal input {
+    background-color: #222 !important;
+}
+.dark-mode .fab {
+    background-color: #333 !important;
+}
+.dark-mode .fab.selected {
+    color: #333 !important;
+}
+.dark-mode .fab:hover {
+    color: #ffffff;
+}
+
+.dark-mode .dropdown-content button:hover {
+    background-color: #333;
+}
+
+/* 등록 */
+
+body.dark-mode .input-file-button,
+body.dark-mode input[type="text"],
+body.dark-mode textarea,
+body.dark-mode button,
+body.dark-mode input[type="file"],
+body.dark-mode input[type="checkbox"],
+body.dark-mode input[type="datetime-local"] {
+    background-color: #333;
+    color: white;
+    border: #333;
+}
+
+body.dark-mode .button-label {
+    background-color: white;
+    color: #222;
+    border: 2px solid #b4b4b4;
+}
+
+body.dark-mode .form-check-input:checked + .button-label {
+    background-color: #333;
+    color: #fff;
+    border: 2px solid #333;
+}
+
+/* 선택된 상태일 때의 스타일 */
+body.dark-mode .textarea-input:focus {
+    border-color: #808080;
+    box-shadow: 0 0 5px #808080;
+}
+
+body.dark-mode input:focus {
+    border-color: #808080;
+    box-shadow: 0 0 5px #808080;
+}
