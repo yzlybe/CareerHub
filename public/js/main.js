@@ -392,8 +392,11 @@ document.addEventListener("DOMContentLoaded", function () {
           <button type="submit" class="login-action">로그인</button>
           
           <button type="button" onclick="renderSignupForm()">회원 가입</button>
-          <a href="구글 로그인 링크">
+          <a href="/google/login">
           <img src="/static/img/google.png" alt="Google 로그인" style="margin-top: 5px;" height="55px" width="293px">
+        </a>
+        <a href="/google/signup">
+          <img src="/static/img/google.png" alt="Google 회원가입" style="margin-top: 5px;" height="55px" width="293px">
         </a>
           </form>
       `;
