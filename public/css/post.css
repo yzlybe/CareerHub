@@ -64,10 +64,10 @@ button:hover {
 }
 
 /* 지도 div */
-.map {
-    height: 30vw;
+#map {
     width: 100%;
-    background-color: bisque;
+    height: 30vh;
+    margin-top: 10px;
 }
 
 .editReqButton {

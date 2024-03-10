@@ -17,12 +17,12 @@
             <div class="imgContainer">
                 <img
                     class="companyImg"
-                    src="/static/img/default.png"
+                    src="<%=data.img_path%>"
                     alt="회사 로고"
                 />
             </div>
             <p class="companyName"><%=data.company_name%></p>
-            <p class="experienceLevel"><%=data.levels%><%=data.levelValue%></p>
+            <p class="experienceLevel"></p>
             <button class="likeButton" onclick="increLike('<%=data.jobs_id%>')">
                 ❤ <%=data.cnt_likes%>
             </button>
@@ -33,6 +33,8 @@
                 ❤ <%=data.cnt_likes%>
             </button>
         </div>
+        <br />
+        <button type="button" onclick="test()">test</button>
         <!-- 본문 -->
         <div class="content mainBlock">
             <!-- 본문 조회 -->
@@ -55,7 +57,6 @@
                 </div>
                 <div class="skills">
                     <h2>🔧 기술 스택</h2>
-                    <p><%=data.stack.react%></p>
                 </div>
                 <div class="welfare">
                     <h2>✨ 회사 복지</h2>
@@ -70,10 +71,7 @@
                     <p class="address">
                         <%=data.address%> <%=data.address_detail%>
                     </p>
-                    <div
-                        id="map"
-                        style="width: 900px; height: 400px; margin-top: 10px"
-                    ></div>
+                    <div id="map"></div>
                 </div>
                 <div class="source">
                     <h2>📎 공고 출처</h2>
@@ -90,8 +88,8 @@
                     <h2>📕 회사 로고</h2>
                     <img
                         id="resultImage"
-                        src="/static/img/default.png"
-                        alt="기본 프로필 이미지"
+                        src="<%=data.img_path%>"
+                        alt="회사 로고"
                         width="100"
                         height="100"
                         class="profile"
@@ -130,6 +128,7 @@
                                 name="levels"
                                 value="신입"
                                 class="form-check-input"
+                                id="level_1"
                             />
                             신입
                         </label>
@@ -139,6 +138,7 @@
                                 name="levels"
                                 value="경력"
                                 class="form-check-input"
+                                id="level_2"
                             />
                             경력
                         </label>
@@ -148,6 +148,7 @@
                                 name="levels"
                                 value="무관"
                                 class="form-check-input"
+                                id="level_3"
                             />
                             경력 무관
                         </label>
@@ -199,52 +200,46 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="reactCheckbox"
+                            id="React"
                             value="React"
                             class="form-check-input"
                             style="resize: none"
                         />
-                        <label
-                            for="reactCheckbox"
-                            class="form-check-label button-label"
+                        <label for="React" class="form-check-label button-label"
                             >React</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="vueCheckbox"
+                            id="Vue"
                             value="Vue"
                             class="form-check-input"
                         />
-                        <label
-                            for="vueCheckbox"
-                            class="form-check-label button-label"
+                        <label for="Vue" class="form-check-label button-label"
                             >Vue</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="cssCheckbox"
+                            id="CSS"
                             value="CSS"
                             class="form-check-input"
                         />
-                        <label
-                            for="cssCheckbox"
-                            class="form-check-label button-label"
+                        <label for="CSS" class="form-check-label button-label"
                             >CSS</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="angularCheckbox"
+                            id="Angular"
                             value="Angular"
                             class="form-check-input"
                         />
                         <label
-                            for="angularCheckbox"
+                            for="Angular"
                             class="form-check-label button-label"
                             >Angular</label
                         >
@@ -252,12 +247,12 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="javascriptCheckbox"
+                            id="JavaScript"
                             value="JavaScript"
                             class="form-check-input"
                         />
                         <label
-                            for="javascriptCheckbox"
+                            for="JavaScript"
                             class="form-check-label button-label"
                             >JavaScript</label
                         >
@@ -265,25 +260,23 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="htmlCheckbox"
+                            id="HTML"
                             value="HTML"
                             class="form-check-input"
                         />
-                        <label
-                            for="htmlCheckbox"
-                            class="form-check-label button-label"
+                        <label for="HTML" class="form-check-label button-label"
                             >HTML</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="typescriptCheckbox"
+                            id="TypeScript"
                             value="TypeScript"
                             class="form-check-input"
                         />
                         <label
-                            for="typescriptCheckbox"
+                            for="TypeScript"
                             class="form-check-label button-label"
                             >TypeScript</label
                         >
@@ -291,38 +284,34 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="sassCheckbox"
+                            id="Sass"
                             value="Sass"
                             class="form-check-input"
                         />
-                        <label
-                            for="sassCheckbox"
-                            class="form-check-label button-label"
+                        <label for="Sass" class="form-check-label button-label"
                             >Sass</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="jsxCheckbox"
+                            id="JSX"
                             value="JSX"
                             class="form-check-input"
                         />
-                        <label
-                            for="jsxCheckbox"
-                            class="form-check-label button-label"
+                        <label for="JSX" class="form-check-label button-label"
                             >JSX</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="webpackCheckbox"
+                            id="Webpack"
                             value="Webpack"
                             class="form-check-input"
                         />
                         <label
-                            for="webpackCheckbox"
+                            for="Webpack"
                             class="form-check-label button-label"
                             >Webpack</label
                         >
@@ -411,9 +400,17 @@
                     <!-- 수정 확인 버튼 -->
                     <button
                         type="button"
+                        class="editButton"
                         onclick="editPost('<%=data.jobs_id%>')"
                     >
-                        수정(완료)
+                        수정
+                    </button>
+                    <button
+                        type="button"
+                        class="editCancelButton"
+                        onclick="editReqPost()"
+                    >
+                        취소
                     </button>
                 </form>
             </div>
@@ -424,7 +421,7 @@
                 class="editReqButton"
                 onclick="editReqPost('<%=data.userId%>')"
             >
-                수정(전환)
+                수정
             </button>
             <button
                 class="deleteButton"
@@ -468,7 +465,7 @@
                 <span class="commentButtons">
                     <button
                         class="editReqCommentButton"
-                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>', '<%=reviewsdata[i].users_id%>')"
                     >
                         <!-- 수정창 전환 버튼 -->
                         수정
@@ -476,7 +473,7 @@
                     <span>|</span>
                     <button
                         class="deleteCommentButton"
-                        onclick="deleteCmt('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="deleteCmt('<%=reviewsdata[i].reviews_id%>', '<%=reviewsdata[i].users_id%>')"
                     >
                         삭제
                     </button>
@@ -493,6 +490,7 @@
                     class="editComment hidden"
                 >
                     <input type="text" name="editTxt" value="" />
+                    <br />
                     <button
                         type="button"
                         class="editCommentButton"
@@ -504,7 +502,7 @@
                     <button
                         type="button"
                         class="editCancelCommentButton"
-                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="editCnlCmt('<%=reviewsdata[i].reviews_id%>')"
                     >
                         취소
                     </button>
@@ -514,11 +512,74 @@
         </div>
 
         <script>
+            // function test() {
+            //     //
+            // }
+
             // 로그인 유저 정보 전달
             (function () {
-                console.log("글 작성 유저 : <%-data.users_id%>"); // 유레카!!!!!!
+                console.log("글 작성 유저 : <%-data.users_id%>");
             })();
 
+            // 경력 표기 변환
+            (function () {
+                const level = document.querySelector(".experienceLevel");
+                switch ("<%-data.levels%>") {
+                    case "1":
+                        level.innerText = "신입";
+                        break;
+                    case "2":
+                        level.innerText = "경력";
+                        break;
+                    case "3":
+                        level.innerText = "경력 무관";
+                        break;
+                }
+            })();
+
+            // 스택 정보 표기
+            (function () {
+                // 본문에 표기
+                const React = "<%-data.stack.react%>";
+                const Vue = "<%-data.stack.vue%>";
+                const CSS = "<%-data.stack.css%>";
+                const Angular = "<%-data.stack.angular%>";
+                const JavaScript = "<%-data.stack.javascript%>";
+                const HTML = "<%-data.stack.html%>";
+                const TypeScript = "<%-data.stack.typescript%>";
+                const Sass = "<%-data.stack.sass%>";
+                const JSX = "<%-data.stack.jsx%>";
+                const Webpack = "<%-data.stack.webpack%>";
+                const stackData = {
+                    React,
+                    Vue,
+                    CSS,
+                    Angular,
+                    JavaScript,
+                    HTML,
+                    TypeScript,
+                    Sass,
+                    JSX,
+                    Webpack,
+                };
+                const result = document.querySelector(".skills");
+                for (let key in stackData) {
+                    if (JSON.parse(stackData[key])) {
+                        let p = document.createElement("p");
+                        p.innerText = key;
+                        result.append(p);
+                    }
+                }
+                // 수정창에 표기
+                for (let key in stackData) {
+                    if (JSON.parse(stackData[key])) {
+                        const editStack = document.getElementById(`${key}`);
+                        editStack.setAttribute("checked", "true");
+                    }
+                }
+            })();
+
+            // 글 작성자만 수정 삭제 버튼 표시
             (function () {
                 if ("<%-data.users_id%>" !== localStorage.userId) {
                     document
@@ -526,6 +587,8 @@
                         .classList.add("hidden");
                 }
             })();
+
+            // 댓글 작성자만 수정 삭제 버튼 표시 (보류)
 
             // 좋아요 증가 patch /like
             function increLike(jobid) {
@@ -555,11 +618,17 @@
                 window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
                 const post = document.querySelector(".content");
                 const cmt = document.querySelector(".comments");
+                const btn = document.querySelector(".contentButtons");
                 const onDefault = post.querySelector(".viewContent");
                 const offDefault = post.querySelector(".editContent");
                 cmt.classList.toggle("hidden");
+                btn.classList.toggle("hidden");
                 onDefault.classList.toggle("hidden");
                 offDefault.classList.toggle("hidden");
+                const levelRadio = document.getElementById(
+                    "level_<%-data.levels%>"
+                );
+                levelRadio.setAttribute("checked", "true");
             }
 
             // 프로필 사진
@@ -604,35 +673,36 @@
                 const fileInput = document.getElementById("img_path");
                 const fileName = fileInput.value.split("\\").pop();
                 const imgPath = `/uploads/${fileName}`;
+                const data = {
+                    jobsId: jobid,
+                    usersId: "<%-data.users_id%>",
+                    // updated_at,
+                    img_path: imgPath,
+                    companyName: form.company_name.value,
+                    levels: form.levels.value,
+                    introduce: form.introduce.value,
+                    task: form.task.value,
+                    conditions: form.conditions.value,
+                    prefer: form.prefer.value,
+                    welfare: form.welfare.value,
+                    deadline: form.deadline.value,
+                    address: form.address.value,
+                    address_detail: form.address_detail.value,
+                    others: form.others.value,
+                    source: form.source.value,
+                    stack: selectedValues,
+                };
 
                 axios({
                     url: "/jobs",
                     method: "PATCH",
-                    data: {
-                        jobsId: jobid,
-                        usersId: "<%-data.users_id%>",
-                        // updated_at,
-                        img_path: imgPath,
-                        companyName: form.company_name.value,
-                        levels: form.levels.value,
-                        introduce: form.introduce.value,
-                        task: form.task.value,
-                        conditions: form.conditions.value,
-                        prefer: form.prefer.value,
-                        welfare: form.welfare.value,
-                        deadline: form.deadline.value,
-                        address: form.address.value,
-                        address_detail: form.address_detail.value,
-                        others: form.others.value,
-                        source: form.source.value,
-                        stack: selectedValues,
-                    },
+                    data: data,
                 })
                     .then((res) => {
-                        console.log(res.data);
-                        window.scrollTo({ left: 0, top: 0 });
+                        console.log("res.data", res.data);
+                        // window.scrollTo({ left: 0, top: 0 });
                         alert("수정되었습니다.");
-                        document.location.reload();
+                        // document.location.reload();
                     })
                     .catch((err) => console.log(err));
             }
@@ -643,7 +713,7 @@
                 axios({
                     method: "DELETE",
                     url: "/jobs",
-                    data: { jobid: jobid },
+                    data: { jobsId: jobid },
                 }).then((res) => {
                     if (res) {
                         alert(
@@ -693,8 +763,23 @@
 
             // 댓글 수정창 전환
             // 사라질 부분 commentButtons 나올 부분 editComment
-            // 나중에 최적화 하기
-            function editReqCmt(reviewid) {
+            // 나중에 최적화 하기 // 왜 없던 공백이 생겼지?
+            function editReqCmt(reviewid, userid) {
+                if (userid == localStorage.userId) {
+                    const findCmt = document.getElementById(`cmt_${reviewid}`);
+                    const cmtTxt = findCmt.querySelector(".comment").innerText;
+                    const onDefault = findCmt.querySelector(".commentButtons");
+                    const offDefault = findCmt.querySelector(".editComment");
+                    onDefault.classList.toggle("hidden");
+                    offDefault.classList.toggle("hidden");
+                    const txtbox = findCmt.querySelector("input");
+                    txtbox.setAttribute("value", `${cmtTxt}`);
+                } else {
+                    alert("본인이 작성한 댓글만 수정할 수 있습니다.");
+                }
+            }
+
+            function editCnlCmt(reviewid) {
                 const findCmt = document.getElementById(`cmt_${reviewid}`);
                 const cmtTxt = findCmt.querySelector(".comment").innerText;
                 const onDefault = findCmt.querySelector(".commentButtons");
@@ -732,20 +817,23 @@
             }
 
             // 댓글 삭제 delete /review
-            function deleteCmt(reviewid) {
-                console.log(reviewid);
-                axios({
-                    method: "DELETE",
-                    url: "/review",
-                    data: { reviewId: reviewid },
-                }).then((res) => {
-                    if (res) {
-                        alert("댓글이 삭제되었습니다.");
-                        document.location.reload();
-                    } else {
-                        alert("댓글을 삭제할 수 없습니다.");
-                    }
-                });
+            function deleteCmt(reviewid, userid) {
+                if (userid == localStorage.userId) {
+                    axios({
+                        method: "DELETE",
+                        url: "/review",
+                        data: { reviewId: reviewid },
+                    }).then((res) => {
+                        if (res) {
+                            alert("댓글이 삭제되었습니다.");
+                            document.location.reload();
+                        } else {
+                            alert("댓글을 삭제할 수 없습니다.");
+                        }
+                    });
+                } else {
+                    alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
+                }
             }
 
             // 지도 관련 script js 분리 시 오류 발생
