@@ -1,139 +1,365 @@
 <!DOCTYPE html>
 <html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>detail</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>detail</title>
+        <link rel="stylesheet" href="/static/css/detail.css" />
+        <link rel="stylesheet" href="/static/css/dark.css" />
 
-  <link rel="stylesheet" href="/static/css/detail.css" />
+        <!-- axios CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-  <!-- axios CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= process.env.KAKAO_MAP_API_KEY %>&libraries=services"></script>
+        <script defer src="/static/js/kakaoMap.js"></script>
 
-  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= process.env.KAKAO_MAP_API_KEY %>&libraries=services"></script>
-  <script defer src="/static/js/kakaoMap.js"></script>
+        <script src="/static/js/detail.js"></script>
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-  <script src="/static/js/detail.js"></script>
-  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-</head>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const darkModeEnabled =
+                    localStorage.getItem("darkModeEnabled") === "true";
 
-<body>
-  <div name="jobs">
-    <form name="detail">
-      <h1>📕 회사 로고</h1>
-      <img id="resultImage" src="/static/img/default.png" alt="기본 프로필 이미지" width="100" height="100" class="profile" />
+                // 로컬 스토리지에 저장된 값에 따라 다크 모드 클래스를 추가/제거
+                if (darkModeEnabled) {
+                    document.body.classList.add("dark-mode");
+                }
+            });
 
-      <span class="filebox">
-        <label for="img_path" class="input-file-button">회사 로고 업로드</label>
-        <input type="file" id="img_path" name="img_path" onchange="fileUpload()" style="display: none" />
-      </span>
-      <br />
+            // 페이지를 벗어날 때 현재 다크 모드 상태를 로컬 스토리지에 저장
+            window.addEventListener("beforeunload", function () {
+                const isDarkModeEnabled =
+                    document.body.classList.contains("dark-mode");
+                localStorage.setItem("darkModeEnabled", isDarkModeEnabled);
+            });
+        </script>
+    </head>
 
-      <h1>📗 회사명</h1>
-      <input type="text" name="company_name" placeholder="회사명을 입력해주세요" class="text-input" required />
-      <br />
+    <body>
+        <%#- include('./header') %>
+        <div name="jobs">
+            <form name="detail">
+                <h1>📕 회사 로고</h1>
+                <img
+                    id="resultImage"
+                    src="/static/img/default.png"
+                    alt="기본 프로필 이미지"
+                    width="100"
+                    height="100"
+                    class="profile"
+                />
 
-      <h1>📘 경력</h1>
-      <div name="form-check-label">
-        <label class="form-check-label">
-          <input type="radio" name="levels" value="신입" class="form-check-input" />
-          신입
-        </label>
-        <label class="form-check-label">
-          <input type="radio" name="levels" value="경력" class="form-check-input" />
-          경력
-        </label>
-        <label class="form-check-label">
-          <input type="radio" name="levels" value="무관" class="form-check-input" />
-          경력 무관
-        </label>
-      </div>
+                <span class="filebox">
+                    <label for="img_path" class="input-file-button"
+                        >회사 로고 업로드</label
+                    >
+                    <input
+                        type="file"
+                        id="img_path"
+                        name="img_path"
+                        onchange="fileUpload()"
+                        style="display: none"
+                    />
+                </span>
+                <br />
 
-      <h1>👨‍💻 회사 소개</h1>
-      <textarea name="introduce" placeholder="회사에 대한 소개를 적어주세요" class="textarea-input" style="resize: none"></textarea>
+                <h1>📗 회사명</h1>
+                <input
+                    type="text"
+                    name="company_name"
+                    placeholder="회사명을 입력해주세요"
+                    class="text-input"
+                    required
+                />
+                <br />
 
-      <h1>📌 담당 업무</h1>
-      <textarea name="task" placeholder="회사에 입사하면 어떤 일을 하게 되나요?" class="textarea-input" style="resize: none"></textarea>
+                <h1>📘 경력</h1>
+                <div name="form-check-label">
+                    <label class="form-check-label">
+                        <input
+                            type="radio"
+                            name="levels"
+                            value="신입"
+                            class="form-check-input"
+                        />
+                        신입
+                    </label>
+                    <label class="form-check-label">
+                        <input
+                            type="radio"
+                            name="levels"
+                            value="경력"
+                            class="form-check-input"
+                        />
+                        경력
+                    </label>
+                    <label class="form-check-label">
+                        <input
+                            type="radio"
+                            name="levels"
+                            value="무관"
+                            class="form-check-input"
+                        />
+                        경력 무관
+                    </label>
+                </div>
 
-      <h1>📜 자격요건</h1>
-      <textarea name="conditions" placeholder="회사에 입사하려면 어떤 준비가 되어있어야 하나요?" class="textarea-input" style="resize: none"></textarea>
+                <h1>👨‍💻 회사 소개</h1>
+                <textarea
+                    name="introduce"
+                    placeholder="회사에 대한 소개를 적어주세요"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-      <h1>👍 우대 사항</h1>
-      <textarea name="prefer" placeholder="회사에 입사하는데 우대하는 사항은 무엇인가요?" class="textarea-input" style="resize: none"></textarea>
+                <h1>📌 담당 업무</h1>
+                <textarea
+                    name="task"
+                    placeholder="회사에 입사하면 어떤 일을 하게 되나요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-      <h1>🔧 기술 스택</h1>
-      <div class="Checkbox" id="stackButtons">
-        <input type="checkbox" name="stack" id="reactCheckbox" value="React" class="form-check-input" style="resize: none" />
-        <label for="reactCheckbox" class="form-check-label button-label">React</label>
+                <h1>📜 자격요건</h1>
+                <textarea
+                    name="conditions"
+                    placeholder="회사에 입사하려면 어떤 준비가 되어있어야 하나요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-        <input type="checkbox" name="stack" id="vueCheckbox" value="Vue" class="form-check-input" />
-        <label for="vueCheckbox" class="form-check-label button-label">Vue</label>
+                <h1>👍 우대 사항</h1>
+                <textarea
+                    name="prefer"
+                    placeholder="회사에 입사하는데 우대하는 사항은 무엇인가요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-        <input type="checkbox" name="stack" id="cssCheckbox" value="CSS" class="form-check-input" />
-        <label for="cssCheckbox" class="form-check-label button-label">CSS</label>
+                <h1>🔧 기술 스택</h1>
+                <div class="Checkbox" id="stackButtons">
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="reactCheckbox"
+                        value="React"
+                        class="form-check-input"
+                        style="resize: none"
+                    />
+                    <label
+                        for="reactCheckbox"
+                        class="form-check-label button-label"
+                        >React</label
+                    >
 
-        <input type="checkbox" name="stack" id="angularCheckbox" value="Angular" class="form-check-input" />
-        <label for="angularCheckbox" class="form-check-label button-label">Angular</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="vueCheckbox"
+                        value="Vue"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="vueCheckbox"
+                        class="form-check-label button-label"
+                        >Vue</label
+                    >
 
-        <input type="checkbox" name="stack" id="javascriptCheckbox" value="JavaScript" class="form-check-input" />
-        <label for="javascriptCheckbox" class="form-check-label button-label">JavaScript</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="cssCheckbox"
+                        value="CSS"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="cssCheckbox"
+                        class="form-check-label button-label"
+                        >CSS</label
+                    >
 
-        <input type="checkbox" name="stack" id="htmlCheckbox" value="HTML" class="form-check-input" />
-        <label for="htmlCheckbox" class="form-check-label button-label">HTML</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="angularCheckbox"
+                        value="Angular"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="angularCheckbox"
+                        class="form-check-label button-label"
+                        >Angular</label
+                    >
 
-        <input type="checkbox" name="stack" id="typescriptCheckbox" value="TypeScript" class="form-check-input" />
-        <label for="typescriptCheckbox" class="form-check-label button-label">TypeScript</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="javascriptCheckbox"
+                        value="JavaScript"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="javascriptCheckbox"
+                        class="form-check-label button-label"
+                        >JavaScript</label
+                    >
 
-        <input type="checkbox" name="stack" id="sassCheckbox" value="Sass" class="form-check-input" />
-        <label for="sassCheckbox" class="form-check-label button-label">Sass</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="htmlCheckbox"
+                        value="HTML"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="htmlCheckbox"
+                        class="form-check-label button-label"
+                        >HTML</label
+                    >
 
-        <input type="checkbox" name="stack" id="jsxCheckbox" value="JSX" class="form-check-input" />
-        <label for="jsxCheckbox" class="form-check-label button-label">JSX</label>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="typescriptCheckbox"
+                        value="TypeScript"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="typescriptCheckbox"
+                        class="form-check-label button-label"
+                        >TypeScript</label
+                    >
 
-        <input type="checkbox" name="stack" id="webpackCheckbox" value="Webpack" class="form-check-input" />
-        <label for="webpackCheckbox" class="form-check-label button-label">Webpack</label>
-      </div>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="sassCheckbox"
+                        value="Sass"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="sassCheckbox"
+                        class="form-check-label button-label"
+                        >Sass</label
+                    >
 
-      <h1>✨ 회사 복지</h1>
-      <textarea name="welfare" placeholder="어떤 복지와 혜택이 있나요?" class="textarea-input" style="resize: none"></textarea>
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="jsxCheckbox"
+                        value="JSX"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="jsxCheckbox"
+                        class="form-check-label button-label"
+                        >JSX</label
+                    >
 
-      <h1>📅 마감일</h1>
-      <input type="datetime-local" id="deadline" name="deadline" required />
-      까지
+                    <input
+                        type="checkbox"
+                        name="stack"
+                        id="webpackCheckbox"
+                        value="Webpack"
+                        class="form-check-input"
+                    />
+                    <label
+                        for="webpackCheckbox"
+                        class="form-check-label button-label"
+                        >Webpack</label
+                    >
+                </div>
 
-      <h1>📍 위치</h1>
+                <h1>✨ 회사 복지</h1>
+                <textarea
+                    name="welfare"
+                    placeholder="어떤 복지와 혜택이 있나요?"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
 
-      <div id="map" style="width: 900px; height: 400px; margin-top: 10px"></div>
-      <br />
-      <!-- 주소 검색 버튼 -->
-      <input type="button" class="input-file-button" onclick="sample5_execDaumPostcode()" value="주소 검색" />
-      <!-- 현위치 버튼 -->
-      <input type="button" class="input-file-button" onclick="getCurrentLocation()" value="현위치 찾기" /><br /><br />
+                <h1>📅 마감일</h1>
+                <input
+                    type="datetime-local"
+                    id="deadline"
+                    name="deadline"
+                    required
+                />
+                까지
 
-      <!-- 주소 입력 필드 -->
-      <input type="text" name="address" id="sample5_address" placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다" class="text-input" readonly /><br /><br />
-      <!-- 상세 주소 입력 필드 -->
-      <input type="text" name="address_detail" placeholder="상세 주소를 적어주세요 (선택)" class="text-input" /><br /><br />
+                <h1>📍 위치</h1>
 
-      <h1>📎 공고 출처</h1>
-      <input type="text" name="source" placeholder="어떤 사이트에서 정보를 받았는지 출처를 꼭 밝혀주세요!" class="text-input" />
+                <div
+                    id="map"
+                    style="width: 900px; height: 400px; margin-top: 10px"
+                ></div>
+                <br />
+                <!-- 주소 검색 버튼 -->
+                <input
+                    type="button"
+                    class="input-file-button"
+                    onclick="sample5_execDaumPostcode()"
+                    value="주소 검색"
+                />
+                <!-- 현위치 버튼 -->
+                <input
+                    type="button"
+                    class="input-file-button"
+                    onclick="getCurrentLocation()"
+                    value="현위치 찾기"
+                /><br /><br />
 
-      <h1>💡 기타 추가 정보</h1>
-      <textarea name="others" placeholder="회사에 대한 추가 정보 혹은 여러분의 자유로운 의견을 써주세요(선택)" class="textarea-input" style="resize: none"></textarea>
-      <br /><br />
+                <!-- 주소 입력 필드 -->
+                <input
+                    type="text"
+                    name="address"
+                    id="sample5_address"
+                    placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다"
+                    class="text-input"
+                    readonly
+                /><br /><br />
+                <!-- 상세 주소 입력 필드 -->
+                <input
+                    type="text"
+                    name="address_detail"
+                    placeholder="상세 주소를 적어주세요 (선택)"
+                    class="text-input"
+                /><br /><br />
 
-      <label name="warning">
-        <input type="checkbox" name="deleteCheckbox" />
-        욕설 혹은 거짓 정보 등 다른 유저들에게 불쾌함을 줄 수 있는
-        공고는 관리자에 의해 삭제될 수 있습니다.
-      </label>
+                <h1>📎 공고 출처</h1>
+                <input
+                    type="text"
+                    name="source"
+                    placeholder="어떤 사이트에서 정보를 받았는지 출처를 꼭 밝혀주세요!"
+                    class="text-input"
+                />
 
-      <button type="button" class="input-file-button" id="submit-button" onclick="detailSubmit()">
-        제출
-      </button>
-    </form>
-  </div>
-</body>
+                <h1>💡 기타 추가 정보</h1>
+                <textarea
+                    name="others"
+                    placeholder="회사에 대한 추가 정보 혹은 여러분의 자유로운 의견을 써주세요(선택)"
+                    class="textarea-input"
+                    style="resize: none"
+                ></textarea>
+                <br /><br />
 
+                <label name="warning">
+                    <input type="checkbox" name="deleteCheckbox" />
+                    욕설 혹은 거짓 정보 등 다른 유저들에게 불쾌함을 줄 수 있는
+                    공고는 관리자에 의해 삭제될 수 있습니다.
+                </label>
+
+                <button
+                    type="button"
+                    class="input-file-button"
+                    id="submit-button"
+                    onclick="detailSubmit()"
+                >
+                    제출
+                </button>
+            </form>
+        </div>
+    </body>
 </html>
