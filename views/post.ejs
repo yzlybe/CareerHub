@@ -4,10 +4,14 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/static/css/post.css" />
+
+        <link rel="stylesheet" href="/static/css/detail.css" />
         <link rel="stylesheet" href="/static/css/dark.css" />
         <script src="/static/js/detail.js"></script>
 
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%=process.env.KAKAO_MAP_API_KEY %>&libraries=services"></script>
         <title><%=data.company_name%> 정보</title>
 
         <script>
@@ -35,12 +39,12 @@
             <div class="imgContainer">
                 <img
                     class="companyImg"
-                    src="/static/img/default.png"
+                    src="<%=data.img_path%>"
                     alt="회사 로고"
                 />
             </div>
             <p class="companyName"><%=data.company_name%></p>
-            <p class="experienceLevel"><%=data.levels%><%=data.levelValue%></p>
+            <p class="experienceLevel"></p>
             <button class="likeButton" onclick="increLike('<%=data.jobs_id%>')">
                 ❤ <%=data.cnt_likes%>
             </button>
@@ -51,6 +55,8 @@
                 ❤ <%=data.cnt_likes%>
             </button>
         </div>
+        <br />
+        <button type="button" onclick="test()">test</button>
         <!-- 본문 -->
         <div class="content mainBlock">
             <!-- 본문 조회 -->
@@ -73,7 +79,6 @@
                 </div>
                 <div class="skills">
                     <h2>🔧 기술 스택</h2>
-                    <p><%=data.stack%></p>
                 </div>
                 <div class="welfare">
                     <h2>✨ 회사 복지</h2>
@@ -85,8 +90,10 @@
                 </div>
                 <div class="location">
                     <h2>📍 위치</h2>
-                    <p class="address"><%=data.address%></p>
-                    <div class="map"></div>
+                    <p class="address">
+                        <%=data.address%> <%=data.address_detail%>
+                    </p>
+                    <div id="map"></div>
                 </div>
                 <div class="source">
                     <h2>📎 공고 출처</h2>
@@ -103,8 +110,8 @@
                     <h2>📕 회사 로고</h2>
                     <img
                         id="resultImage"
-                        src="/static/img/default.png"
-                        alt="기본 프로필 이미지"
+                        src="<%=data.img_path%>"
+                        alt="회사 로고"
                         width="100"
                         height="100"
                         class="profile"
@@ -130,7 +137,7 @@
                         name="company_name"
                         placeholder="회사명을 입력해주세요"
                         class="text-input"
-                        value="<%=data.introduce%>"
+                        value="<%=data.company_name%>"
                         required
                     />
                     <br />
@@ -143,6 +150,7 @@
                                 name="levels"
                                 value="신입"
                                 class="form-check-input"
+                                id="level_1"
                             />
                             신입
                         </label>
@@ -152,6 +160,7 @@
                                 name="levels"
                                 value="경력"
                                 class="form-check-input"
+                                id="level_2"
                             />
                             경력
                         </label>
@@ -161,6 +170,7 @@
                                 name="levels"
                                 value="무관"
                                 class="form-check-input"
+                                id="level_3"
                             />
                             경력 무관
                         </label>
@@ -173,7 +183,8 @@
                         class="textarea-input"
                         style="resize: none"
                     >
-                    </textarea>
+<%=data.introduce%></textarea
+                    >
 
                     <h2>📌 담당 업무</h2>
                     <textarea
@@ -181,7 +192,9 @@
                         placeholder="회사에 입사하면 어떤 일을 하게 되나요?"
                         class="textarea-input"
                         style="resize: none"
-                    ></textarea>
+                    >
+<%=data.task%></textarea
+                    >
 
                     <h2>📜 자격요건</h2>
                     <textarea
@@ -189,7 +202,9 @@
                         placeholder="회사에 입사하려면 어떤 준비가 되어있어야 하나요?"
                         class="textarea-input"
                         style="resize: none"
-                    ></textarea>
+                    >
+<%=data.conditions%></textarea
+                    >
 
                     <h2>👍 우대 사항</h2>
                     <textarea
@@ -197,7 +212,9 @@
                         placeholder="회사에 입사하는데 우대하는 사항은 무엇인가요?"
                         class="textarea-input"
                         style="resize: none"
-                    ></textarea>
+                    >
+<%=data.prefer%></textarea
+                    >
 
                     <!-- 스택 박스 -->
                     <h2>🔧 기술 스택</h2>
@@ -205,52 +222,46 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="reactCheckbox"
+                            id="React"
                             value="React"
                             class="form-check-input"
                             style="resize: none"
                         />
-                        <label
-                            for="reactCheckbox"
-                            class="form-check-label button-label"
+                        <label for="React" class="form-check-label button-label"
                             >React</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="vueCheckbox"
+                            id="Vue"
                             value="Vue"
                             class="form-check-input"
                         />
-                        <label
-                            for="vueCheckbox"
-                            class="form-check-label button-label"
+                        <label for="Vue" class="form-check-label button-label"
                             >Vue</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="cssCheckbox"
+                            id="CSS"
                             value="CSS"
                             class="form-check-input"
                         />
-                        <label
-                            for="cssCheckbox"
-                            class="form-check-label button-label"
+                        <label for="CSS" class="form-check-label button-label"
                             >CSS</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="angularCheckbox"
+                            id="Angular"
                             value="Angular"
                             class="form-check-input"
                         />
                         <label
-                            for="angularCheckbox"
+                            for="Angular"
                             class="form-check-label button-label"
                             >Angular</label
                         >
@@ -258,12 +269,12 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="javascriptCheckbox"
+                            id="JavaScript"
                             value="JavaScript"
                             class="form-check-input"
                         />
                         <label
-                            for="javascriptCheckbox"
+                            for="JavaScript"
                             class="form-check-label button-label"
                             >JavaScript</label
                         >
@@ -271,25 +282,23 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="htmlCheckbox"
+                            id="HTML"
                             value="HTML"
                             class="form-check-input"
                         />
-                        <label
-                            for="htmlCheckbox"
-                            class="form-check-label button-label"
+                        <label for="HTML" class="form-check-label button-label"
                             >HTML</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="typescriptCheckbox"
+                            id="TypeScript"
                             value="TypeScript"
                             class="form-check-input"
                         />
                         <label
-                            for="typescriptCheckbox"
+                            for="TypeScript"
                             class="form-check-label button-label"
                             >TypeScript</label
                         >
@@ -297,38 +306,34 @@
                         <input
                             type="checkbox"
                             name="stack"
-                            id="sassCheckbox"
+                            id="Sass"
                             value="Sass"
                             class="form-check-input"
                         />
-                        <label
-                            for="sassCheckbox"
-                            class="form-check-label button-label"
+                        <label for="Sass" class="form-check-label button-label"
                             >Sass</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="jsxCheckbox"
+                            id="JSX"
                             value="JSX"
                             class="form-check-input"
                         />
-                        <label
-                            for="jsxCheckbox"
-                            class="form-check-label button-label"
+                        <label for="JSX" class="form-check-label button-label"
                             >JSX</label
                         >
 
                         <input
                             type="checkbox"
                             name="stack"
-                            id="webpackCheckbox"
+                            id="Webpack"
                             value="Webpack"
                             class="form-check-input"
                         />
                         <label
-                            for="webpackCheckbox"
+                            for="Webpack"
                             class="form-check-label button-label"
                             >Webpack</label
                         >
@@ -336,17 +341,20 @@
 
                     <h2>✨ 회사 복지</h2>
                     <textarea
-                        name="welfaer"
+                        name="welfare"
                         placeholder="어떤 복지와 혜택이 있나요?"
                         class="textarea-input"
                         style="resize: none"
-                    ></textarea>
+                    >
+<%=data.welfare%></textarea
+                    >
 
                     <h2>📅 마감일</h2>
                     <input
                         type="datetime-local"
                         id="deadline"
                         name="deadline"
+                        defaultValue="<%=data.dedline%>"
                         required
                     />
                     까지
@@ -354,7 +362,7 @@
                     <h2>📍 위치</h2>
 
                     <div
-                        id="map"
+                        id="mapEdit"
                         style="width: 900px; height: 400px; margin-top: 10px"
                     ></div>
                     <br />
@@ -379,6 +387,7 @@
                         name="address"
                         id="sample5_address"
                         placeholder="키워드 검색 후 해당 장소를 클릭하시면 주소가 기입됩니다"
+                        value="<%=data.address%>"
                         class="text-input"
                         readonly
                     /><br /><br />
@@ -387,6 +396,7 @@
                         type="text"
                         name="address_detail"
                         placeholder="상세 주소를 적어주세요 (선택)"
+                        value="<%=data.address_detail%>"
                         class="text-input"
                     /><br /><br />
 
@@ -395,6 +405,7 @@
                         type="text"
                         name="source"
                         placeholder="어떤 사이트에서 정보를 받았는지 출처를 꼭 밝혀주세요!"
+                        value="<%=data.source%>"
                         class="text-input"
                     />
 
@@ -404,11 +415,24 @@
                         placeholder="회사에 대한 추가 정보 혹은 여러분의 자유로운 의견을 써주세요(선택)"
                         class="textarea-input"
                         style="resize: none"
-                    ></textarea>
+                    >
+<%=data.others%></textarea
+                    >
                     <br />
                     <!-- 수정 확인 버튼 -->
-                    <button type="button" onclick="editPost()">
-                        수정(완료)
+                    <button
+                        type="button"
+                        class="editButton"
+                        onclick="editPost('<%=data.jobs_id%>')"
+                    >
+                        수정
+                    </button>
+                    <button
+                        type="button"
+                        class="editCancelButton"
+                        onclick="editReqPost()"
+                    >
+                        취소
                     </button>
                 </form>
             </div>
@@ -419,7 +443,7 @@
                 class="editReqButton"
                 onclick="editReqPost('<%=data.userId%>')"
             >
-                수정(전환)
+                수정
             </button>
             <button
                 class="deleteButton"
@@ -450,6 +474,12 @@
             <!-- 댓글 조회 -->
             <!-- Todo: 예외처리 추가하기 -->
             <% for (let i= 0; i < reviewsdata.length; i++) { %>
+            <!-- <input
+                type="hidden"
+                id="reviewWriter_<%#=reviewsdata[i].reviews_id%>"
+                name="reviewWriter"
+                value="<%#=reviewsdata[i].users_id%>"
+            /> -->
             <div class="commentBox" id="cmt_<%=reviewsdata[i].reviews_id%>">
                 <p class="writer"><%=reviewsdata[i].nickname%></p>
                 <p class="registerDate"><%=reviewsdata[i].created_at%></p>
@@ -457,7 +487,7 @@
                 <span class="commentButtons">
                     <button
                         class="editReqCommentButton"
-                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>', '<%=reviewsdata[i].users_id%>')"
                     >
                         <!-- 수정창 전환 버튼 -->
                         수정
@@ -465,7 +495,7 @@
                     <span>|</span>
                     <button
                         class="deleteCommentButton"
-                        onclick="deleteCmt('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="deleteCmt('<%=reviewsdata[i].reviews_id%>', '<%=reviewsdata[i].users_id%>')"
                     >
                         삭제
                     </button>
@@ -481,11 +511,12 @@
                     name="editComment_<%=reviewsdata[i].reviews_id%>"
                     class="editComment hidden"
                 >
-                    <input type="text" name="editTxt" value="opoop" />
+                    <input type="text" name="editTxt" value="" />
+                    <br />
                     <button
                         type="button"
                         class="editCommentButton"
-                        onclick="editCmt('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="editCmt('<%=reviewsdata[i].reviews_id%>', '<%=data.jobs_id%>')"
                     >
                         <!-- 수정 확인 버튼 -->
                         수정
@@ -493,7 +524,7 @@
                     <button
                         type="button"
                         class="editCancelCommentButton"
-                        onclick="editReqCmt('<%=reviewsdata[i].reviews_id%>')"
+                        onclick="editCnlCmt('<%=reviewsdata[i].reviews_id%>')"
                     >
                         취소
                     </button>
@@ -503,6 +534,84 @@
         </div>
 
         <script>
+            // function test() {
+            //     //
+            // }
+
+            // 로그인 유저 정보 전달
+            (function () {
+                console.log("글 작성 유저 : <%-data.users_id%>");
+            })();
+
+            // 경력 표기 변환
+            (function () {
+                const level = document.querySelector(".experienceLevel");
+                switch ("<%-data.levels%>") {
+                    case "1":
+                        level.innerText = "신입";
+                        break;
+                    case "2":
+                        level.innerText = "경력";
+                        break;
+                    case "3":
+                        level.innerText = "경력 무관";
+                        break;
+                }
+            })();
+
+            // 스택 정보 표기
+            (function () {
+                // 본문에 표기
+                const React = "<%-data.stack.react%>";
+                const Vue = "<%-data.stack.vue%>";
+                const CSS = "<%-data.stack.css%>";
+                const Angular = "<%-data.stack.angular%>";
+                const JavaScript = "<%-data.stack.javascript%>";
+                const HTML = "<%-data.stack.html%>";
+                const TypeScript = "<%-data.stack.typescript%>";
+                const Sass = "<%-data.stack.sass%>";
+                const JSX = "<%-data.stack.jsx%>";
+                const Webpack = "<%-data.stack.webpack%>";
+                const stackData = {
+                    React,
+                    Vue,
+                    CSS,
+                    Angular,
+                    JavaScript,
+                    HTML,
+                    TypeScript,
+                    Sass,
+                    JSX,
+                    Webpack,
+                };
+                const result = document.querySelector(".skills");
+                for (let key in stackData) {
+                    if (JSON.parse(stackData[key])) {
+                        let p = document.createElement("p");
+                        p.innerText = key;
+                        result.append(p);
+                    }
+                }
+                // 수정창에 표기
+                for (let key in stackData) {
+                    if (JSON.parse(stackData[key])) {
+                        const editStack = document.getElementById(`${key}`);
+                        editStack.setAttribute("checked", "true");
+                    }
+                }
+            })();
+
+            // 글 작성자만 수정 삭제 버튼 표시
+            (function () {
+                if ("<%-data.users_id%>" !== localStorage.userId) {
+                    document
+                        .querySelector(".contentButtons")
+                        .classList.add("hidden");
+                }
+            })();
+
+            // 댓글 작성자만 수정 삭제 버튼 표시 (보류)
+
             // 좋아요 증가 patch /like
             function increLike(jobid) {
                 console.log(jobid);
@@ -530,44 +639,94 @@
             function editReqPost(userid) {
                 window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
                 const post = document.querySelector(".content");
+                const cmt = document.querySelector(".comments");
+                const btn = document.querySelector(".contentButtons");
                 const onDefault = post.querySelector(".viewContent");
                 const offDefault = post.querySelector(".editContent");
+                cmt.classList.toggle("hidden");
+                btn.classList.toggle("hidden");
                 onDefault.classList.toggle("hidden");
                 offDefault.classList.toggle("hidden");
+                const levelRadio = document.getElementById(
+                    "level_<%-data.levels%>"
+                );
+                levelRadio.setAttribute("checked", "true");
+            }
+
+            // 프로필 사진
+            function fileUpload() {
+                const fileInput = document.getElementById("img_path");
+                const formData = new FormData();
+                formData.append("img_path", fileInput.files[0]);
+
+                axios({
+                    method: "POST",
+                    url: "/upload",
+                    data: formData,
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                    .then((res) => {
+                        console.log(res.data);
+                        const resultImage =
+                            document.getElementById("resultImage");
+                        resultImage.src = `/uploads/${res.data.path}`;
+                    })
+                    .catch((err) => console.error(err));
             }
 
             // 글 수정 patch /jobs
             function editPost(jobid) {
                 const form = document.forms["editContent"];
                 console.log(form);
-                //     axios({
-                //         url: "/jobs",
-                //         method: "PATCH",
-                //         data: {
-                //             jobsId: jobid,
-                //             usersId,
-                //             updated_at,
-                //             img_path,
-                //             companyName,
-                //             levels,
-                //             introduce,
-                //             task,
-                //             conditions,
-                //             prefer,
-                //             welfaer,
-                //             deadline,
-                //             address,
-                //             address_detail,
-                //             others,
-                //             source,
-                //         },
-                //     })
-                //         .then((res) => {
-                //             console.log(res);
-                //             document.location.reload();
-                //         })
-                //         .catch((err) => console.log(err));
-                window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+                console.log("<%-data.users_id%>");
+
+                // 체크된 체크박스들의 값들을 담을 배열
+                const selectedValues = [];
+                // NodeList를 배열로 변환하여 순회
+                Array.from(form.stack).forEach((checkbox) => {
+                    if (checkbox.checked) {
+                        selectedValues.push(checkbox.value);
+                    }
+                });
+                console.log(selectedValues);
+
+                const fileInput = document.getElementById("img_path");
+                const fileName = fileInput.value.split("\\").pop();
+                const imgPath = `/uploads/${fileName}`;
+                const data = {
+                    jobsId: jobid,
+                    usersId: "<%-data.users_id%>",
+                    // updated_at,
+                    img_path: imgPath,
+                    companyName: form.company_name.value,
+                    levels: form.levels.value,
+                    introduce: form.introduce.value,
+                    task: form.task.value,
+                    conditions: form.conditions.value,
+                    prefer: form.prefer.value,
+                    welfare: form.welfare.value,
+                    deadline: form.deadline.value,
+                    address: form.address.value,
+                    address_detail: form.address_detail.value,
+                    others: form.others.value,
+                    source: form.source.value,
+                    stack: selectedValues,
+                };
+
+                axios({
+                    url: "/jobs",
+                    method: "PATCH",
+                    data: data,
+                })
+                    .then((res) => {
+                        console.log("res.data", res.data);
+                        // window.scrollTo({ left: 0, top: 0 });
+                        alert("수정되었습니다.");
+                        // document.location.reload();
+                    })
+                    .catch((err) => console.log(err));
             }
 
             // 글 삭제 delete /jobs
@@ -576,7 +735,7 @@
                 axios({
                     method: "DELETE",
                     url: "/jobs",
-                    data: { jobid: jobid },
+                    data: { jobsId: jobid },
                 }).then((res) => {
                     if (res) {
                         alert(
@@ -626,8 +785,23 @@
 
             // 댓글 수정창 전환
             // 사라질 부분 commentButtons 나올 부분 editComment
-            // 나중에 최적화 하기
-            function editReqCmt(reviewid) {
+            // 나중에 최적화 하기 // 왜 없던 공백이 생겼지?
+            function editReqCmt(reviewid, userid) {
+                if (userid == localStorage.userId) {
+                    const findCmt = document.getElementById(`cmt_${reviewid}`);
+                    const cmtTxt = findCmt.querySelector(".comment").innerText;
+                    const onDefault = findCmt.querySelector(".commentButtons");
+                    const offDefault = findCmt.querySelector(".editComment");
+                    onDefault.classList.toggle("hidden");
+                    offDefault.classList.toggle("hidden");
+                    const txtbox = findCmt.querySelector("input");
+                    txtbox.setAttribute("value", `${cmtTxt}`);
+                } else {
+                    alert("본인이 작성한 댓글만 수정할 수 있습니다.");
+                }
+            }
+
+            function editCnlCmt(reviewid) {
                 const findCmt = document.getElementById(`cmt_${reviewid}`);
                 const cmtTxt = findCmt.querySelector(".comment").innerText;
                 const onDefault = findCmt.querySelector(".commentButtons");
@@ -639,7 +813,7 @@
             }
 
             // 댓글 수정 PATCH /review
-            function editCmt(reviewid) {
+            function editCmt(reviewid, jobid) {
                 const form = document.forms[`editComment_${reviewid}`];
                 if (form.editTxt.value.length === 0) {
                     alert("내용을 입력해주세요.");
@@ -653,6 +827,7 @@
                             comment:
                                 document.forms[`editComment_${reviewid}`]
                                     .editTxt.value,
+                            jobsId: jobid,
                         },
                     })
                         .then((res) => {
@@ -664,20 +839,266 @@
             }
 
             // 댓글 삭제 delete /review
-            function deleteCmt(reviewid) {
-                console.log(reviewid);
-                axios({
-                    method: "DELETE",
-                    url: "/review",
-                    data: { reviewId: reviewid },
-                }).then((res) => {
-                    if (res) {
-                        alert("댓글이 삭제되었습니다.");
-                        document.location.reload();
+            function deleteCmt(reviewid, userid) {
+                if (userid == localStorage.userId) {
+                    axios({
+                        method: "DELETE",
+                        url: "/review",
+                        data: { reviewId: reviewid },
+                    }).then((res) => {
+                        if (res) {
+                            alert("댓글이 삭제되었습니다.");
+                            document.location.reload();
+                        } else {
+                            alert("댓글을 삭제할 수 없습니다.");
+                        }
+                    });
+                } else {
+                    alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
+                }
+            }
+
+            // 지도 관련 script js 분리 시 오류 발생
+            // 조회 시 지도 출력
+            document.addEventListener("DOMContentLoaded", function () {
+                // This function will be executed once the DOM is fully loaded
+                // Check if the Kakao object is available
+                if (typeof kakao !== "undefined") {
+                    const address = "<%= data.address %>";
+                    const introduceText = "<%= data.company_name %>";
+                    // 주소를 좌표로 변환하는 함수
+                    const geocoder = new kakao.maps.services.Geocoder();
+                    geocoder.addressSearch(address, function (result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            const mapContainer = document.getElementById("map");
+                            const options = {
+                                center: new kakao.maps.LatLng(
+                                    result[0].y,
+                                    result[0].x
+                                ),
+                                level: 3,
+                            };
+                            const map = new kakao.maps.Map(
+                                mapContainer,
+                                options
+                            );
+                            // 마커 표시
+                            const marker = new kakao.maps.Marker({
+                                position: new kakao.maps.LatLng(
+                                    result[0].y,
+                                    result[0].x
+                                ),
+                                map: map,
+                            });
+                            // 인포윈도우 생성
+                            const infowindow = new kakao.maps.InfoWindow({
+                                content: introduceText,
+                            });
+                            // Open infowindow immediately
+                            infowindow.open(map, marker);
+                        } else {
+                            console.error(
+                                "주소로 좌표를 검색하는데 실패했습니다.",
+                                status
+                            );
+                        }
+                    });
+                } else {
+                    console.error("Kakao Maps SDK is not loaded.");
+                }
+            });
+
+            var mapContainer = document.getElementById("mapEdit"); // 지도를 표시할 div
+            var mapOption = {
+                center: new daum.maps.LatLng(37.537187, 127.005476), // 기본 중심좌표
+                level: 1, // 지도의 확대 레벨
+            };
+            // 지도를 미리 생성
+            var map = new daum.maps.Map(mapContainer, mapOption);
+            // 주소-좌표 변환 객체를 생성
+            var geocoder = new daum.maps.services.Geocoder();
+            // 마커를 미리 생성
+            var marker = new daum.maps.Marker({
+                position: new daum.maps.LatLng(37.537187, 127.005476),
+                map: map,
+            });
+            // 페이지 로딩 시, 기본 위치 설정 함수 호출
+            setDefaultLocation();
+            // 기본 위치 설정 함수
+            function setDefaultLocation() {
+                var address = "<%= data.address %>"; // data.address 값 가져오기
+                // 주소로 좌표 변환
+                geocoder.addressSearch(address, function (results, status) {
+                    if (status === daum.maps.services.Status.OK) {
+                        var result = results[0];
+                        var coords = new daum.maps.LatLng(result.y, result.x);
+                        // 지도 중심을 설정
+                        map.setCenter(coords);
+                        // 마커를 결과값으로 받은 위치로 옮김
+                        marker.setPosition(coords);
                     } else {
-                        alert("댓글을 삭제할 수 없습니다.");
+                        console.error(
+                            "주소로 좌표를 검색하는데 실패했습니다.",
+                            status
+                        );
                     }
                 });
+            }
+            // 주소 검색 함수
+            function sample5_execDaumPostcode() {
+                new daum.Postcode({
+                    oncomplete: function (data) {
+                        var addr = data.address; // 최종 주소 변수
+                        // 주소 정보를 해당 필드에 넣는다.
+                        document.getElementById("sample5_address").value = addr;
+                        // 주소로 상세 정보를 검색
+                        geocoder.addressSearch(
+                            data.address,
+                            function (results, status) {
+                                // 정상적으로 검색이 완료됐으면
+                                if (status === daum.maps.services.Status.OK) {
+                                    var result = results[0]; //첫번째 결과의 값을 활용
+                                    // 해당 주소에 대한 좌표를 받아서
+                                    var coords = new daum.maps.LatLng(
+                                        result.y,
+                                        result.x
+                                    );
+                                    // 지도 중심을 변경한다.
+                                    map.setCenter(coords);
+                                    // 마커를 결과값으로 받은 위치로 옮긴다.
+                                    marker.setPosition(coords);
+                                }
+                            }
+                        );
+                    },
+                }).open();
+            }
+            // 현위치 찾기 함수
+            function getCurrentLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (
+                        position
+                    ) {
+                        var lat = position.coords.latitude; // 위도
+                        var lng = position.coords.longitude; // 경도
+                        var currentPos = new daum.maps.LatLng(lat, lng);
+                        map.setCenter(currentPos);
+                        marker.setPosition(currentPos);
+                        // 주소로 변환하여 입력 필드에 넣기
+                        geocoder.coord2Address(
+                            lng,
+                            lat,
+                            function (result, status) {
+                                if (status === daum.maps.services.Status.OK) {
+                                    var address =
+                                        result[0].address.address_name;
+                                    document.getElementById(
+                                        "sample5_address"
+                                    ).value = address;
+                                }
+                            }
+                        );
+                    });
+                } else {
+                    alert("현위치를 찾을 수 없습니다.");
+                }
+            }
+
+            // 수정 시 지도 출력
+            var mapContainer = document.getElementById("mapEdit"); // 지도를 표시할 div
+            var mapOption = {
+                center: new daum.maps.LatLng(37.537187, 127.005476), // 기본 중심좌표
+                level: 1, // 지도의 확대 레벨
+            };
+            // 지도를 미리 생성
+            var map = new daum.maps.Map(mapContainer, mapOption);
+            // 주소-좌표 변환 객체를 생성
+            var geocoder = new daum.maps.services.Geocoder();
+            // 마커를 미리 생성
+            var marker = new daum.maps.Marker({
+                position: new daum.maps.LatLng(37.537187, 127.005476),
+                map: map,
+            });
+            // 페이지 로딩 시, 기본 위치 설정 함수 호출
+            setDefaultLocation();
+            // 기본 위치 설정 함수
+            function setDefaultLocation() {
+                var address = "<%= data.address %>"; // data.address 값 가져오기
+                // 주소로 좌표 변환
+                geocoder.addressSearch(address, function (results, status) {
+                    if (status === daum.maps.services.Status.OK) {
+                        var result = results[0];
+                        var coords = new daum.maps.LatLng(result.y, result.x);
+                        // 지도 중심을 설정
+                        map.setCenter(coords);
+                        // 마커를 결과값으로 받은 위치로 옮김
+                        marker.setPosition(coords);
+                    } else {
+                        console.error(
+                            "주소로 좌표를 검색하는데 실패했습니다.",
+                            status
+                        );
+                    }
+                });
+            }
+            // 주소 검색 함수
+            function sample5_execDaumPostcode() {
+                new daum.Postcode({
+                    oncomplete: function (data) {
+                        var addr = data.address; // 최종 주소 변수
+                        // 주소 정보를 해당 필드에 넣는다.
+                        document.getElementById("sample5_address").value = addr;
+                        // 주소로 상세 정보를 검색
+                        geocoder.addressSearch(
+                            data.address,
+                            function (results, status) {
+                                // 정상적으로 검색이 완료됐으면
+                                if (status === daum.maps.services.Status.OK) {
+                                    var result = results[0]; //첫번째 결과의 값을 활용
+                                    // 해당 주소에 대한 좌표를 받아서
+                                    var coords = new daum.maps.LatLng(
+                                        result.y,
+                                        result.x
+                                    );
+                                    // 지도 중심을 변경한다.
+                                    map.setCenter(coords);
+                                    // 마커를 결과값으로 받은 위치로 옮긴다.
+                                    marker.setPosition(coords);
+                                }
+                            }
+                        );
+                    },
+                }).open();
+            }
+            // 현위치 찾기 함수
+            function getCurrentLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (
+                        position
+                    ) {
+                        var lat = position.coords.latitude; // 위도
+                        var lng = position.coords.longitude; // 경도
+                        var currentPos = new daum.maps.LatLng(lat, lng);
+                        map.setCenter(currentPos);
+                        marker.setPosition(currentPos);
+                        // 주소로 변환하여 입력 필드에 넣기
+                        geocoder.coord2Address(
+                            lng,
+                            lat,
+                            function (result, status) {
+                                if (status === daum.maps.services.Status.OK) {
+                                    var address =
+                                        result[0].address.address_name;
+                                    document.getElementById(
+                                        "sample5_address"
+                                    ).value = address;
+                                }
+                            }
+                        );
+                    });
+                } else {
+                    alert("현위치를 찾을 수 없습니다.");
+                }
             }
         </script>
     </body>

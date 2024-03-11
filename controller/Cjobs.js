@@ -59,6 +59,7 @@ exports.jobsLike = async (req, res) => {
                         ],
                     },
                 ],
+                order: [["created_at", "DESC"]],
             });
             likedJobs.push(job);
         }
@@ -163,9 +164,20 @@ exports.jobsWrite = async (req, res) => {
         const stackModelData = {};
         // 스택 컬럼명에 대해 순회하면서 해당 값이 스택 데이터에 포함되어 있는지 확인하여 true 또는 false 설정
         stackColumns.forEach((column) => {
-            stackModelData[column] = stack.includes(column);
+            // 대소문자를 구별하지 않고 비교하기 위해 모든 스택 값을 소문자로 변환하여 비교
+            const stackValue = stack.map((value) => value.toLowerCase());
+            stackModelData[column] = stackValue.includes(column.toLowerCase());
         });
-        console.log("디비넣기전 img_path", imgPath);
+
+        const job = await jobsModel.findOne({
+            where: { company_name: companyName },
+        });
+        // 회사명 unique로 설정해서 중복체크
+        if (job)
+            return res
+                .status(404)
+                .send({ result: false, msg: "회사 이름 중복" });
+
         const isSuccess = await jobsModel.create({
             users_id: userId,
             img_path: imgPath,
@@ -182,16 +194,11 @@ exports.jobsWrite = async (req, res) => {
             others: others,
             source: source,
         });
-
-        const job = await jobsModel.findOne({
-            where: { company_name: companyName },
-        });
-
         const createdStack = await stackModel.create({
             ...stackModelData,
-            jobs_id: job.jobs_id,
+            jobs_id: isSuccess.jobs_id,
         });
-
+        console.log("삽입결과", createdStack);
         console.log("isSuccess: ", isSuccess);
         if (isSuccess)
             return res.send({
@@ -275,7 +282,6 @@ exports.jobsUpdate = async (req, res) => {
         const isSuccess = await jobsModel.update(
             {
                 users_id: usersId,
-                //updated_at,
                 img_path,
                 company_name: companyName,
                 levels: levelValue,

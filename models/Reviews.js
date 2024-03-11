@@ -12,24 +12,16 @@ const reviewsModel = (Sequelize, DataTypes) => {
                 type: DataTypes.TEXT,
                 allowNull: false,
             },
-            created_at: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
-            },
-            updated_at: {
-                type: DataTypes.DATE,
-                allowNull: true,
-            },
-             nickname: {
+            nickname: {
                 type: DataTypes.STRING(255),
                 allowNull: false,
-         },
+            },
         },
         {
             tableName: "reviews",
-            timestamps: false,
+            timestamps: true,
             freezTableName: true,
+            underscored: true,
         }
     );
     return model;

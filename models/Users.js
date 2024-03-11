@@ -17,10 +17,6 @@ const usersModel = (Sequelize, DataTypes) => {
                 type: DataTypes.STRING(255),
                 allowNull: false,
             },
-            created_at: {
-                type: DataTypes.DATE, // 시퀄라이즈에서는 TIMESTMAP 타입 지원 X
-                defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
-            },
             nickname: {
                 type: DataTypes.STRING(255),
                 allowNull: false,
@@ -28,8 +24,9 @@ const usersModel = (Sequelize, DataTypes) => {
         },
         {
             tableName: "users",
-            timestamps: false,
+            timestamps: true,
             freezeTableName: true,
+            underscored: true,
         }
     );
     return model;
