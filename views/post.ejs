@@ -437,7 +437,7 @@
                 </form>
             </div>
         </div>
-        <div class="contentButtons">
+        <div class="contentButtons hidden">
             <!-- 수정창 전환 버튼 -->
             <button
                 class="editReqButton"
@@ -482,7 +482,7 @@
             /> -->
             <div class="commentBox" id="cmt_<%=reviewsdata[i].reviews_id%>">
                 <p class="writer"><%=reviewsdata[i].nickname%></p>
-                <p class="registerDate"><%=reviewsdata[i].created_at%></p>
+                <p class="registerDate"><%=reviewsdata[i].updatedAt%></p>
                 <!-- 수정창 전환 시 사라짐 -->
                 <span class="commentButtons">
                     <button
@@ -604,7 +604,6 @@
             // 수정창 날짜 표기
             (function () {
                 const deadlineDate = "<%=data.deadline%>".replace(" ", "T");
-                console.log("d", deadlineDate);
                 document
                     .getElementById("deadline")
                     .setAttribute("value", `${deadlineDate}`);
@@ -612,10 +611,10 @@
 
             // 글 작성자만 수정 삭제 버튼 표시
             (function () {
-                if ("<%-data.users_id%>" !== localStorage.userId) {
+                if ("<%-data.users_id%>" == localStorage.userId) {
                     document
                         .querySelector(".contentButtons")
-                        .classList.add("hidden");
+                        .classList.toggle("hidden");
                 }
             })();
 
@@ -662,9 +661,12 @@
                 levelRadio.setAttribute("checked", "true");
             }
 
+            var imgPath = "<%=data.img_path%>";
             // 프로필 사진
             function fileUpload() {
                 const fileInput = document.getElementById("img_path");
+                const fileName = fileInput.value.split("\\").pop();
+                imgPath = `/uploads/${fileName}`;
                 const formData = new FormData();
                 formData.append("img_path", fileInput.files[0]);
 
@@ -701,9 +703,6 @@
                 });
                 console.log(selectedValues);
 
-                const fileInput = document.getElementById("img_path");
-                const fileName = fileInput.value.split("\\").pop();
-                const imgPath = `/uploads/${fileName}`;
                 const data = {
                     jobsId: jobid,
                     usersId: "<%-data.users_id%>",
@@ -731,9 +730,9 @@
                 })
                     .then((res) => {
                         console.log("res.data", res.data);
-                        // window.scrollTo({ left: 0, top: 0 });
+                        window.scrollTo({ left: 0, top: 0 });
                         alert("수정되었습니다.");
-                        // document.location.reload();
+                        document.location.reload();
                     })
                     .catch((err) => console.log(err));
             }
