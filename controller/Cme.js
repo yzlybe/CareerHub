@@ -35,6 +35,7 @@ exports.myJobs = async (req, res) => {
                     ],
                 },
             ],
+            order: [["created_at", "DESC"]],
         });
         console.log(jobsIdList);
         res.send(jobsIdList);
