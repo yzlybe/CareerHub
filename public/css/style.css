@@ -119,12 +119,12 @@ p {
     font-size: 0.9em; /* 폰트 크기 조정 */
     border: 2px solid #ddd; /* 테두리 스타일 */
     background-color: white; /* 배경색 */
-    color: #007bff; /* 텍스트 색상 */
+    color: #2c88d9; /* 텍스트 색상 */
     border-radius: 5px; /* 모서리 둥글기 */
     cursor: pointer; /* 마우스 오버 시 커서 변경 */
 }
 .button-group button.selected {
-    background-color: #007bff !important;
+    background-color: #2c88d9 !important;
     color: white !important;
 }
 
@@ -184,11 +184,11 @@ p {
     font-size: 0.9em;
     transition: background-color 0.3s;
     background-color: white; /* 선택 시 배경색 */
-    color: #007bff; /* 선택 시 텍스트 색상 */
+    color: #2c88d9; /* 선택 시 텍스트 색상 */
     border-radius: 5px;
 }
 .tag-button:hover {
-    background-color: #007bff; /* 마우스 오버 효과 */
+    background-color: #2c88d9; /* 마우스 오버 효과 */
     color: white;
 }
 
@@ -218,7 +218,7 @@ p {
     height: 80px;
     padding: 10px; /* 버튼 안쪽 여백, 텍스트 크기에 따라 조절 가능 */
     border-radius: 50%; /* 원형 모양 */
-    background-color: #007bff; /* 배경색 */
+    background-color: #2c88d9; /* 배경색 */
     color: white; /* 텍스트 색상 */
     text-align: center; /* 텍스트 중앙 정렬 */
     line-height: normal; /* 텍스트 라인 높이를 normal로 설정 */
@@ -235,7 +235,7 @@ p {
 /* 버튼 호버 효과 */
 .fab:hover {
     background-color: white; /* 배경색 */
-    color: #007bff; /* 텍스트 색상 */
+    color: #2c88d9; /* 텍스트 색상 */
     border: 1px solid black;
 }
 /* 페이지네이션 컨트롤 스타일 */
@@ -256,7 +256,7 @@ p {
     background-color: #e0e0e0;
 }
 #pagination button.active {
-    background-color: #007bff;
+    background-color: #2c88d9;
     color: white;
 }
 /* 모달 전체 스타일 */
@@ -380,6 +380,6 @@ button[onclick="renderLoginForm()"] {
 }
 
 .active-background {
-    background-color: #007bff !important; /* 어두운 회색 */
+    background-color: #2c88d9 !important; /* 어두운 회색 */
     color: white !important; /* 텍스트 색상을 흰색으로 */
 }
