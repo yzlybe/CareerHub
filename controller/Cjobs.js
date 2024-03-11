@@ -83,10 +83,6 @@ exports.jobsLike = async (req, res) => {
 // GET /jobs /:jobsId
 // 공고 상세 페이지 조회
 exports.jobsDetail = async (req, res) => {
-    if (!req.session.userId)
-    return res
-        .status(404)
-        .send({ result: false, msg: "로그인 후 사용이 가능합니다." });
     try {
         const jobId = req.params.jobId;
         const jobsDetail = await jobsModel.findOne({
