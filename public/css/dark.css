@@ -116,6 +116,12 @@ body.dark-mode {
     border: none;
 }
 
+.dark-mode .modal button[name="sign"] {
+    background-color: #222 !important;
+    color: white !important;
+    border: none;
+}
+
 .dark-mode .modal input {
     background-color: #222 !important;
     color: #fff;
