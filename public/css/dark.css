@@ -187,3 +187,12 @@ body.dark-mode button[onclick="renderSignupForm()"] {
 body.dark-mode .close-button {
     color: #fff;
 }
+body.dark-mode button[type="button"][name="Google"] {
+    background-color: #222 !important;
+    color: #fff;
+}
+
+body.dark-mode button[type="button"][name="Google"] span {
+    text-decoration: underline;
+    color: #fff;
+}
