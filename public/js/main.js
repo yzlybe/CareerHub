@@ -389,8 +389,8 @@ document.addEventListener("DOMContentLoaded", function () {
         <form id="loginForm">
           <input type="email" name="email" placeholder="이메일 주소" required><br>
           <input type="password" name="password" placeholder="비밀번호" required><br>
-          <button type="submit" class="login-action">로그인</button>
-          
+          <button type="submit" class="login-action">로그인</button>          
+
           <button type="button" onclick="renderSignupForm()">회원 가입</button>
           <a href="/google/login">
           <img src="/static/img/google.png" alt="Google 로그인" style="margin-top: 5px;" height="55px" width="293px">

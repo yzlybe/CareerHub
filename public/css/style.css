@@ -54,7 +54,7 @@ header {
     padding: 5px 9px;
     cursor: pointer;
     font-size: 14px;
-    display: inline-flex; 
+    display: inline-flex;
     align-items: center;
     justify-content: center; /* 추가된 부분: 아이템들을 버튼의 중앙에 위치시킵니다. */
     gap: 10px; /* 아이콘과 텍스트 사이의 간격을 지정합니다. */
@@ -122,13 +122,11 @@ p {
     color: #007bff; /* 텍스트 색상 */
     border-radius: 5px; /* 모서리 둥글기 */
     cursor: pointer; /* 마우스 오버 시 커서 변경 */
-  
 }
 .button-group button.selected {
     background-color: #007bff !important;
     color: white !important;
 }
-
 
 /* 컨테이너 및 포트폴리오 아이템 스타일 */
 .container {
@@ -198,7 +196,7 @@ p {
 .favorite-container {
     position: absolute;
     top: 10px; /* 상단에서부터의 위치 */
-   
+
     left: 10px; /* 왼쪽에서부터의 위치 */
 }
 .favorite {
@@ -210,9 +208,9 @@ p {
     bottom: 100px;
     right: 100px;
     z-index: 999; /* 다른 요소들 위에 표시 */
-    
 }
-.dropdown, .interest-button {
+.dropdown,
+.interest-button {
     display: none; /* 초기 상태에서 숨김 */
 }
 .fab {
@@ -281,25 +279,24 @@ p {
 
     padding: 20px 0px 40px 40px;
     border-radius: 8px;
-    width: 20%; /* 모달 너비 */
+    width: 25%; /* 모달 너비 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19); /* 그림자 효과 */
     position: relative; /* 닫기 버튼의 절대 위치를 위한 기준점 */
 }
 /* 닫기 버튼 스타일 */
 .close-button {
-    color: #aaa;
+    color: #222;
     float: right;
-    font-size: 28px;
     font-weight: bold;
     position: absolute; /* 부모 요소인 .modal-content에 대해 절대 위치 설정 */
     top: 30px; /* 상단에서부터 10px 떨어진 위치 */
     right: 35px; /* 오른쪽 가장자리에서부터 10px 떨어진 위치 */
-    font-size: 45px; /* x 버튼의 크기 조정 */
+    font-size: 25px; /* x 버튼의 크기 조정 */
     cursor: pointer; /* 마우스를 올렸을 때 커서 변경 */
 }
 .close-button:hover,
 .close-button:focus {
-    color: black;
+    color: #222;
     text-decoration: none;
     cursor: pointer;
 }
@@ -310,37 +307,42 @@ p {
     width: calc(100% - 40px); /* 패딩을 고려한 너비 */
     padding: 10px;
     margin-top: -2px;
-    margin-bottom: -10px;
+    margin-bottom: -3px;
     display: block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
     box-sizing: border-box; /* 박스 사이즈를 border 포함으로 계산 */
+    color: #222;
+    font-size: 14px;
 }
 /* 버튼 스타일 */
 .modal button {
-    width: 87%;
-    padding: 12px 20px;
+    width: 90%;
+    padding: 8px 8px;
     margin-top: 2px;
     border: none;
     border-radius: 4px;
     color: white;
-    background-color: #007bff; /* 부트스트랩 기본 파란색 */
+    background-color: #222;
     cursor: pointer;
-    font-size: 16px;
-    border: 2px solid #ccc;
+    font-size: 14px;
+    /* border: 1px solid #ccc; */
 }
-.modal button:hover {
+/* .modal button:hover {
     opacity: 0.9;
-    color: #007bff;
+    color: #000000;
     background-color: white;
-}
+} */
 /* 회원가입 버튼 스타일 */
 .signup-action {
     background-color: #28a745; /* 부트스트랩 녹색 */
 }
 /* 뒤로 가기 버튼 스타일 */
 button[onclick="renderLoginForm()"] {
-    background-color: #6c757d; /* 부트스트랩 회색 */
+    background-color: #fff;
+    color: #222;
+    font-size: 12px;
+    font-weight: 700;
 }
 /* 드롭다운 버튼 */
 .dropdown {
@@ -377,8 +379,7 @@ button[onclick="renderLoginForm()"] {
     display: block;
 }
 
-
 .active-background {
-    background-color:#007bff !important; /* 어두운 회색 */
+    background-color: #007bff !important; /* 어두운 회색 */
     color: white !important; /* 텍스트 색상을 흰색으로 */
 }
