@@ -196,3 +196,25 @@ body.dark-mode button[type="button"][name="Google"] span {
     text-decoration: underline;
     color: #fff;
 }
+
+/* 공고 상세페이지 */
+
+body.dark-mode [name="commentText"] {
+    background-color: #333;
+    color: white;
+    border: #333;
+}
+
+body.dark-mode .likeButton {
+    background-color: #c41b1b !important;
+    border: 0px;
+    border-radius: 5px;
+    color: white !important;
+}
+
+.unlikeButton {
+    background-color: #c9c9c9 !important;
+    border: 0px;
+    border-radius: 5px;
+    color: #c41b1b !important;
+}
