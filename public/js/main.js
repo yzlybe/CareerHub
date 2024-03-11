@@ -293,7 +293,9 @@ let currentSearchText = "";
 function handleSearchInput(e) {
     // '최근 본 공고'나 '내가 쓴 공고' 보기 상태일 때는 검색 기능 비활성화
     if (viewingRecentPortfolios || viewingMyJobs) {
-        alert("현재 '최근 본 공고' 또는 '내가 쓴 공고' 보기 모드입니다. 이 상태에서는 검색을 사용할 수 없습니다.");
+        alert(
+            "현재 '최근 본 공고' 또는 '내가 쓴 공고' 보기 모드입니다. 이 상태에서는 검색을 사용할 수 없습니다."
+        );
         e.target.value = "";
         return; // 검색 로직 수행하지 않고 함수 종료
     }
@@ -307,7 +309,9 @@ let selectedTags = []; // 사용자가 선택한 태그를 추적하기 위한 �
 function filterItems(tag) {
     // '최근 본 공고'나 '내가 쓴 공고' 보기 상태일 때는 필터링 기능 비활성화
     if (viewingRecentPortfolios || viewingMyJobs) {
-        alert("현재 '최근 본 공고' 또는 '내가 쓴 공고' 보기 모드입니다. 이 상태에서는 태그 필터를 사용할 수 없습니다.");
+        alert(
+            "현재 '최근 본 공고' 또는 '내가 쓴 공고' 보기 모드입니다. 이 상태에서는 태그 필터를 사용할 수 없습니다."
+        );
         return; // 필터링 수행하지 않고 함수 종료
     }
 
@@ -406,14 +410,15 @@ document.addEventListener("DOMContentLoaded", function () {
           <button type="submit" class="login-action">로그인</button>
           
 
-          <a href="구글 로그인 링크"> <button type="button" style="background-color: #fff; color: #222;"><img src="/static/img/111.png" alt="Google 로그인" style="width: 20px;" "align-items: center;">  sign in with Google</button></a>
+          <a href="/google/login"> <button type="button" style="background-color: #fff; color: #222;"><img src="/static/img/111.png" alt="Google 로그인" style="width: 20px;" "align-items: center;">  sign in with Google</button></a>
 
 <button type="button" onclick="renderSignupForm()" style="background-color: #fff; color: #000; font-size: 12px;">
     회원이 아니신가요? <span style="font-size: 12px; text-decoration: underline; font-weight: 700;">회원 가입</span>
 </button>
+<a href="/google/signup">
 <button type="button" name="Google" style="background-color: #fff; color: #000; font-size: 12px;">
     Google로 <span style="font-size: 12px; text-decoration: underline; font-weight: 700;"> 회원 가입</span>
-</button>
+</button></a>
 
 
 
@@ -525,7 +530,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const loginButton = document.querySelector(".login-button");
         loginButton.addEventListener("click", handleLoginButtonClick);
     });
-   
 
     loginButton.addEventListener("click", function () {
         renderLoginForm();
@@ -687,9 +691,10 @@ viewButton.addEventListener("click", function () {
         viewingRecentPortfolios = true; // 상태 업데이트
         viewingMyJobs = false; // 다른 상태 비활성화
         myJobsButton.classList.remove("active-background"); // 다른 버튼 배경색 변경 클래스 제거
-        
+
         // 최근 본 공고 목록 로직 처리
-        const recentlyViewed = JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) || [];
+        const recentlyViewed =
+            JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) || [];
         renderRecentlyViewedPortfolios(recentlyViewed);
         currentPage = 1;
         renderPaginationControls(1);
@@ -702,7 +707,6 @@ viewButton.addEventListener("click", function () {
         resetToAllPortfolios();
     }
 });
-
 
 function handlePortfolioCardClick(portfolioId) {
     let recentlyViewed =
@@ -742,7 +746,7 @@ myJobsButton.addEventListener("click", async function () {
         viewingMyJobs = true;
         viewingRecentPortfolios = false; // 다른 상태 비활성화
         viewButton.classList.remove("active-background"); // 다른 버튼 배경색 변경 클래스 제거
-        
+
         // 내가 쓴 공고 로직 처리
         portfolioData = await fetchMyJobs();
         currentPage = 1;
@@ -751,7 +755,7 @@ myJobsButton.addEventListener("click", async function () {
     } else {
         viewingMyJobs = false;
         currentPage = 1; // 페이지를 첫 페이지로 리셋
-            updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페
+        updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페
         this.classList.remove("active-background");
         resetToAllPortfolios();
         // 전체 포트폴리오 목록 로직 처리
