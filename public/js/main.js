@@ -291,12 +291,26 @@ function attachCardClickEvent() {
 // 검색 처리
 let currentSearchText = "";
 function handleSearchInput(e) {
+    // '최근 본 공고'나 '내가 쓴 공고' 보기 상태일 때는 검색 기능 비활성화
+    if (viewingRecentPortfolios || viewingMyJobs) {
+        alert("현재 '최근 본 공고' 또는 '내가 쓴 공고' 보기 모드입니다. 이 상태에서는 검색을 사용할 수 없습니다.");
+        e.target.value = "";
+        return; // 검색 로직 수행하지 않고 함수 종료
+    }
+
     currentSearchText = e.target.value.toLowerCase(); // 검색어 상태 업데이트
     filterAndDisplayItems(); // 변경된 검색어를 반영하여 아이템 필터링 및 화면 업데이트
 }
+
 let selectedTags = []; // 사용자가 선택한 태그를 추적하기 위한 배열
 // 태그에 따라 아이템을 필터링하는 함수
 function filterItems(tag) {
+    // '최근 본 공고'나 '내가 쓴 공고' 보기 상태일 때는 필터링 기능 비활성화
+    if (viewingRecentPortfolios || viewingMyJobs) {
+        alert("현재 '최근 본 공고' 또는 '내가 쓴 공고' 보기 모드입니다. 이 상태에서는 태그 필터를 사용할 수 없습니다.");
+        return; // 필터링 수행하지 않고 함수 종료
+    }
+
     const index = selectedTags.indexOf(tag);
     if (index > -1) {
         selectedTags.splice(index, 1); // 태그가 이미 배열에 있다면 제거
@@ -304,7 +318,7 @@ function filterItems(tag) {
         selectedTags.push(tag); // 태그가 배열에 없다면 추가
     }
     filterAndDisplayItems(); // 필터링된 아이템을 기반으로 화면 업데이트
-    updateTagButtons();
+    updateTagButtons(); // 필터 버튼의 상태를 업데이트
 }
 function updateTagButtons() {
     document.querySelectorAll(".button-group button").forEach((button) => {
@@ -508,44 +522,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const loginButton = document.querySelector(".login-button");
         loginButton.addEventListener("click", handleLoginButtonClick);
     });
-    // 회원가입 처리
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const editProfileSubmitButton = document.getElementById(
-            "editProfileSubmitButton"
-        );
-        if (editProfileSubmitButton) {
-            editProfileSubmitButton.addEventListener("click", function () {
-                const nickname = document.querySelector(
-                    "#editProfileForm input[name='nickname']"
-                ).value;
-                const password = document.querySelector(
-                    "#editProfileForm input[name='password']"
-                ).value;
-
-                // 여기에 AJAX 요청 로직을 추가합니다.
-                axios({
-                    method: "patch",
-                    url: "/mypage",
-                    data: {
-                        nickname: nickname,
-                        password: password,
-                    },
-                })
-                    .then((response) => {
-                        console.log(response.data);
-                        alert("회원 정보가 성공적으로 수정되었습니다.");
-                        document.getElementById(
-                            "editProfileModal"
-                        ).style.display = "none";
-                    })
-                    .catch((error) => {
-                        console.error("회원 정보 수정 중 오류 발생:", error);
-                        alert("회원 정보 수정 중 오류가 발생하였습니다.");
-                    });
-            });
-        }
-    });
+   
 
     loginButton.addEventListener("click", function () {
         renderLoginForm();
@@ -702,27 +679,27 @@ document.addEventListener("DOMContentLoaded", function () {
 let viewingRecentPortfolios = false;
 const viewButton = document.getElementById("viewRecentPortfolios");
 // '내가 최근 본 공고' 버튼 클릭 이벤트 리스너
-document
-    .getElementById("viewRecentPortfolios")
-    .addEventListener("click", function () {
-        if (viewingRecentPortfolios) {
-            // 이미 최근 본 공고를 보고 있다면, 전체 포트폴리오 목록을 렌더링
-            viewingRecentPortfolios = false; // 상태 업데이트
-            currentPage = 1; // 페이지를 첫 페이지로 리셋
-            updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페이지네이션 적용하여 업데이트
-            this.classList.remove("active-background");
-        } else {
-            // 최근 본 공고 목록을 보여줌
-            viewingRecentPortfolios = true; // 상태 업데이트
-            const recentlyViewed =
-                JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) ||
-                [];
-            renderRecentlyViewedPortfolios(recentlyViewed);
-            currentPage = 1; // 항상 첫 페이지로 설정
-            renderPaginationControls(1); // 페이지네이션 컨트롤을 1페이지로 설정
-            this.classList.add("active-background"); // 배경색 변경 클래스 추가
-        }
-    });
+viewButton.addEventListener("click", function () {
+    if (!viewingRecentPortfolios) {
+        viewingRecentPortfolios = true; // 상태 업데이트
+        viewingMyJobs = false; // 다른 상태 비활성화
+        myJobsButton.classList.remove("active-background"); // 다른 버튼 배경색 변경 클래스 제거
+        
+        // 최근 본 공고 목록 로직 처리
+        const recentlyViewed = JSON.parse(localStorage.getItem("recentlyViewedPortfolios")) || [];
+        renderRecentlyViewedPortfolios(recentlyViewed);
+        currentPage = 1;
+        renderPaginationControls(1);
+        this.classList.add("active-background");
+    } else {
+        viewingRecentPortfolios = false; // 상태 업데이트
+        currentPage = 1; // 페이지를 첫 페이지로 리셋
+        updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페이지네이션 적용하여 업데이트
+        this.classList.remove("active-background");
+        resetToAllPortfolios();
+    }
+});
+
 
 function handlePortfolioCardClick(portfolioId) {
     let recentlyViewed =
@@ -757,25 +734,26 @@ document.addEventListener("DOMContentLoaded", () => {
 //내가 쓴 공고 보기
 let viewingMyJobs = false; // "내가 쓴 공고" 보기 상태를 추적하는 변수
 
-const myJobsButton = document.getElementById("myJobsButton");
-if (myJobsButton) {
-    myJobsButton.addEventListener("click", async function () {
-        if (!viewingMyJobs) {
-            // "내가 쓴 공고"를 보여주는 경우
-            portfolioData = await fetchMyJobs();
-            currentPage = 1; // 페이지를 첫 번째로 리셋
-            updateDisplay(); // 화면 업데이트
-        } else {
-            // "전체 공고"를 보여주는 경우
-            fetchData("/main").then((data) => {
-                portfolioData = data; // 전체 공고 데이터로 업데이트
-                currentPage = 1; // 페이지를 첫 번째로 리셋
-                updateDisplay(); // 화면 업데이트
-            });
-        }
-        viewingMyJobs = !viewingMyJobs; // 상태 토글
-    });
-}
+myJobsButton.addEventListener("click", async function () {
+    if (!viewingMyJobs) {
+        viewingMyJobs = true;
+        viewingRecentPortfolios = false; // 다른 상태 비활성화
+        viewButton.classList.remove("active-background"); // 다른 버튼 배경색 변경 클래스 제거
+        
+        // 내가 쓴 공고 로직 처리
+        portfolioData = await fetchMyJobs();
+        currentPage = 1;
+        updateDisplay();
+        this.classList.add("active-background");
+    } else {
+        viewingMyJobs = false;
+        currentPage = 1; // 페이지를 첫 페이지로 리셋
+            updateDisplay(); // 전체 공고 목록으로 돌아갈 때 페
+        this.classList.remove("active-background");
+        resetToAllPortfolios();
+        // 전체 포트폴리오 목록 로직 처리
+    }
+});
 
 async function fetchMyJobs() {
     try {
@@ -832,5 +810,12 @@ function displayMyJobs(jobs) {
                 .join(" ")}</div>
         `;
         container.appendChild(jobElement);
+    });
+}
+function resetToAllPortfolios() {
+    fetchData().then((data) => {
+        portfolioData = data;
+        currentPage = 1;
+        updateDisplay();
     });
 }
