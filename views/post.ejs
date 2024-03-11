@@ -93,7 +93,7 @@
                     <p class="address">
                         <%=data.address%> <%=data.address_detail%>
                     </p>
-                    <div id="map"></div>
+                    <div id="map" style="color: #000"></div>
                 </div>
                 <div class="source">
                     <h2>📎 공고 출처</h2>
@@ -361,10 +361,7 @@
 
                     <h2>📍 위치</h2>
 
-                    <div
-                        id="mapEdit"
-                        style="width: 900px; height: 400px; margin-top: 10px"
-                    ></div>
+                    <div id="mapEdit" style="color: #000"></div>
                     <br />
                     <!-- 주소 검색 버튼 -->
                     <input
@@ -896,6 +893,7 @@
                             });
                             // Open infowindow immediately
                             infowindow.open(map, marker);
+                            console.log(mapContainer.children);
                         } else {
                             console.error(
                                 "주소로 좌표를 검색하는데 실패했습니다.",
