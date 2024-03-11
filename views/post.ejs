@@ -3,9 +3,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/static/css/post.css" />
 
         <link rel="stylesheet" href="/static/css/detail.css" />
+        <link rel="stylesheet" href="/static/css/post.css" />
         <link rel="stylesheet" href="/static/css/dark.css" />
         <script src="/static/js/detail.js"></script>
 
@@ -34,6 +34,32 @@
         </script>
     </head>
     <body>
+        <!-- 메인 페이지 버튼 -->
+        <div class="header">
+            <button
+                class="home"
+                name="home"
+                type="button"
+                onclick="location.href='/'"
+            >
+                <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="30"
+                    height="30"
+                    fill="currentColor"
+                    class="bi bi-house-fill"
+                    viewBox="0 0 16 16"
+                >
+                    <path
+                        d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"
+                    />
+                    <path
+                        d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z"
+                    />
+                </svg>
+            </button>
+        </div>
         <!-- 회사 정보 -->
         <div class="company">
             <div class="imgContainer">
@@ -45,18 +71,9 @@
             </div>
             <p class="companyName"><%=data.company_name%></p>
             <p class="experienceLevel"></p>
-            <button class="likeButton" onclick="increLike('<%=data.jobs_id%>')">
-                ❤ <%=data.cnt_likes%>
-            </button>
-            <button
-                class="unlikeButton"
-                onclick="reduceLike('<%=data.jobs_id%>')"
-            >
-                ❤ <%=data.cnt_likes%>
-            </button>
+            <div class="likeCount">❤ <%=data.cnt_likes%></div>
         </div>
         <br />
-        <button type="button" onclick="test()">test</button>
         <!-- 본문 -->
         <div class="content mainBlock">
             <!-- 본문 조회 -->
@@ -417,20 +434,22 @@
                     >
                     <br />
                     <!-- 수정 확인 버튼 -->
-                    <button
-                        type="button"
-                        class="editButton"
-                        onclick="editPost('<%=data.jobs_id%>')"
-                    >
-                        수정
-                    </button>
-                    <button
-                        type="button"
-                        class="editCancelButton"
-                        onclick="editReqPost()"
-                    >
-                        취소
-                    </button>
+                    <div class="editContentButtons">
+                        <button
+                            type="button"
+                            class="editButton input-file-button"
+                            onclick="editPost('<%=data.jobs_id%>')"
+                        >
+                            수정
+                        </button>
+                        <button
+                            type="button"
+                            class="editCancelButton input-file-button"
+                            onclick="editReqPost()"
+                        >
+                            취소
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -452,34 +471,11 @@
         <br />
         <!-- 댓글 -->
         <div class="comments mainBlock">
-            <!-- 댓글 등록 -->
-            <form name="inputComment">
-                <input
-                    type="textarea"
-                    name="commentText"
-                    placeholder="댓글 입력"
-                />
-                <button
-                    type="button"
-                    class="commentButton"
-                    onclick="sendCmt('<%=data.jobs_id%>')"
-                >
-                    등록
-                </button>
-            </form>
-            <br />
             <!-- 댓글 조회 -->
-            <!-- Todo: 예외처리 추가하기 -->
             <% for (let i= 0; i < reviewsdata.length; i++) { %>
-            <!-- <input
-                type="hidden"
-                id="reviewWriter_<%#=reviewsdata[i].reviews_id%>"
-                name="reviewWriter"
-                value="<%#=reviewsdata[i].users_id%>"
-            /> -->
             <div class="commentBox" id="cmt_<%=reviewsdata[i].reviews_id%>">
                 <p class="writer"><%=reviewsdata[i].nickname%></p>
-                <p class="registerDate"><%=reviewsdata[i].updatedAt%></p>
+
                 <!-- 수정창 전환 시 사라짐 -->
                 <span class="commentButtons">
                     <button
@@ -496,19 +492,18 @@
                     >
                         삭제
                     </button>
-                    <div class="commentDiv">
-                        <p class="comment">
-                            <%=reviewsdata[i].reviews_comment%>
-                        </p>
-                    </div>
+                    <p class="registerDate"><%=reviewsdata[i].updatedAt%></p>
                 </span>
+                <div class="commentDiv">
+                    <p class="comment"><%=reviewsdata[i].reviews_comment%></p>
+                </div>
 
                 <!-- 수정창 전환 시 나타남 -->
                 <form
                     name="editComment_<%=reviewsdata[i].reviews_id%>"
-                    class="editComment hidden"
+                    class="editComment hiddenC"
                 >
-                    <input type="text" name="editTxt" value="" />
+                    <textarea name="editTxt" class="editTxt"></textarea>
                     <br />
                     <button
                         type="button"
@@ -528,13 +523,24 @@
                 </form>
             </div>
             <%}%>
+            <!-- 댓글 등록 -->
+            <form name="inputComment">
+                <textarea
+                    class="commentText"
+                    name="commentText"
+                    placeholder="댓글 입력"
+                ></textarea>
+                <button
+                    type="button"
+                    class="commentButton"
+                    onclick="sendCmt('<%=data.jobs_id%>')"
+                >
+                    등록
+                </button>
+            </form>
         </div>
 
         <script>
-            function test() {
-                console.log("<%=data.deadline%>".replace(" ", "T"));
-            }
-
             // 로그인 유저 정보 전달
             (function () {
                 console.log("글 작성 유저 : <%-data.users_id%>");
@@ -596,6 +602,11 @@
                         editStack.setAttribute("checked", "true");
                     }
                 }
+                if (result.querySelector("p") == null) {
+                    let none = document.createElement("p");
+                    none.innerText = "없음";
+                    result.append(none);
+                }
             })();
 
             // 수정창 날짜 표기
@@ -615,30 +626,16 @@
                 }
             })();
 
-            // 댓글 작성자만 수정 삭제 버튼 표시 (보류)
-
-            // 좋아요 증가 patch /like
-            function increLike(jobid) {
-                console.log(jobid);
-                axios({
-                    url: "/like",
-                    method: "PATCH",
-                    data: {
-                        jobsId: jobid,
-                    },
-                });
-            }
-            // 좋아요 감소 patch /unlike
-            function reduceLike(jobid) {
-                console.log(jobid);
-                axios({
-                    url: "/unlike",
-                    method: "PATCH",
-                    data: {
-                        jobsId: jobid,
-                    },
-                });
-            }
+            // null인 정보 숨기기
+            (function () {
+                const cnt = document.querySelector(".viewContent").children;
+                for (i = 0; i < cnt.length; i++) {
+                    const cntText = cnt[i].querySelector("p").innerText;
+                    if (cntText == "") {
+                        cnt[i].classList.add("hidden");
+                    }
+                }
+            })();
 
             // 글 수정창 전환
             function editReqPost(userid) {
@@ -687,9 +684,6 @@
             // 글 수정 patch /jobs
             function editPost(jobid) {
                 const form = document.forms["editContent"];
-                console.log(form);
-                console.log("<%-data.users_id%>");
-
                 // 체크된 체크박스들의 값들을 담을 배열
                 const selectedValues = [];
                 // NodeList를 배열로 변환하여 순회
@@ -698,12 +692,9 @@
                         selectedValues.push(checkbox.value);
                     }
                 });
-                console.log(selectedValues);
-
                 const data = {
                     jobsId: jobid,
                     usersId: "<%-data.users_id%>",
-                    // updated_at,
                     img_path: imgPath,
                     companyName: form.company_name.value,
                     levels: form.levels.value,
@@ -736,7 +727,6 @@
 
             // 글 삭제 delete /jobs
             function deletePost(jobid) {
-                console.log(jobid);
                 axios({
                     method: "DELETE",
                     url: "/jobs",
@@ -758,9 +748,6 @@
                 const checkLogin = JSON.parse(localStorage.isLoggedIn);
                 if (checkLogin) {
                     const form = document.forms["inputComment"];
-                    console.log("comment", form.commentText.value);
-                    console.log("jobsId", jobid);
-                    console.log("userId", localStorage.userId);
                     const data = {
                         jobsId: jobid,
                         comment: form.commentText.value,
@@ -777,8 +764,8 @@
                         })
                             .then((res) => {
                                 console.log("resdata", res.data);
+                                alert("댓글이 등록되었습니다.");
                                 document.location.reload();
-                                // window.scrollBy(0, window.innerHeight);
                             })
                             .catch((err) => console.log(err));
                     }
@@ -790,17 +777,19 @@
 
             // 댓글 수정창 전환
             // 사라질 부분 commentButtons 나올 부분 editComment
-            // 나중에 최적화 하기 // 왜 없던 공백이 생겼지?
             function editReqCmt(reviewid, userid) {
                 if (userid == localStorage.userId) {
                     const findCmt = document.getElementById(`cmt_${reviewid}`);
                     const cmtTxt = findCmt.querySelector(".comment").innerText;
-                    const onDefault = findCmt.querySelector(".commentButtons");
+                    const onDefaultBtn =
+                        findCmt.querySelector(".commentButtons");
+                    const onDefaultDiv = findCmt.querySelector(".commentDiv");
                     const offDefault = findCmt.querySelector(".editComment");
-                    onDefault.classList.toggle("hidden");
-                    offDefault.classList.toggle("hidden");
-                    const txtbox = findCmt.querySelector("input");
-                    txtbox.setAttribute("value", `${cmtTxt}`);
+                    onDefaultBtn.classList.toggle("hiddenC");
+                    onDefaultDiv.classList.toggle("hiddenC");
+                    offDefault.classList.toggle("hiddenC");
+                    const txtbox = findCmt.querySelector("textarea");
+                    txtbox.innerText = `${cmtTxt}`;
                 } else {
                     alert("본인이 작성한 댓글만 수정할 수 있습니다.");
                 }
@@ -808,13 +797,12 @@
 
             function editCnlCmt(reviewid) {
                 const findCmt = document.getElementById(`cmt_${reviewid}`);
-                const cmtTxt = findCmt.querySelector(".comment").innerText;
-                const onDefault = findCmt.querySelector(".commentButtons");
+                const onDefaultBtn = findCmt.querySelector(".commentButtons");
+                const onDefaultDiv = findCmt.querySelector(".commentDiv");
                 const offDefault = findCmt.querySelector(".editComment");
-                onDefault.classList.toggle("hidden");
-                offDefault.classList.toggle("hidden");
-                const txtbox = findCmt.querySelector("input");
-                txtbox.setAttribute("value", `${cmtTxt}`);
+                onDefaultBtn.classList.toggle("hiddenC");
+                onDefaultDiv.classList.toggle("hiddenC");
+                offDefault.classList.toggle("hiddenC");
             }
 
             // 댓글 수정 PATCH /review
@@ -837,6 +825,7 @@
                     })
                         .then((res) => {
                             console.log(res);
+                            alert("댓글이 수정되었습니다.");
                             document.location.reload();
                         })
                         .catch((err) => console.log(err));
@@ -901,7 +890,6 @@
                             });
                             // Open infowindow immediately
                             infowindow.open(map, marker);
-                            console.log(mapContainer.children);
                         } else {
                             console.error(
                                 "주소로 좌표를 검색하는데 실패했습니다.",
