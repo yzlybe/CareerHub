@@ -354,7 +354,7 @@
                         type="datetime-local"
                         id="deadline"
                         name="deadline"
-                        defaultValue="<%=data.dedline%>"
+                        value=""
                         required
                     />
                     까지
@@ -534,9 +534,9 @@
         </div>
 
         <script>
-            // function test() {
-            //     //
-            // }
+            function test() {
+                console.log("<%=data.deadline%>".replace(" ", "T"));
+            }
 
             // 로그인 유저 정보 전달
             (function () {
@@ -599,6 +599,15 @@
                         editStack.setAttribute("checked", "true");
                     }
                 }
+            })();
+
+            // 수정창 날짜 표기
+            (function () {
+                const deadlineDate = "<%=data.deadline%>".replace(" ", "T");
+                console.log("d", deadlineDate);
+                document
+                    .getElementById("deadline")
+                    .setAttribute("value", `${deadlineDate}`);
             })();
 
             // 글 작성자만 수정 삭제 버튼 표시
