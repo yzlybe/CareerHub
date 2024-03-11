@@ -26,6 +26,10 @@ exports.jobs = async (req, res) => {
 // GET /jobs /like
 // 사용자가 관심 등록한 공고 목록 조회(메뉴바에서 관심 목록 클릭시)
 exports.jobsLike = async (req, res) => {
+    if (!req.session.userId)
+    return res
+        .status(404)
+        .send({ result: false, msg: "로그인 후 사용이 가능합니다." });
     try {
         const userId = req.session.userId;
         const userLikes = await likesModel.findAll({
@@ -64,7 +68,12 @@ exports.jobsLike = async (req, res) => {
             likedJobs.push(job);
         }
         console.log("likedJobs안에 담긴 배열 데이터", likedJobs);
-        res.send(likedJobs);
+        if (likedJobs){
+            res.send({result: true, msg: "관심공고 페이지 완료",
+            });
+        }else{
+            res.send({result: false, msg: "관심공고 페이지 실패"})
+        }
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
@@ -74,6 +83,10 @@ exports.jobsLike = async (req, res) => {
 // GET /jobs /:jobsId
 // 공고 상세 페이지 조회
 exports.jobsDetail = async (req, res) => {
+    if (!req.session.userId)
+    return res
+        .status(404)
+        .send({ result: false, msg: "로그인 후 사용이 가능합니다." });
     try {
         const jobId = req.params.jobId;
         const jobsDetail = await jobsModel.findOne({
@@ -114,6 +127,10 @@ exports.jobsDetail = async (req, res) => {
 // POST /jobs
 // 공고 등록
 exports.jobsWrite = async (req, res) => {
+    if (!req.session.userId)
+    return res
+        .status(404)
+        .send({ result: false, msg: "로그인 후 사용이 가능합니다." });
     try {
         const userId = req.session.userId;
         const {
@@ -274,9 +291,11 @@ exports.jobsUpdate = async (req, res) => {
         // 스택 테이블 업데이트
         const stackModelData = {}; // 스택 데이터 객체 초기화
 
-        // 스택 데이터 객체 업데이트
+        // 스택 컬럼명에 대해 순회하면서 해당 값이 스택 데이터에 포함되어 있는지 확인하여 true 또는 false 설정
         stackColumns.forEach((column) => {
-            stackModelData[column] = stack.includes(column);
+            // 대소문자를 구별하지 않고 비교하기 위해 모든 스택 값을 소문자로 변환하여 비교
+            const stackValue = stack.map((value) => value.toLowerCase());
+            stackModelData[column] = stackValue.includes(column.toLowerCase());
         });
 
         const isSuccess = await jobsModel.update(
@@ -310,26 +329,22 @@ exports.jobsUpdate = async (req, res) => {
                 jobs_id: jobsId,
             },
         });
-        /*
-        const createdStack = await stackModel.create({
-            ...stackModelData,
-            jobs_id: job.jobs_id,
-        });
-*/
+
         console.log("Updated stack:", updatedStack);
 
         console.log(usersId);
         console.log(isSuccess);
         if (isSuccess > 0 && updatedStack > 0) {
-            res.send(true);
+            res.send({result: true, msg: "공고 수정 성공"});
         } else {
-            res.send(false);
+            res.send({result: false, msg: "공고 수정 실패"});
         }
     } catch (error) {
         console.log("error", error);
         res.status(500).send("server error");
     }
 };
+
 
 // DELETE /jobs
 // 공고 삭제
@@ -343,9 +358,9 @@ exports.jobsDelete = async (req, res) => {
         });
         console.log(isDeleted);
         if (isDeleted > 0) {
-            res.send(true);
+            res.send({result: true, msg: "공고 삭제 완료"});
         } else {
-            res.send(false);
+            res.send({result: false, msg: "재시도해주세요"});
         }
     } catch (error) {
         console.log("error", error);
