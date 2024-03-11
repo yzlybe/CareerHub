@@ -411,6 +411,9 @@ document.addEventListener("DOMContentLoaded", function () {
 <button type="button" onclick="renderSignupForm()" style="background-color: #fff; color: #000; font-size: 12px;">
     회원이 아니신가요? <span style="font-size: 12px; text-decoration: underline; font-weight: 700;">회원 가입</span>
 </button>
+<button type="button" name="Google" style="background-color: #fff; color: #000; font-size: 12px;">
+    Google로 <span style="font-size: 12px; text-decoration: underline; font-weight: 700;"> 회원 가입</span>
+</button>
 
 
 
