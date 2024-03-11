@@ -54,6 +54,7 @@ exports.main = async (req, res) => {
                 ],
             },
         ],
+        order: [["created_at", "DESC"]], // createdAt을 기준으로 내림차순 정렬
     });
     res.send(foundJobs);
 };
@@ -318,10 +319,25 @@ exports.googleLoginRedirect = async (req, res) => {
         if (foundUser) {
             req.session.userId = foundUser.users_id;
             req.session.nickname = foundUser.nickname;
-            res.send({ result: true, msg: "로그인 성공" }); // 로그인 성공
+            res.send(`<script>
+            localStorage.setItem("userId", "${foundUser.users_id}");
+            localStorage.setItem("nickname", "${foundUser.nickname}");
+            localStorage.setItem("isLoggedIn", "true");
+            alert("로그인 성공");
+            window.location.href="/";
+            </script>`);
+            //     {
+            //     result: true,
+            //     msg: "로그인 성공",
+            //     userId: foundUser.users_id,
+            //     nickname: foundUser.nickname,
+            // } // 로그인 성공
         } else {
             // 로그인 실패
-            res.send({ result: false, msg: "로그인 실패" });
+            res.send(`<script>
+            alert("로그인 실패, 회원 가입 후 이용하세요")
+            window.location.href="/"
+            </script>`);
         }
         //todo:
 
@@ -341,7 +357,7 @@ exports.googleSignUp = (req, res) => {
     url += "&scope=email profile";
     res.redirect(url);
 };
-// post /google/signup
+// get /google/signup
 //
 exports.googleSignUpRedirect = async (req, res) => {
     const { code } = req.query;
@@ -369,7 +385,10 @@ exports.googleSignUpRedirect = async (req, res) => {
                 users_email: email,
             },
         });
-        if (checkDup) return res.send({ result: false, msg: "이메일 중복" });
+        if (checkDup)
+            return res.send(`<script>alert("이미 가압된 이메일 입니다.")
+        window.location.href="/"
+        </script>`);
         //검증 후 데이터 생성
         const newUser = await usersModel.create({
             users_email: email,
@@ -382,10 +401,14 @@ exports.googleSignUpRedirect = async (req, res) => {
             // 디비 삽입 성공시 세션 설정
             req.session.userId = newUser.users_id;
             req.session.nickname = newUser.nickname;
-            res.send({ result: true, msg: "회원가입 성공" }); // 회원 가입 성공
+            res.send(`<script>alert("회원 가입 성공")
+            window.location.href="/"
+            </script>`); // 회원 가입 성공
         } else {
             // 회원 가입 실패
-            res.send({ result: false, msg: "회원가입 실패" });
+            res.send(`<script>alert("회원 가입 실패")
+            window.location.href="/"
+            </script>`);
         }
     } catch (error) {
         console.log("error", error);

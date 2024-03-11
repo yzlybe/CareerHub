@@ -20,7 +20,7 @@ async function fetchData(url) {
             return {
                 id: dataItem.jobs_id,
                 title: dataItem.company_name,
-                date: dataItem.created_at,
+                date: dataItem.createdAt,
                 tags: finalTags, // 스택이 없으면 "없음" 태그로 설정
                 imageUrl: dataItem.img_path,
                 favoriteCount: dataItem.cnt_likes,
@@ -392,8 +392,11 @@ document.addEventListener("DOMContentLoaded", function () {
           <button type="submit" class="login-action">로그인</button>
           
           <button type="button" onclick="renderSignupForm()">회원 가입</button>
-          <a href="구글 로그인 링크">
+          <a href="/google/login">
           <img src="/static/img/google.png" alt="Google 로그인" style="margin-top: 5px;" height="55px" width="293px">
+        </a>
+        <a href="/google/signup">
+          <img src="/static/img/google.png" alt="Google 회원가입" style="margin-top: 5px;" height="55px" width="293px">
         </a>
           </form>
       `;
@@ -793,7 +796,7 @@ async function fetchMyJobs() {
             return {
                 id: dataItem.jobs_id,
                 title: dataItem.company_name,
-                date: dataItem.created_at,
+                date: dataItem.createdAt,
                 tags: finalTags, // 스택이 없으면 "없음" 태그로 설정
                 imageUrl: dataItem.img_path,
                 favoriteCount: dataItem.cnt_likes,

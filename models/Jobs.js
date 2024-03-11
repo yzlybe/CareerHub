@@ -8,14 +8,6 @@ const jobsModel = (sequelize, DataTypes) => {
                 autoIncrement: true,
                 allowNull: false,
             },
-            created_at: {
-                type: DataTypes.DATE,
-                defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
-                allowNull: false,
-            },
-            updated_at: {
-                type: DataTypes.DATE,
-            },
             img_path: {
                 type: DataTypes.STRING(255),
                 defaultValue: "/uploads/default.png",
@@ -70,8 +62,9 @@ const jobsModel = (sequelize, DataTypes) => {
         },
         {
             tableName: "jobs",
-            timestamps: false,
+            timestamps: true,
             freezeTableName: true,
+            underscored: true,
         }
     );
 
