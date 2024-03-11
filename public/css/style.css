@@ -166,8 +166,9 @@ p {
     position: relative;
 }
 .portfolioCard img {
-    width: 80px; /* 카드 너비에 맞춤 */
-    height: auto; /* 비율 유지 */
+    width: 50%; /* 이미지를 컨테이너의 너비에 맞게 조정 */
+    height: 50%; /* 이미지를 컨테이너의 높이에 맞게 조정 */
+    object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너 영역을 완전히 채움 */
     border-top-left-radius: 10px; /* 카드의 상단 좌우 둥근 모서리 적용 */
     border-top-right-radius: 10px;
 }
