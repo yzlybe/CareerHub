@@ -73,7 +73,6 @@ body.dark-mode {
 .dark-mode .search-input-container input[type="text"] {
     color: #ffffff;
     background-color: #333;
-    border-color: #555;
 }
 
 .dark-mode .button-group button {
@@ -108,17 +107,21 @@ body.dark-mode {
 
 .dark-mode .modal-content {
     background-color: #222 !important;
+    color: white !important;
 }
 
 .dark-mode .modal button {
     background-color: #333 !important;
-    color: white;
+    color: white !important;
     border: none;
 }
 
 .dark-mode .modal input {
     background-color: #222 !important;
+    color: #fff;
+    border: 1px solid #ffffff !important;
 }
+
 .dark-mode .fab {
     background-color: #333 !important;
 }
@@ -168,4 +171,19 @@ body.dark-mode .textarea-input:focus {
 body.dark-mode input:focus {
     border-color: #808080;
     box-shadow: 0 0 5px #808080;
+}
+
+body.dark-mode button[onclick="renderLoginForm()"] {
+    background-color: #222 !important;
+    color: #fff !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+body.dark-mode button[onclick="renderSignupForm()"] {
+    background-color: #222 !important;
+}
+
+body.dark-mode .close-button {
+    color: #fff;
 }
