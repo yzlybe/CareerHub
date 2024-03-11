@@ -23,6 +23,19 @@ button:hover {
     width: 60vw;
 }
 
+/* 헤더 */
+.header {
+    width: 100%;
+    height: 40px;
+    position: relative;
+}
+.home {
+    color: #aaa;
+    background-color: rgba(255, 255, 255, 0);
+    border: 0;
+    margin: 10px;
+}
+
 /* 회사 정보 */
 .company {
     display: flex;
