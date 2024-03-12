@@ -3,6 +3,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 30px;
 }
 
 button:hover {
@@ -119,11 +120,25 @@ header {
     color: #2c88d9;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+a:hover {
+    color: #2c88d9;
+    background-color: #eee;
+}
+a:active {
+    color: #2c88d9;
+    background-color: #ddd;
+}
+
 /* 지도 div */
 #map {
     width: 100%;
     height: 50vh;
     margin-top: 10px;
+    border-radius: 10px;
 }
 
 #mapEdit {
@@ -158,6 +173,7 @@ header {
     margin: 5px 0;
     padding: 15px;
     resize: none;
+    border-radius: 5px;
 }
 
 .commentBox {
