@@ -3,6 +3,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 30px;
 }
 
 button:hover {
@@ -117,6 +118,19 @@ header {
     border: 1px #2c88d9 solid;
     border-radius: 5px;
     color: #2c88d9;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+a:hover {
+    color: #2c88d9;
+    background-color: #eee;
+}
+a:active {
+    color: #2c88d9;
+    background-color: #ddd;
 }
 
 /* 지도 div */
