@@ -165,12 +165,19 @@ p {
     justify-content: flex-start; /* 세로 방향으로 상단 정렬 */
     position: relative;
 }
+.pImgCon {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
 .portfolioCard img {
-    width: 50%; /* 이미지를 컨테이너의 너비에 맞게 조정 */
-    height: 50%; /* 이미지를 컨테이너의 높이에 맞게 조정 */
-    object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너 영역을 완전히 채움 */
-    border-top-left-radius: 10px; /* 카드의 상단 좌우 둥근 모서리 적용 */
-    border-top-right-radius: 10px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .tag-button {
     padding: 5px 10px;
