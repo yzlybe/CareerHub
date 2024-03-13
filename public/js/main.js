@@ -462,30 +462,50 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     };
     //회원 가입 db 연동
-    async function signup() {
-        const form = document.forms["signupForm"];
-        await axios({
-            method: "post",
-            url: "/register",
-            data: {
-                email: form.email.value,
-                nickname: form.username.value,
-                password: form.password.value,
-            },
-        })
-            .then((res) => {
-                console.log(res.data);
-                if (res.data.result) {
-                    alert(res.data.msg);
-                    closeAuthModal();
-                } else {
-                    alert(res.data.msg);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+    // 회원 가입 db 연동
+async function signup() {
+    const form = document.forms["signupForm"];
+    const email = form.email.value;
+    const nickname = form.username.value;
+    const password = form.password.value;
+    const confirmPassword = form.confirm_password.value;
+
+    // 이메일 형식 검사
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        alert("유효하지 않은 이메일 주소입니다.");
+        return;
     }
+
+    // 비밀번호 최소 조건 검사
+    if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+        alert("비밀번호는 최소 8자 이상이어야 하며, 숫자와 영문자를 포함해야 합니다.");
+        return;
+    }
+
+    // 비밀번호 일치 검사
+    if (password !== confirmPassword) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+    }
+
+    try {
+        const response = await axios.post("/register", {
+            email: email,
+            nickname: nickname,
+            password: password,
+        });
+
+        if (response.data.result) {
+            alert(response.data.msg);
+            closeAuthModal();
+        } else {
+            alert(response.data.msg);
+        }
+    } catch (err) {
+        console.error("회원가입 중 오류 발생:", err);
+        alert("회원가입 과정에서 오류가 발생했습니다.");
+    }
+}
 
     //로그인 db연동
     async function login() {
