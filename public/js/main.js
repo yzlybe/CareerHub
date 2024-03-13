@@ -161,7 +161,9 @@ function renderItems(items) {
                 };">${item.isFavorite ? "favorite" : "favorite_border"}</span>
                 <span class="favorite-count">${item.favoriteCount}</span>
             </div>
-            <img src="${item.imageUrl}" alt="${item.title}">
+            <div class="pImgCon">
+                <img src="${item.imageUrl}" alt="${item.title}">
+            </div>
             <h3>${item.title}</h3>
             <p>${item.date}</p>
             <div class="tags-container">${item.tags
