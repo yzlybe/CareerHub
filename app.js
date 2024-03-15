@@ -70,8 +70,6 @@ sequelize
 //
 
 app.post("/upload", uploadDetail.single("img_path"), function (req, res) {
-    console.log(req.body);
-    console.log(req.file);
     res.send({ path: req.file.filename });
 });
 
