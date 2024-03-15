@@ -221,7 +221,7 @@ function toggleFavoriteLocal(itemId) {
                 item.favoriteCount += newFavoriteStatus ? 1 : -1;
                 saveFavoritesToLocalStorage();
                 updateDisplay();
-                console.log(response.data);
+              
                 alert(
                     `관심 등록 ${
                         newFavoriteStatus ? "추가" : "삭제"
@@ -644,7 +644,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         })
             .then((response) => {
-                console.log(response.data);
+                
                 alert("회원 정보가 성공적으로 수정되었습니다.");
                 document.getElementById("editProfileModal").style.display =
                     "none";
@@ -792,13 +792,13 @@ myJobsButton.addEventListener("click", async function () {
 async function fetchMyJobs() {
     try {
         const res = await axios.get("/me/jobs", { withCredentials: true });
-        console.log(res.data);
+        
         return res.data.map((dataItem) => {
             // 가져온 데이터를 변환하여 반환
             const stacks = dataItem.stack; // 서버에서 스택 객체를 가져와 저장
-            console.log("stacks", stacks);
+         
             const techStack = Object.keys(stacks).filter((key) => stacks[key]); // true인 스택만 필터링하여 배열로 가져옴
-            console.log("techStack", techStack);
+           
             const tags = techStack.map((tag) => {
                 // 첫 글자 대문자로 변환하여 태그 추가
                 if (tag === "typescript") return "TypeScript";
