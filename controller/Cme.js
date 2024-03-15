@@ -11,7 +11,6 @@ const dotenv = require("dotenv").config();
 // GET /me/jobs
 exports.myJobs = async (req, res) => {
     try {
-        console.log(req.session.userId);
         if (!req.session.userId)
             return res
                 .status(404)
@@ -37,7 +36,7 @@ exports.myJobs = async (req, res) => {
             ],
             order: [["created_at", "DESC"]],
         });
-        console.log(jobsIdList);
+
         res.send(jobsIdList);
     } catch (error) {
         console.log("error", error);

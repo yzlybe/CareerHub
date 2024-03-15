@@ -10,7 +10,6 @@ const {
 // 댓글 조회
 exports.findAllReviews = async (req, res) => {
     try {
-        console.log(req.params);
         const { jobsId } = req.params;
         const foundJobsId = await jobsModel.findOne({
             where: {
@@ -26,7 +25,7 @@ exports.findAllReviews = async (req, res) => {
         const reviews = await reviewsModel.findAll({
             where: { jobs_id: jobsId },
         });
-        console.log(reviews);
+
         if (reviews.length > 0) {
             res.send({
                 result: true,
@@ -60,7 +59,7 @@ exports.createReview = async (req, res) => {
             users_id: req.session.userId,
             nickname: req.session.nickname,
         });
-        console.log("issuccess", isSuccess);
+
         if (isSuccess) {
             res.send({ result: true, msg: "댓글 등록 성공" });
         } else {
@@ -80,7 +79,6 @@ exports.updateReview = async (req, res) => {
             .status(404)
             .send({ result: false, msg: "로그인이 필요합니다" });
     try {
-        console.log(req.body);
         const { reviewId, comment, jobsId } = req.body;
         // 작성자만 수정 할 수 있는 로직
         // 프론트에 저장된 닉네임과 디비 값 비교후 작성자일 경우 auth값 보내기
@@ -91,7 +89,7 @@ exports.updateReview = async (req, res) => {
                 jobs_id: jobsId,
             },
         });
-        console.log(authUserId.length);
+
         if (authUserId.length === 0)
             return res
                 .status(404)
@@ -126,7 +124,6 @@ exports.deleteReview = async (req, res) => {
             .status(404)
             .send({ result: false, msg: "로그인이 필요합니다" });
     try {
-        console.log(req.body);
         const { reviewId } = req.body;
         const isSuccess = await reviewsModel.destroy({
             where: {
@@ -134,7 +131,6 @@ exports.deleteReview = async (req, res) => {
             },
         });
 
-        console.log(isSuccess);
         if (isSuccess) {
             res.send({ result: true, data: null, msg: "댓글 삭제 성공" });
         } else {

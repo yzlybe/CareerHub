@@ -70,7 +70,6 @@ exports.register = (req, res) => {
 // 회원가입 페이지에서 가입하기 버튼 클릭시
 exports.createUser = async (req, res) => {
     try {
-        console.log(req.body);
         const { email, password, nickname } = req.body;
         // 이메일 중복 체크 검사
         const checkDup = await usersModel.findOne({
@@ -164,14 +163,13 @@ exports.findUserProfile = async (req, res) => {
             .status(404)
             .send({ result: false, msg: "로그인이 필요합니다" });
     try {
-        console.log(req.session.userId);
         //세션값으로 유저 프로필 조회
         const userProfile = await usersModel.findOne({
             where: {
                 users_id: req.session.userId,
             },
         });
-        console.log(userProfile); // DB조회된 결과 확인
+
         if (userProfile) {
             res.send({
                 result: true,
@@ -197,9 +195,8 @@ exports.updateUser = async (req, res) => {
             .status(404)
             .send({ result: false, msg: "로그인이 필요합니다" });
     try {
-        console.log(req.session.userId);
         const { password, nickname } = req.body;
-        console.log(req.body);
+
         const isUpdated = await usersModel.update(
             {
                 users_password: password,
@@ -212,7 +209,7 @@ exports.updateUser = async (req, res) => {
                 },
             }
         );
-        console.log(isUpdated); // 수정 결과 확인
+
         if (isUpdated > 0) {
             // 수정 성공시
             res.send({ result: true, msg: "수정 완료" });
@@ -233,14 +230,13 @@ exports.deleteUser = async (req, res) => {
             .status(404)
             .send({ result: false, msg: "로그인이 필요합니다" });
     try {
-        console.log(req.session.userId);
         const isDeleted = await usersModel.destroy({
             where: {
                 // users_id: 2,
                 users_id: req.session.userId,
             },
         });
-        console.log(isDeleted); // DB 삭제 결과 확인
+
         if (isDeleted > 0) {
             // 삭제 성공시 세션 삭제
             req.session.destroy((err) => {
@@ -279,15 +275,14 @@ exports.googleLogin = (req, res) => {
     url += `&redirect_uri=${process.env.GOOGLE_LOGIN_REDIRECT_URI}`;
     url += "&response_type=code";
     url += "&scope=email profile";
-    console.log(process.env.GOOGLE_CLIENT_ID);
-    console.log(process.env.GOOGLE_LOGIN_REDIRECT_URI);
+
     res.redirect(url);
 };
 // get /google/login
 // 구글 로그인 후 디비에 등록된 사용자인지 검증
 exports.googleLoginRedirect = async (req, res) => {
     const { code } = req.query;
-    console.log(`code: ${code}`);
+
     const resp = await axios.post(process.env.GOOGLE_TOKEN_URL, {
         code,
         client_id: process.env.GOOGLE_CLIENT_ID,
@@ -311,9 +306,6 @@ exports.googleLoginRedirect = async (req, res) => {
                 users_email: email,
             },
         });
-
-        console.log("조회결과", foundUser);
-        // console.log(foundUsers.users_id);
 
         // 가입된 유저시 세션 설정
         if (foundUser) {
@@ -361,7 +353,6 @@ exports.googleSignUp = (req, res) => {
 //
 exports.googleSignUpRedirect = async (req, res) => {
     const { code } = req.query;
-    console.log(`code: ${code}`);
 
     const resp = await axios.post(process.env.GOOGLE_TOKEN_URL, {
         code,
@@ -396,7 +387,6 @@ exports.googleSignUpRedirect = async (req, res) => {
             nickname: name,
         });
 
-        console.log(newUser);
         if (newUser) {
             // 디비 삽입 성공시 세션 설정
             req.session.userId = newUser.users_id;

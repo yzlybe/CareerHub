@@ -10,7 +10,6 @@ const axios = require("axios");
 const { jobs } = require("./Cjobs");
 // PATCH /like
 exports.increCount = async (req, res) => {
-    console.log(req.body);
     try {
         const { jobsId } = req.body;
         // 해당 공고 좋아요 수 검색
@@ -19,8 +18,6 @@ exports.increCount = async (req, res) => {
                 jobs_id: jobsId,
             },
         });
-        // 좋아요 수 타입 확인
-        console.log(typeof count.cnt_likes);
 
         const changedCount = count.cnt_likes + 1; // count++
         // jobs 테이블에 해당 공고 카운트 변경
@@ -52,7 +49,6 @@ exports.increCount = async (req, res) => {
 };
 
 exports.reduceCount = async (req, res) => {
-    console.log(req.body);
     try {
         const { jobsId } = req.body;
         // 해당 공고 좋아요 수 검색
@@ -62,7 +58,7 @@ exports.reduceCount = async (req, res) => {
             },
         });
         const changedCount = count.cnt_likes - 1; // count++
-        console.log(changedCount);
+
         if (changedCount !== -1) {
             const isSuccess = await jobsModel.update(
                 {
