@@ -7,7 +7,7 @@
 개발자들을 위한 취업정보(채용정보) 공유 사이트입니다.
 
 ## 배포 주소
-http://www.careerhub.com:8000
+http://www.careerhub.store:8000
 
 ## 팀원 소개
 
