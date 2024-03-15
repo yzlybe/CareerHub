@@ -705,7 +705,6 @@
                     },
                 })
                     .then((res) => {
-                        console.log(res.data);
                         const resultImage =
                             document.getElementById("resultImage");
                         resultImage.src = `/uploads/${res.data.path}`;
@@ -749,7 +748,6 @@
                     data: data,
                 })
                     .then((res) => {
-                        console.log("res.data", res.data);
                         window.scrollTo({ left: 0, top: 0 });
                         alert("수정되었습니다.");
                         document.location.reload();
@@ -795,7 +793,6 @@
                             data: data,
                         })
                             .then((res) => {
-                                console.log("resdata", res.data);
                                 alert("댓글이 등록되었습니다.");
                                 document.location.reload();
                             })
@@ -808,7 +805,6 @@
             }
 
             // 댓글 수정창 전환
-            // 사라질 부분 commentButtons 나올 부분 editComment
             function editReqCmt(reviewid, userid) {
                 if (userid == localStorage.userId) {
                     const findCmt = document.getElementById(`cmt_${reviewid}`);
@@ -856,7 +852,6 @@
                         },
                     })
                         .then((res) => {
-                            console.log(res);
                             alert("댓글이 수정되었습니다.");
                             document.location.reload();
                         })
