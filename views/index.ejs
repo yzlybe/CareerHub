@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CareerHub</title>
+        <%- include('include/head')%>
         <!-- CSS 파일 경로 수정 -->
         <link rel="stylesheet" href="/static/css/style.css" />
-        <link rel="stylesheet" href="/static/css/dark.css" />
-        <script src="/static/js/dark.js"></script>
 
         <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <link
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
             rel="stylesheet"
         />
+
+        <title>CareerHub</title>
     </head>
     <body>
         <header>
@@ -26,10 +23,14 @@
                 <div class="circle"></div>
                 <div class="circle"></div>
 
-                </button><label class="switch">
-    <input type="checkbox" id="darkModeSwitch" onchange="toggleDarkMode()">
-    <span class="slider"></span>
-</label>
+                <label class="switch">
+                    <input
+                        type="checkbox"
+                        id="darkModeSwitch"
+                        onchange="toggleDarkMode()"
+                    />
+                    <span class="slider"></span>
+                </label>
             </div>
             <div class="content-container">
                 <!-- 새로운 컨테이너 추가 -->
