@@ -1,4 +1,10 @@
 {
+    "name": "Project CareerHub",
+    "version": "1.0.0",
+    "description": "Job posting sharing site for developers",
+    "main": "app.js",
+    "author": "Clean Cording Crew",
+    "license": "ISC",
     "scripts": {
         "test": "",
         "start": "cross-env NODE_ENV=prod pm2 start app.js",
@@ -7,7 +13,6 @@
     },
     "dependencies": {
         "axios": "^1.6.7",
-        "bcrypt": "^5.1.1",
         "body-parser": "^1.20.2",
         "cross-env": "^7.0.3",
         "dotenv": "^16.4.5",
