@@ -1,43 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>공고 페이지</title>
+        <%- include('include/head')%>
 
         <link rel="stylesheet" href="/static/css/detail.css" />
-        <link rel="stylesheet" href="/static/css/dark.css" />
-
-        <!-- axios CDN -->
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-        <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= process.env.KAKAO_MAP_API_KEY %>&libraries=services"></script>
+        <script src="/static/js/detail.js"></script>
         <script defer src="/static/js/kakaoMap.js"></script>
 
-        <script src="/static/js/detail.js"></script>
-        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const darkModeEnabled =
-                    localStorage.getItem("darkModeEnabled") === "true";
-
-                // 로컬 스토리지에 저장된 값에 따라 다크 모드 클래스를 추가/제거
-                if (darkModeEnabled) {
-                    document.body.classList.add("dark-mode");
-                }
-            });
-
-            // 페이지를 벗어날 때 현재 다크 모드 상태를 로컬 스토리지에 저장
-            window.addEventListener("beforeunload", function () {
-                const isDarkModeEnabled =
-                    document.body.classList.contains("dark-mode");
-                localStorage.setItem("darkModeEnabled", isDarkModeEnabled);
-            });
-        </script>
+        <title>공고 페이지</title>
     </head>
 
     <body>
+        <%- include('include/header')%>
+
         <div name="jobs">
             <form name="detail">
                 <h1>📕 회사 로고</h1>

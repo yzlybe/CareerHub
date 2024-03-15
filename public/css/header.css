@@ -1,0 +1,44 @@
+header {
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.circle {
+    width: 10px; /* 동그라미의 너비 */
+    height: 10px; /* 동그라미의 높이 */
+    margin-left: 20px; /* 동그라미 사이의 간격 */
+    background-color: black; /* 동그라미의 색상 */
+    border-radius: 50%; /* 원형으로 만들기 위한 설정 */
+    display: inline-block; /* 동그라미를 옆으로 나열하기 위한 설정 */
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.circle:first-child {
+    margin-left: 15px; /* 첫 번째 동그라미의 왼쪽 여백을 20px로 설정 */
+}
+.top-bar {
+    display: flex; /* 자식 요소를 flex 아이템으로 만듦 */
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: space-between; /* 양 끝 정렬 */
+    /* 기존의 .top-bar 스타일 */
+    background-color: #f0f0f0;
+    height: 30px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.darkSwitch {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.home {
+    color: #aaa;
+    background-color: rgba(255, 255, 255, 0);
+    border: 0;
+    margin: 10px;
+    justify-self: flex-end;
+}
