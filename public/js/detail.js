@@ -33,8 +33,6 @@ function detailSubmit() {
         }
     });
 
-    // console.log(form);
-    // console.log(form.stack);
     const fileInput = document.getElementById("img_path");
     const fileName = fileInput.value.split("\\").pop();
     const imgPath = `/uploads/${fileName}`;
