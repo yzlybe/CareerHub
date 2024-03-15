@@ -83,15 +83,30 @@ http://www.careerhub.com:8000
 <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 </div>
 
-## 컨벤션,API
-컨벤션 --> https://husky-willow-29c.notion.site/f327c2f7da194fe7becd3a8cfc42928c?pvs=4<br>
-API --> https://husky-willow-29c.notion.site/API-Docs-1f226e42dcc941c0960f4b806e91b211?pvs=4
-
 ## 실행 가이드
+### 설치
 ```
 $ git clone https://github.com/serken0/CCC.git
 $ cd ccc
 $ npm install
+```
+### 환경변수 (.env 파일 생성)
+```
+DB_USERNAME=로컬DB계정
+DB_PASSWORD=로컬DB비밀번호
+DB_DATABASE=로컬DB이름
+PORT=8000
+SECRET=secretkey
+GOOGLE_CLIENT_ID=구글 로그인 테스트시 필요
+GOOGLE_CLIENT_SECRET=구글 로그인 테스트시 필요
+GOOGLE_LOGIN_REDIRECT_URI=구글 로그인 테스트시 필요
+GOOGLE_SIGNUP_REDIRECT_URI=구글 로그인 테스트시 필요
+GOOGLE_TOKEN_URL=구글 로그인 테스트시 필요
+GOOGLE_USERINFO_URL=구글 로그인 테스트시 필요
+KAKAO_MAP_API_KEY=카카오 지도 API 테스트시 필요
+```
+### 실행
+```
 $ npm run dev
 ```
 
@@ -112,7 +127,14 @@ $ npm run dev
 ![내가쓴공고](https://github.com/serken0/CCC/assets/140472588/1e96feaa-3daf-4260-8a8d-31e6ba9a342d)
 ### 8. 최근 본 공고 목록 조회
 ![최근본공고](https://github.com/serken0/CCC/assets/140472588/e74d10ba-643d-4290-9408-bd2129d68b28)
+### 9. 다크모드
+![다크모드](https://github.com/serken0/CCC/assets/140472588/05b1e7a1-a656-4519-b273-aced667c338a)
 
 
 ## Reference
+<a href="https://husky-willow-29c.notion.site/API-Docs-1f226e42dcc941c0960f4b806e91b211?pvs=4">API 명세서</a><br>
+<a href="https://www.erdcloud.com/d/c8heLktDgWrn5TxjM">ERD Cloud</a><br>
+<a href="https://husky-willow-29c.notion.site/API-Docs-1f226e42dcc941c0960f4b806e91b211?pvs=4">컨벤션</a><br>
+<a href="">피그마</a><br>
+
 
