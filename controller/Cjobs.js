@@ -15,12 +15,10 @@ exports.index = (req, res) => {
 // 공고 작성 페이지
 exports.jobs = async (req, res) => {
     const writeJobs = await jobsModel.findAll();
-    console.log("listjobs", writeJobs);
     res.render("detail.ejs", {
         data: writeJobs,
         KAKAO_MAP_API_KEY: process.env.KAKAO_MAP_API_KEY,
     });
-    console.log("공고 작성 페이지_writeJobs");
 };
 
 // GET /jobs /like
@@ -37,8 +35,6 @@ exports.jobsLike = async (req, res) => {
                 users_id: userId,
             },
         });
-        console.log("userId 작성한 값", userId);
-        console.log(userLikes);
 
         const likedJobs = [];
         for (const like of userLikes) {
@@ -67,7 +63,6 @@ exports.jobsLike = async (req, res) => {
             });
             likedJobs.push(job);
         }
-        console.log("likedJobs안에 담긴 배열 데이터", likedJobs);
         if (likedJobs){
             res.send({result: true, msg: "관심공고 페이지 완료",
             });
@@ -75,7 +70,6 @@ exports.jobsLike = async (req, res) => {
             res.send({result: false, msg: "관심공고 페이지 실패"})
         }
     } catch (error) {
-        console.log("error", error);
         res.status(500).send("server error");
     }
 };
@@ -108,14 +102,11 @@ exports.jobsDetail = async (req, res) => {
         const reviews = await reviewsModel.findAll({
             where: { jobs_id: jobId },
         });
-        console.log("reviews list", reviews);
         res.render("post.ejs", {
             data: jobsDetail,
             reviewsdata: reviews,
         });
-        console.log("공고 상세 페이지 완료");
     } catch (error) {
-        console.log("error", error);
         res.status(500).send("server error");
     }
 };
@@ -158,7 +149,7 @@ exports.jobsWrite = async (req, res) => {
                 levelValue = 3;
                 break;
             default:
-                throw new Error("올바르지 않은 경력 레벨입니다."); // 예상치 못한 값이 전달된 경우 오류 발생
+                throw new Error("올바르지 않은 경력 레벨입니다."); 
         }
         // stackModel에 있는 컬럼명 배열
         const stackColumns = [
@@ -211,8 +202,6 @@ exports.jobsWrite = async (req, res) => {
             ...stackModelData,
             jobs_id: isSuccess.jobs_id,
         });
-        console.log("삽입결과", createdStack);
-        console.log("isSuccess: ", isSuccess);
         if (isSuccess)
             return res.send({
                 result: true,
@@ -224,7 +213,6 @@ exports.jobsWrite = async (req, res) => {
                 .status(404)
                 .send({ result: false, msg: "공고 등록 실패" });
     } catch (error) {
-        console.log("error", error);
         res.status(500).send("server error");
     }
 };
@@ -233,11 +221,9 @@ exports.jobsWrite = async (req, res) => {
 // 공고 수정
 exports.jobsUpdate = async (req, res) => {
     try {
-        console.log(req.body);
         const {
             jobsId,
             usersId,
-            //updated_at,
             img_path,
             companyName,
             levels,
@@ -255,7 +241,6 @@ exports.jobsUpdate = async (req, res) => {
         } = req.body;
 
         let levelValue;
-        console.log(levels);
         switch (levels) {
             case "신입":
                 levelValue = 1;
@@ -267,9 +252,8 @@ exports.jobsUpdate = async (req, res) => {
                 levelValue = 3;
                 break;
             default:
-                throw new Error("올바르지 않은 경력 레벨입니다."); // 예상치 못한 값이 전달된 경우 오류 발생
+                throw new Error("올바르지 않은 경력 레벨입니다."); 
         }
-        console.log("levelValue:", levelValue);
 
         // 스택 관련 컬럼 목록
         const stackColumns = [
@@ -326,17 +310,12 @@ exports.jobsUpdate = async (req, res) => {
             },
         });
 
-        console.log("Updated stack:", updatedStack);
-
-        console.log(usersId);
-        console.log(isSuccess);
         if (isSuccess > 0 && updatedStack > 0) {
             res.send({result: true, msg: "공고 수정 성공"});
         } else {
             res.send({result: false, msg: "공고 수정 실패"});
         }
     } catch (error) {
-        console.log("error", error);
         res.status(500).send("server error");
     }
 };
@@ -346,20 +325,17 @@ exports.jobsUpdate = async (req, res) => {
 // 공고 삭제
 exports.jobsDelete = async (req, res) => {
     try {
-        console.log("body", req.body);
         const isDeleted = await jobsModel.destroy({
             where: {
                 jobs_id: req.body.jobsId,
             },
         });
-        console.log(isDeleted);
         if (isDeleted > 0) {
             res.send({result: true, msg: "공고 삭제 완료"});
         } else {
             res.send({result: false, msg: "재시도해주세요"});
         }
     } catch (error) {
-        console.log("error", error);
         res.status(500).send("server error");
     }
 };
